@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividades - Ciberseguridad</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -13,41 +13,67 @@
 <canvas id="matrix-right"></canvas>
 
 <header>
-    <h1>Actividades</h1>
-    <nav><a href="index.html">Inicio</a></nav>
+    <h1>Panel de Actividades</h1>
+    <nav><a href="index.html"><i class="fas fa-home"></i> Inicio</a></nav>
 </header>
 
 <main>
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <h2>Parcial 1</h2>
-        <div class="activities-container">
-            <a href="pdf/actividad1.pdf" target="_blank" class="mini-window">Actividad 1</a>
-            <a href="pdf/actividad2.pdf" target="_blank" class="mini-window">Actividad 2</a>
-            <a href="pdf/actividad3.pdf" target="_blank" class="mini-window">Actividad 3</a>
-            <a href="pdf/actividad4.pdf" target="_blank" class="mini-window">Actividad 4</a>
-            <a href="pdf/actividad5.pdf" target="_blank" class="mini-window">Actividad 5</a>
-            <a href="pdf/actividad6.pdf" target="_blank" class="mini-window">Actividad 6</a>
-        </div>
-    </section>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <h2><i class="fas fa-folder-open"></i> Parcial 1: Evidencias Transcritas</h2>
+        <div class="activities-container">
+            <a href="parcial1/actividad1.html" class="mini-window">
+                <i class="fas fa-terminal"></i> Actividad 1
+            </a>
+            <a href="parcial1/actividad2.html" class="mini-window">
+                <i class="fas fa-terminal"></i> Actividad 2
+            </a>
+            <a href="parcial1/actividad3.html" class="mini-window">
+                <i class="fas fa-terminal"></i> Actividad 3
+            </a>
+            <a href="parcial1/actividad4.html" class="mini-window">
+                <i class="fas fa-terminal"></i> Actividad 4
+            </a>
+            <a href="parcial1/actividad5.html" class="mini-window">
+                <i class="fas fa-terminal"></i> Actividad 5
+            </a>
+            <a href="pdf/actividad6.pdf" target="_blank" class="mini-window">
+                <i class="fas fa-file-pdf"></i> Actividad 6
+            </a>
+        </div>
+    </section>
 
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <h2>Parcial 2</h2>
-        <p style="text-align:center; opacity:0.5;">[ Encriptado - Próximamente ]</p>
-    </section>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <h2><i class="fas fa-lock"></i> Parcial 2</h2>
+        <div class="encrypted-zone">
+            <p style="text-align:center; color: #ff5f56; font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                <i class="fas fa-user-secret"></i> [ ACCESO DENEGADO ]
+            </p>
+            <p style="text-align:center; opacity:0.4; font-size: 0.8em;">
+                ERROR 403: Contenido cifrado mediante AES-256. Esperando llaves del servidor...
+            </p>
+        </div>
+    </section>
 
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <h2>Parcial 3</h2>
-        <p style="text-align:center; opacity:0.5;">[ Encriptado - Próximamente ]</p>
-    </section>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <h2><i class="fas fa-lock"></i> Parcial 3</h2>
+        <div class="encrypted-zone">
+            <p style="text-align:center; color: #ff5f56; font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                <i class="fas fa-skull"></i> [ DATA ENCRYPTED ]
+            </p>
+            <p style="text-align:center; opacity:0.4; font-size: 0.8em;">
+                Status: SYSTEM_LOCKED - Fase final no iniciada.
+            </p>
+        </div>
+    </section>
 </main>
 
 <script src="matrix.js"></script>
