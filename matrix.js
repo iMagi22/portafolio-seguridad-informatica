@@ -1,33 +1,44 @@
-// ===== EFECTO MAQUINA DE ESCRIBIR =====
+function createMatrix(canvasId){
 
-const nameText = "MAGDALENA YESENIA TRISTAN RIVERA; 
-const typingElement = document.getElementById("typing-name");
+const canvas = document.getElementById(canvasId);
 
-let index = 0;
-let deleting = false;
+if (!canvas) return;
 
-function typeEffect() {
+const ctx = canvas.getContext("2d");
 
-    if (!typingElement) return; // evita error si no existe
+canvas.height = window.innerHeight;
+canvas.width = 120;
 
-    if (!deleting && index < nameText.length) {
-        typingElement.innerHTML += nameText.charAt(index);
-        index++;
-        setTimeout(typeEffect, 100);
-    } 
-    else if (!deleting && index === nameText.length) {
-        deleting = true;
-        setTimeout(typeEffect, 1500);
-    } 
-    else if (deleting && index > 0) {
-        typingElement.innerHTML = nameText.substring(0, index - 1);
-        index--;
-        setTimeout(typeEffect, 50);
-    } 
-    else {
-        deleting = false;
-        setTimeout(typeEffect, 500);
-    }
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize = 12;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for(let x = 0; x < columns; x++) drops[x] = 1;
+
+function draw(){
+
+ctx.fillStyle = "rgba(0,0,0,0.1)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle = "#00ff66";
+ctx.font = fontSize + "px monospace";
+
+for(let i = 0; i < drops.length; i++){
+
+const text = letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize > canvas.height && Math.random() > 0.975){
+drops[i] = 0;
 }
 
-typeEffect();
+drops[i]++;
+}
+}
+
+setInterval(draw,40);
+}
+
+createMatrix("matrix-left");
+createMatrix("matrix-right");
