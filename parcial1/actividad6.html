@@ -1,27 +1,78 @@
-<div class="mini-window" style="
-    cursor: not-allowed; 
-    border: 2px solid #ff5f56; 
-    background: rgba(255, 95, 86, 0.15); 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 20px;
-    pointer-events: none; 
-    user-select: none;">
-    
-    <i class="fas fa-terminal" style="color: #ff5f56; opacity: 0.5;"></i>
-    <span style="color: #ff5f56; font-family: 'Courier New', monospace; font-weight: bold; margin-top: 5px;">
-        Actividad 6
-    </span>
-    <div style="
-        background: #ff5f56; 
-        color: black; 
-        font-size: 10px; 
-        padding: 2px 5px; 
-        margin-top: 5px; 
-        font-weight: bold; 
-        text-transform: uppercase;">
-        Locked
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 6 - Análisis de Mitigación</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Gestión de Seguridad</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
+            <p><strong>Práctica:</strong> ACTIVIDAD 06 - Análisis de Mitigación y Gestión de Vulnerabilidades</p>
+            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        
+        <article class="transcription-text">
+            <h2>Resumen Ejecutivo: Estrategias de Defensa en Profundidad</h2>
+            <p>Tras el análisis de los incidentes globales (NotPetya) y la implementación de controles técnicos (Iptables), la Actividad 06 se centra en sintetizar los mecanismos de defensa para reducir la superficie de ataque en una infraestructura corporativa.</p>
+
+            <h3>1. Identificación de Activos y Riesgos</h3>
+            <p>La base de cualquier estrategia de seguridad es el inventario. No se puede proteger lo que no se conoce. Se clasifican los activos según su criticidad para el negocio, aplicando el modelo <strong>CIA</strong> (Confidencialidad, Integridad y Disponibilidad).</p>
+
+            
+
+            <h3>2. Ciclo de Gestión de Vulnerabilidades</h3>
+            <ul>
+                <li><strong>Detección:</strong> Uso de escáneres para identificar fallos en el software.</li>
+                <li><strong>Priorización:</strong> Análisis de riesgo basado en el impacto potencial.</li>
+                <li><strong>Remediación:</strong> Aplicación de parches de seguridad o cambios en reglas de Firewall.</li>
+                <li><strong>Verificación:</strong> Auditoría post-remediación para asegurar que el fallo fue corregido.</li>
+            </ul>
+
+            <hr class="divider">
+
+            <h3>3. Controles Técnicos Implementados</h3>
+            <table border="1" style="width:100%; border-collapse: collapse; border-color: #00ff66; margin: 15px 0;">
+                <tr style="background: rgba(0, 255, 102, 0.1);">
+                    <th style="padding: 10px;">Control</th>
+                    <th style="padding: 10px;">Descripción</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>Hardening</strong></td>
+                    <td style="padding: 10px;">Configuración robusta de sistemas operativos eliminando servicios innecesarios.</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>Segmentación</strong></td>
+                    <td style="padding: 10px;">División de la red en subredes para evitar el movimiento lateral de atacantes.</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>MFA</strong></td>
+                    <td style="padding: 10px;">Autenticación de múltiples factores para mitigar el robo de credenciales.</td>
+                </tr>
+            </table>
+
+            <h3>
