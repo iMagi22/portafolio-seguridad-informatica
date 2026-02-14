@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 2 - Análisis X.800 y RFC 4949</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Transcripción Técnica</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
+            <p><strong>Práctica:</strong> ACTIVIDAD 02 - Análisis de servicios de seguridad (X.800 y RFC 4949)</p>
+            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        
+        <article class="transcription-text">
+            <h2 style="text-align: center;">1. Introducción</h2>
+            <p>El presente análisis examina distintos escenarios de incidentes de seguridad informática aplicando los seis servicios de seguridad definidos en el modelo <strong>X.800</strong> (autenticación, control de acceso, confidencialidad, integridad, no repudio y disponibilidad), así como la terminología formal establecida en el <strong>RFC 4949</strong>.</p>
+            <p>Mientras X.800 proporciona una arquitectura conceptual, el RFC 4949 ofrece el lenguaje técnico estandarizado para describir con precisión amenazas y ataques.</p>
+
+            <hr class="divider">
+
+            <h2>2. Marco Teórico</h2>
+            <h3>2.1 Servicios de Seguridad – X.800</h3>
+            <ul>
+                <li>Autenticación</li>
+                <li>Control de acceso</li>
+                <li>Confidencialidad</li>
+                <li>Integridad</li>
+                <li>No repudio</li>
+                <li>Disponibilidad</li>
+            </ul>
+
+            <h3>2.2 Terminología Formal – RFC 4949</h3>
+            <p><em>"Attack: An assault on system security that derives from an intelligent threat."</em></p>
+            <p><em>"Vulnerability: A flaw or weakness in a system's design, implementation, or operation."</em></p>
+
+            <hr class="divider">
+
+            <h2>3. Análisis de Escenarios</h2>
+            
+            <div style="background: rgba(0,255,102,0.05); padding: 10px; border-left: 3px solid #00ff66; margin-bottom: 20px;">
+                <h4>ESCENARIO 01 – Ransomware Multi-Stage (LockBit)</h4>
+                <p><strong>Servicios X.800:</strong> Confidencialidad, Integridad y Disponibilidad.</p>
+                <p><strong>Definición RFC 4949:</strong> Multi-stage attack, Data breach, Availability attack.</p>
+            </div>
+
+            <div style="background: rgba(0,255,102,0.05); padding: 10px; border-left: 3px solid #00ff66; margin-bottom: 20px;">
+                <h4>ESCENARIO 02 – Exposición por mala configuración</h4>
+                <p><strong>Servicios:</strong> Confidencialidad. | <strong>RFC 4949:</strong> Misconfiguration, Exposure.</p>
+            </div>
+
+            <div style="background: rgba(0,255,102,0.05); padding: 10px; border-left: 3px solid #00ff66; margin-bottom: 20px;">
+                <h4>ESCENARIO 03 – Supply Chain Attack</h4>
+                <p><strong>Servicios:</strong> Integridad y Confidencialidad.</p>
+            </div>
+
+            <div style="background: rgba(0,255,102,0.05); padding: 10px; border-left: 3px solid #00ff66; margin-bottom: 20px;">
+                <h4>ESCENARIO 04 – Credential Compromise por phishing</h4>
+                <p><strong>Servicios:</strong> Autenticación, Control de acceso, Confidencialidad.</p>
+            </div>
+
+            <div style="background: rgba(0,255,102,0.05); padding: 10px; border-left: 3px solid #00ff66; margin-bottom: 20px;">
+                <h4>ESCENARIO 07 – Alteración de registros</h4>
+                <p><strong>Servicios:</strong> Integridad y No repudio. | <strong>RFC 4949:</strong> Audit trail, Evidentiary integrity.</p>
+            </div>
+
+            <div style="background: rgba(0,255,102,0.05); padding: 10px; border-left: 3px solid #00ff66; margin-bottom: 20px;">
+                <h4>ESCENARIO 10 – Ataque destructivo total</h4>
+                <p><strong>Compromiso:</strong> Máximo nivel de impacto (Confidencialidad, Integridad y Disponibilidad).</p>
+            </div>
+
+            <hr class="divider">
+
+            <h2>4. Conclusión Comparativa</h2>
+            <p>La integración de ambos marcos permite una documentación profesional y técnicamente fundamentada. La correcta aplicación demuestra madurez conceptual y capacidad para realizar análisis técnicos basados en estándares internacionales.</p>
+        </article>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="../pdf/actividad2.pdf" download class="pdf-btn">
+                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA PDF (ACTIVIDAD 2)
+            </a>
+        </div>
+    </section>
+</main>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
