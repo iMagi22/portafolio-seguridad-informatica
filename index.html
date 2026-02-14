@@ -9,14 +9,20 @@
 
 <body>
 
+<!-- FONDO MATRIX -->
+<canvas id="matrix"></canvas>
+
+<!-- PARTICULAS -->
+<div class="particles"></div>
+
 <header id="inicio">
 
-    <!-- FOTO DE PERFIL -->
     <div class="profile-container">
         <img src="img/perfil.png" alt="Foto de perfil">
     </div>
 
-    <h1>Magdalena Yesenia Tristán Rivera</h1>
+    <h1 id="typewriter"></h1>
+
     <p>174702</p>
     <p>CNO V – Seguridad Informática</p>
     <p>Universidad Politécnica de San Luis Potosí</p>
@@ -34,72 +40,100 @@
 
 <main>
 
-    <!-- ===================== -->
-    <!-- PRESENTACIÓN -->
-    <!-- ===================== -->
-    <section id="presentacion" class="terminal-box">
-        <h2>Propósito del Portafolio</h2>
-        <p>
-            Este portafolio digital documenta mi trayectoria académica
-            en la asignatura de Seguridad Informática.
-        </p>
-        <p>
-            Aquí se presentan evidencias, actividades y análisis técnicos
-            desarrollados durante el curso.
-        </p>
-        <a href="actividades.html" class="btn">Ver Actividades</a>
-    </section>
+<section id="presentacion" class="terminal-box">
+    <div class="window-buttons">
+        <span class="close"></span>
+        <span class="max"></span>
+        <span class="min"></span>
+    </div>
 
-    <!-- ===================== -->
-    <!-- PERFIL -->
-    <!-- ===================== -->
-    <section id="perfil" class="terminal-box">
-        <h2>Perfil Académico</h2>
-        <p>
-            Soy estudiante de Ingeniería en Tecnologías de la Información,
-            con interés en ciberseguridad, análisis de vulnerabilidades
-            y protección de sistemas.
-        </p>
-        <p>
-            Mi objetivo es fortalecer mis conocimientos técnicos
-            y documentar cada proceso de aprendizaje de manera profesional.
-        </p>
-    </section>
+    <h2>Propósito del Portafolio</h2>
+    <p>
+        Este portafolio digital documenta mi trayectoria académica
+        en la asignatura de Seguridad Informática.
+    </p>
+    <a href="actividades.html" class="btn">Ver Actividades</a>
+</section>
 
-    <!-- ===================== -->
-    <!-- TECNOLOGÍAS -->
-    <!-- ===================== -->
-    <section class="terminal-box">
-        <h2>Tecnologías y Herramientas</h2>
-        <ul>
-            <li>HTML5</li>
-            <li>CSS3</li>
-            <li>Git y GitHub</li>
-            <li>GitHub Pages</li>
-            <li>Fundamentos de Seguridad Informática</li>
-        </ul>
-    </section>
+<section id="perfil" class="terminal-box">
+    <div class="window-buttons">
+        <span class="close"></span>
+        <span class="max"></span>
+        <span class="min"></span>
+    </div>
 
-    <!-- ===================== -->
-    <!-- CONTACTO -->
-    <!-- ===================== -->
-    <section id="contacto" class="terminal-box">
-        <h2>Contacto</h2>
-        <p>
-            Para consultas académicas relacionadas con este portafolio:
-        </p>
-        <p>
-            📧 Correo institucional  
-            <br>
-            (agrega aquí tu correo si deseas)
-        </p>
-    </section>
+    <h2>Perfil Académico</h2>
+    <p>
+        Estudiante de Ingeniería en Tecnologías de la Información
+        con enfoque en ciberseguridad y análisis de vulnerabilidades.
+    </p>
+</section>
+
+<section id="contacto" class="terminal-box">
+    <div class="window-buttons">
+        <span class="close"></span>
+        <span class="max"></span>
+        <span class="min"></span>
+    </div>
+
+    <h2>Contacto</h2>
+    <p>Correo institucional (agrega aquí tu correo)</p>
+</section>
 
 </main>
 
 <footer>
     <p>Portafolio Académico – Seguridad Informática – 2026</p>
 </footer>
+
+<!-- ================= MATRIX SCRIPT ================= -->
+<script>
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "アァカサタナハマヤャラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let x = 0; x < columns; x++) drops[x] = 1;
+
+function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ff66";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+setInterval(draw, 35);
+</script>
+
+<!-- ================= TYPEWRITER ================= -->
+<script>
+const text = "Magdalena Yesenia Tristán Rivera";
+let i = 0;
+function typeWriter() {
+    if (i < text.length) {
+        document.getElementById("typewriter").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 70);
+    }
+}
+window.onload = typeWriter;
+</script>
 
 </body>
 </html>
