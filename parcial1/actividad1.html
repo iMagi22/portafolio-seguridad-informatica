@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 1 - Análisis de un ciberataque real y suimpacto empresarial. </title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Analisis</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        
+        <article class="transcription-text">
+            <h2 style="text-align: center;">ACTIVIDAD 01: Análisis de un ciberataque real y su impacto empresarial</h2>
+            <p style="text-align: center; opacity: 0.8;">CNO V: Seguridad Informática | 30/01/2026</p>
+            
+            <hr class="divider">
+
+            <h3>1. Introducción y Contexto</h3>
+            <p>El ataque <strong>NotPetya (2017)</strong> es considerado uno de los ciberataques más devastadores de la historia. Aunque inicialmente parecía un ransomware común (Petya), resultó ser un malware destructivo (wiper) diseñado para borrar datos de forma irreversible. El ataque comenzó en Ucrania a través del software contable <em>M.E.Doc</em> y se propagó rápidamente por todo el mundo, afectando gravemente a la naviera danesa <strong>Maersk</strong>.</p>
+
+            <h3>2. Tabla Técnica del Ataque</h3>
+            <table border="1" style="width:100%; border-collapse: collapse; border-color: #00ff66; margin: 20px 0;">
+                <tr style="background: rgba(0, 255, 102, 0.2);">
+                    <th style="padding: 10px;">Categoría</th>
+                    <th style="padding: 10px;">Descripción Detallada</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>Vector de Entrada</strong></td>
+                    <td style="padding: 10px;">Actualización maliciosa del software contable ucraniano M.E.Doc.</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>Propagación</strong></td>
+                    <td style="padding: 10px;">Uso de <em>EternalBlue</em> (SMB exploit) y <em>Mimikatz</em> para extraer credenciales y saltar entre redes.</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>Mecanismo de Daño</strong></td>
+                    <td style="padding: 10px;">Cifrado del MFT (Master File Table) y sobrescritura del MBR (Master Boot Record).</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>Tipo de Malware</strong></td>
+                    <td style="padding: 10px;">Wiper (Malware de borrado destructivo).</td>
+                </tr>
+            </table>
+
+            <h3>3. Evaluación del Impacto (Modelo CIA)</h3>
+            <p>El impacto se evaluó bajo la triada de la seguridad informática:</p>
+            <ul>
+                <li><strong>Confidencialidad:</strong> El ataque comprometió credenciales de administrador, permitiendo acceso no autorizado a nivel global.</li>
+                <li><strong>Integridad:</strong> Crítica. Los datos de los servidores no fueron solo cifrados, sino dañados permanentemente sin posibilidad de recuperación mediante llave.</li>
+                <li><strong>Disponibilidad:</strong> Parálisis total. Maersk tuvo que detener operaciones en 76 terminales portuarias, afectando la cadena de suministro global.</li>
+            </ul>
+
+            <h3>4. Impacto Económico y Recuperación</h3>
+            <p>Maersk reportó pérdidas directas de entre <strong>$250 y $300 millones de USD</strong>. El proceso de recuperación incluyó:</p>
+            <ul>
+                <li>Reinstalación de 4,000 servidores nuevos.</li>
+                <li>Sustitución de 45,000 computadoras personales.</li>
+                <li>Reconfiguración de 2,500 aplicaciones empresariales.</li>
+            </ul>
+
+            <h3>5. Lecciones Aprendidas</h3>
+            <p>La principal recomendación derivada de este caso es la segmentación de redes y la gestión crítica de parches de seguridad, así como la importancia de contar con respaldos <em>offline</em> (fuera de línea) que no puedan ser alcanzados por malware de propagación lateral.</p>
+        </article>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="../pdf/actividad1.pdf" download class="pdf-btn">
+                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA PDF
+            </a>
+        </div>
+    </section>
+</main>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
