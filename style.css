@@ -1,79 +1,70 @@
-body {
-    margin: 0;
-    font-family: Consolas, monospace;
-    background: linear-gradient(180deg, #050816, #0b0f2a);
-    color: #e0e0ff;
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividades | Seguridad Informática</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
 
-header {
-    padding: 30px;
-    text-align: center;
-    border-bottom: 1px solid #7c4dff;
-}
+<body>
 
-nav a {
-    color: #7c4dff;
-    text-decoration: none;
-    margin: 10px;
-    font-weight: bold;
-}
+<header>
+    <h1>Actividades Académicas</h1>
+    <nav>
+        <a href="index.html">Inicio</a>
+    </nav>
+</header>
 
-main {
-    padding: 30px;
-    max-width: 900px;
-    margin: auto;
-}
+<main>
 
-/* Títulos de parcial */
-.parcial {
-    margin-top: 60px;
-    color: #bb86fc;
-    border-left: 4px solid #7c4dff;
-    padding-left: 10px;
-}
+<h2>Parcial 1</h2>
 
-/* Tarjetas */
-.card {
-    background-color: #0f1535;
-    border: 1px solid #7c4dff;
-    padding: 25px;
-    margin: 30px 0;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(124,77,255,0.4);
-    transition: 0.3s;
-}
+<section>
+    <h3>Actividad 01</h3>
+    <p>Análisis en grupo de un ciberataque real y su impacto empresarial.</p>
+    <a href="actividad1.html">Ver actividad</a>
+</section>
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(124,77,255,0.7);
-}
+<section>
+    <h3>Actividad 02</h3>
+    <p>Análisis de servicios de seguridad (X.800 y RFC 4949).</p>
+    <a href="actividad2.html">Ver actividad</a>
+</section>
 
-/* Imagen */
-.card-img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #7c4dff;
-    transition: 0.4s;
-}
+<h2>Parcial 2</h2>
 
-.card-img:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 25px rgba(124,77,255,0.8);
-}
+<section>
+    <h3>Actividad 03</h3>
+    <p>Interpretación y traducción de políticas de filtrado en iptables.</p>
+    <a href="actividad3.html">Ver actividad</a>
+</section>
 
-/* Botón */
-.btn {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #7c4dff;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: 0.3s;
-}
+<section>
+    <h3>Actividad 04</h3>
+    <p>Mecanismos de defensa en red.</p>
+    <a href="actividad4.html">Ver actividad</a>
+</section>
 
-.btn:hover {
-    background-color: #651fff;
-}
+<h2>Parcial 3</h2>
+
+<section>
+    <h3>Actividad 05</h3>
+    <p>Análisis comparativo de metodologías de seguridad informática.</p>
+    <a href="actividad5.html">Ver actividad</a>
+</section>
+
+<section>
+    <h3>Actividad 06</h3>
+    <p>Implementación de IPSec VPN.</p>
+    <a href="actividad6.html">Ver actividad</a>
+</section>
+
+</main>
+
+<footer>
+    <p>Portafolio académico – Seguridad Informática</p>
+</footer>
+
+</body>
+</html>
