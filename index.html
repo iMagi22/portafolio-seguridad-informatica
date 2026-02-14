@@ -3,104 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portafolio - ITI Ciberseguridad</title>
-
+<title>Portafolio | Seguridad Informática</title>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
+
 <body>
 
+<!-- MATRIX LATERAL -->
 <canvas id="matrix-left"></canvas>
 <canvas id="matrix-right"></canvas>
 
-<header>
-<h1>Portafolio Académico</h1>
-<p>Alumna de Ingeniería en Tecnologías de la Información (ITI) en Ciberseguridad</p>
+<header id="inicio">
+
+<div class="profile-container">
+<img src="img/perfil.png" alt="Foto de perfil">
+</div>
+
+<h1 id="typewriter"></h1>
+
+<p>174702</p>
+<p>CNO V – Seguridad Informática</p>
+<p>Universidad Politécnica de San Luis Potosí</p>
+<p>Periodo: 2026</p>
 
 <nav>
 <a href="#inicio">Inicio</a>
-<a href="activities.html">Actividades</a>
+<a href="#presentacion">Presentación</a>
+<a href="#perfil">Perfil</a>
+<a href="actividades.html">Actividades</a>
 <a href="#contacto">Contacto</a>
 </nav>
+
 </header>
 
 <main>
 
-<!-- INICIO -->
-<section id="inicio" class="window">
+<section id="presentacion" class="window">
 <div class="window-bar">
 <span class="btn red"></span>
 <span class="btn yellow"></span>
 <span class="btn green"></span>
 </div>
 
-<h2>Presentación del Portafolio</h2>
-
-<p>
-Este portafolio reúne las actividades, prácticas y proyectos realizados durante el curso.
-Su objetivo es demostrar el desarrollo de habilidades técnicas y académicas.
-</p>
-
+<h2>Propósito del Portafolio</h2>
+<p>Este portafolio documenta mi desarrollo en Seguridad Informática.</p>
 </section>
 
-<!-- PERFIL -->
-<section class="window">
-
+<section id="perfil" class="window">
 <div class="window-bar">
 <span class="btn red"></span>
 <span class="btn yellow"></span>
 <span class="btn green"></span>
 </div>
 
-<h2>Perfil del Estudiante</h2>
-
-<div class="perfil-container">
-
-<img src="img/tuimagen.jpg" alt="Foto de perfil" class="perfil-img">
-
-<div class="perfil-texto">
-
-<p>
-Estudiante de ITI con enfoque en Ciberseguridad, interesada en desarrollo de software,
-redes y seguridad informática.
-</p>
-
-<h3 id="typing-name"></h3>
-
-</div>
-
-</div>
-
+<h2>Perfil Académico</h2>
+<p>Estudiante de TI con enfoque en ciberseguridad y análisis de vulnerabilidades.</p>
 </section>
 
-<!-- INFORMACION TECNICA -->
-<section class="window">
-<div class="window-bar">
-<span class="btn red"></span>
-<span class="btn yellow"></span>
-<span class="btn green"></span>
-</div>
-
-<h2>Información Técnica Básica</h2>
-
-<div class="tech-icons">
-<span><i class="fa-brands fa-cuttlefish"></i> C++</span>
-<span><i class="fa-brands fa-python"></i> Python</span>
-<span><i class="fa-brands fa-java"></i> Java (NetBeans)</span>
-<span><i class="fa-brands fa-js"></i> JavaScript</span>
-<span><i class="fa-brands fa-html5"></i> HTML</span>
-<span><i class="fa-brands fa-css3-alt"></i> CSS</span>
-<span><i class="fa-brands fa-github"></i> GitHub</span>
-<span><i class="fa-solid fa-square-root-variable"></i> MATLAB</span>
-<span><i class="fa-solid fa-code"></i> Visual Studio Code</span>
-<span><i class="fa-solid fa-network-wired"></i> Cisco Packet Tracer</span>
-<span><i class="fa-brands fa-ubuntu"></i> Ubuntu</span>
-</div>
-
-</section>
-
-<!-- CONTACTO -->
 <section id="contacto" class="window">
 <div class="window-bar">
 <span class="btn red"></span>
@@ -109,15 +68,17 @@ redes y seguridad informática.
 </div>
 
 <h2>Contacto</h2>
-
-<p><i class="fa-solid fa-envelope"></i> 174702@upslp.edu.mx</p>
-<p><i class="fa-brands fa-telegram"></i> @Magiuwu</p>
-
+<p>Agrega aquí tu correo institucional</p>
 </section>
 
 </main>
 
+<footer>
+<p>Portafolio Seguridad Informática – 2026</p>
+</footer>
+
 <script src="matrix.js"></script>
+<script src="typewriter.js"></script>
 
 </body>
 </html>
