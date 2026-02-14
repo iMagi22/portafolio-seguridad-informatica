@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 3 - Iptables</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Transcripción Técnica</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
+            <p><strong>Práctica:</strong> ACTIVIDAD 03 - Interpretación y traducción de políticas de filtrado en iptables</p>
+            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        
+        <article class="transcription-text">
+            <h2>1. Flujo del Paquete en Netfilter</h2>
+            <p>Cuando un paquete entra al sistema, primero pasa por una tabla <strong>PREROUTING</strong>, después por una tabla de <strong>INPUT</strong> o <strong>FORWARD</strong>, y finalmente se ejecuta una <strong>POSTROUTING</strong>.</p>
+
+            
+
+            <h2>2. Relación de Tablas y Propósitos</h2>
+            <table border="1" style="width:100%; border-collapse: collapse; border-color: #00ff66; margin: 15px 0;">
+                <tr style="background: rgba(0, 255, 102, 0.2);">
+                    <th style="padding: 10px;">Tabla</th>
+                    <th style="padding: 10px;">Propósito Principal</th>
+                    <th style="padding: 10px;">Ejemplo de uso</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>FILTER</strong></td>
+                    <td style="padding: 10px;">Filtrado de paquetes (Aceptar/Denegar)</td>
+                    <td style="padding: 10px;">Cerrar puerto 22</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>NAT</strong></td>
+                    <td style="padding: 10px;">Traducción de direcciones de red</td>
+                    <td style="padding: 10px;">Redirección de puertos</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>MANGLE</strong></td>
+                    <td style="padding: 10px;">Modificación de cabeceras de paquetes</td>
+                    <td style="padding: 10px;">Cambiar el TTL</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;"><strong>RAW</strong></td>
+                    <td style="padding: 10px;">Configuración de exenciones de seguimiento</td>
+                    <td style="padding: 10px;">NOTRACK</td>
+                </tr>
+            </table>
+
+            <hr class="divider">
+
+            <h2>3. Anatomía y Análisis de Comandos</h2>
+            <p><strong>Comando base:</strong> <code>iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT</code></p>
+            <p><em>Descripción:</em> Permite el tráfico entrante para los puertos web estándar (HTTP y HTTPS).</p>
+
+            <h3>Análisis de Regla Compleja:</h3>
+            <p style="background: #000; padding: 10px; border: 1px solid #00ff66; color: #00ff66;">
+                <code>iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m state --state NEW,ESTABLISHED -j ACCEPT</code>
+            </p>
+            <p><strong>¿Qué hace esta regla?</strong><br>
+            Habilita un servidor web de forma segura. Permite ver las páginas web (puertos 80 y 443) y la administración remota (puerto 22 para SSH) a través de la interfaz eth0, siempre que sea tráfico TCP y el estado de la conexión sea nueva o ya establecida.</p>
+
+            <hr class="divider">
+
+            <h2>4. Traducción de Políticas a Comandos</h2>
+            <ul>
+                <li><strong>Permitir SSH solo desde una IP específica:</strong><br>
+                <code>iptables -A INPUT -p tcp -s 192.168.1.50 --dport 22 -j ACCEPT</code></li>
+                
+                <li><strong>Permitir tráfico entrante a puertos 80 y 443 solo si la conexión es establecida:</strong><br>
+                <code>iptables -A INPUT -p tcp -m multiport --dports 80,443 -m state --state ESTABLISHED,RELATED -j ACCEPT</code></li>
+
+                <li><strong>Denegar todo el tráfico entrante (Política restrictiva):</strong><br>
+                <code>iptables -P INPUT DROP</code></li>
+            </ul>
+        </article>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="../pdf/actividad3.pdf" download class="pdf-btn">
+                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA PDF (ACTIVIDAD 3)
+            </a>
+        </div>
+    </section>
+</main>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
