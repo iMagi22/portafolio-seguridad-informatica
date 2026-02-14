@@ -1,55 +1,101 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-
-<canvas id="matrix-left"></canvas>
-<canvas id="matrix-right"></canvas>
-
-<header>
-    <h1>Actividades</h1>
-    <nav><a href="index.html">Inicio</a></nav>
-</header>
-
 <main>
     <section class="window">
         <div class="window-bar">
             <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
         </div>
-        <h2>Parcial 1</h2>
+        <h2>Parcial 1: Índice de Actividades</h2>
         <div class="activities-container">
-            <a href="pdf/actividad1.pdf" target="_blank" class="mini-window">Actividad 1</a>
-            <a href="pdf/actividad2.pdf" target="_blank" class="mini-window">Actividad 2</a>
-            <a href="pdf/actividad3.pdf" target="_blank" class="mini-window">Actividad 3</a>
-            <a href="pdf/actividad4.pdf" target="_blank" class="mini-window">Actividad 4</a>
-            <a href="pdf/actividad5.pdf" target="_blank" class="mini-window">Actividad 5</a>
-            <a href="pdf/actividad6.pdf" target="_blank" class="mini-window">Actividad 6</a>
+            <a href="#act1" class="mini-window">Actividad 1</a>
+            <a href="#act2" class="mini-window">Actividad 2</a>
+            <a href="#act3" class="mini-window">Actividad 3</a>
+            <a href="#act4" class="mini-window">Actividad 4</a>
+            <a href="#act5" class="mini-window">Actividad 5</a>
+            <a href="#" class="mini-window" style="opacity:0.5">Actividad 6</a>
         </div>
     </section>
 
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+    <section id="act1" class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <h2>Actividad 01: Análisis de NotPetya - Maersk (2017)</h2>
+        <div class="transcription-text">
+            <p><strong>Introducción:</strong> NotPetya fue un malware destructivo disfrazado de ransomware que atacó a través del software contable M.E.Doc. Maersk fue una de las entidades más afectadas globalmente.</p>
+            
+            <h3>Evaluación del Impacto (Modelo CIA)</h3>
+            <table border="1" style="width:100%; border-collapse: collapse; margin: 10px 0;">
+                <tr><th>Dimensión</th><th>Impacto</th></tr>
+                <tr><td>Confidencialidad</td><td>Bajo. El objetivo no era el robo de datos, sino la destrucción, aunque se comprometieron credenciales locales.</td></tr>
+                <tr><td>Integridad</td><td>Alto. El malware sobrescribió el MBR y cifró la tabla maestra de archivos (MFT) de forma irreversible.</td></tr>
+                <tr><td>Disponibilidad</td><td>Crítico. Suspensión total de operaciones portuarias y logísticas en 76 terminales a nivel mundial.</td></tr>
+            </table>
+
+            <h3>Costo Económico Estimado</h3>
+            <ul>
+                <li>Interrupción de ingresos: $250 - $300 millones de USD.</li>
+                <li>Recuperación tecnológica: Reinstalación de 4,000 servidores y 45,000 computadoras.</li>
+            </ul>
         </div>
-        <h2>Parcial 2</h2>
-        <p style="text-align:center; opacity:0.5;">[ Encriptado - Próximamente ]</p>
+        <a href="pdf/actividad1.pdf" download class="pdf-btn"><i class="fas fa-file-pdf"></i> Descargar PDF Original</a>
     </section>
 
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+    <section id="act2" class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <h2>Actividad 02: Servicios de Seguridad (X.800 y RFC 4949)</h2>
+        <div class="transcription-text">
+            <p><strong>Análisis Conceptual:</strong> Integración del modelo arquitectónico X.800 y el glosario técnico RFC 4949 para el análisis de incidentes.</p>
+            
+            <h3>Escenarios de Seguridad</h3>
+            <ul>
+                <li><strong>Audit Trail:</strong> Registros cronológicos que permiten reconstruir eventos de seguridad.</li>
+                <li><strong>Masquerade:</strong> Ataque donde una entidad finge ser otra (ej. Phishing institucional).</li>
+                <li><strong>No Repudio:</strong> Garantiza que el emisor de un mensaje no pueda negar su autoría.</li>
+                <li><strong>Integridad Probatoria:</strong> Asegura que los logs no fueron alterados tras un ataque.</li>
+            </ul>
         </div>
-        <h2>Parcial 3</h2>
-        <p style="text-align:center; opacity:0.5;">[ Encriptado - Próximamente ]</p>
+        <a href="pdf/actividad2.pdf" download class="pdf-btn"><i class="fas fa-file-pdf"></i> Descargar PDF Original</a>
+    </section>
+
+    <section id="act3" class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <h2>Actividad 03: Iptables - Traducción de Políticas</h2>
+        <div class="transcription-text">
+            <h3>Tablas de Netfilter:</h3>
+            <p>FILTER (Filtrado), NAT (Traducción de direcciones), MANGLE (Modificación de paquetes).</p>
+            
+            <h3>Anatomía de Regla Crítica:</h3>
+            <p><code>iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m state --state NEW,ESTABLISHED -j ACCEPT</code></p>
+            <p><strong>Interpretación:</strong> Esta regla habilita un servidor web seguro permitiendo tráfico entrante por la interfaz eth0 hacia los puertos 22 (SSH), 80 (HTTP) y 443 (HTTPS) solo para conexiones nuevas o ya establecidas bajo el protocolo TCP.</p>
+        </div>
+        <a href="pdf/actividad3.pdf" download class="pdf-btn"><i class="fas fa-file-pdf"></i> Descargar PDF Original</a>
+    </section>
+
+    <section id="act4" class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <h2>Actividad 04: Mecanismos de Defensa en Red</h2>
+        <div class="transcription-text">
+            <h3>Script de Firewall Restrictivo:</h3>
+            <ol>
+                <li><strong>Política por defecto:</strong> <code>iptables -P INPUT DROP</code> / <code>-P FORWARD DROP</code></li>
+                <li><strong>DNS Local:</strong> Permitir puerto 53 (UDP/TCP) desde 192.1.2.0/24 hacia el exterior.</li>
+                <li><strong>Servidor de Correo (IP 192.1.2.10):</strong> Permitir puerto 25 (SMTP) entrante y saliente.</li>
+                <li><strong>Servidor Web (IP 192.1.2.11):</strong> Permitir puerto 80 (HTTP) entrante desde cualquier origen.</li>
+            </ol>
+        </div>
+        <a href="pdf/actividad4.pdf" download class="pdf-btn"><i class="fas fa-file-pdf"></i> Descargar PDF Original</a>
+    </section>
+
+    <section id="act5" class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <h2>Actividad 05: Metodologías de Pentesting</h2>
+        <div class="transcription-text">
+            <p>Análisis comparativo de marcos de trabajo para auditorías de seguridad.</p>
+            <table border="1" style="width:100%; border-collapse: collapse; color: #00ff66;">
+                <tr><th>Metodología</th><th>Enfoque Principal</th></tr>
+                <tr><td>MITRE ATT&CK</td><td>Tácticas y técnicas basadas en ataques reales de adversarios.</td></tr>
+                <tr><td>OWASP WSTG</td><td>Seguridad profunda en aplicaciones y lógica de negocio web.</td></tr>
+                <tr><td>NIST 800-115</td><td>Guía técnica federal para pruebas y evaluaciones de seguridad.</td></tr>
+                <tr><td>OSSTMM</td><td>Metodología científica basada en métricas de visibilidad (Ravs).</td></tr>
+            </table>
+        </div>
+        <a href="pdf/actividad5.pdf" download class="pdf-btn"><i class="fas fa-file-pdf"></i> Descargar PDF Original</a>
     </section>
 </main>
-
-<script src="matrix.js"></script>
-</body>
-</html>
