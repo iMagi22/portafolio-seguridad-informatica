@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 4 - Mecanismos de Defensa en Red</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Configuración de Firewall</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
+            <p><strong>Práctica:</strong> ACTIVIDAD 04 - Mecanismos de defensa en red (iptables)</p>
+            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        
+        <article class="transcription-text">
+            <h2>Configuración de Políticas de Filtrado</h2>
+            <p>A continuación se detallan las reglas implementadas para asegurar la infraestructura de red mediante el uso de <code>iptables</code>, estableciendo un perímetro de seguridad controlado.</p>
+
+            <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px solid #00ff66; border-radius: 5px; font-family: 'Courier New', Courier, monospace;">
+                
+                <p><strong>1. Establecer una política restrictiva (Lista Blanca):</strong></p>
+                <code style="color: #ff5f56;">iptables -P FORWARD DROP</code><br>
+                <code style="color: #ff5f56;">iptables -P INPUT DROP</code>
+                <p><small>// Se deniega todo tráfico por defecto para asegurar que solo lo explícitamente permitido pase.</small></p>
+
+                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
+
+                <p><strong>2. Tráfico de conexiones ya establecidas:</strong></p>
+                <code style="color: #27c93f;">iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</code>
+                <p><small>// Permite que las respuestas a peticiones legítimas salgan del sistema.</small></p>
+
+                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
+
+                <p><strong>3. Servicio DNS (Resolución de nombres):</strong></p>
+                <code style="color: #00ff66;">iptables -A OUTPUT -p tcp --dport 53 -s 192.1.2.0/24 -j ACCEPT</code>
+                <p><small>// Acepta tráfico DNS saliente desde la red local para navegar por IP.</small></p>
+
+                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
+
+                <p><strong>4. Servidor de Correo (SMTP):</strong></p>
+                <code>iptables -A INPUT -p tcp --dport 25 -d 192.1.2.10 -j ACCEPT</code><br>
+                <code>iptables -A OUTPUT -p tcp --dport 25 -s 192.1.2.10 -j ACCEPT</code>
+                <p><small>// Se permite el intercambio de correos (entrada y salida) específicamente para el servidor 192.1.2.10.</small></p>
+
+                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
+
+                <p><strong>5. Servidor Web (HTTP):</strong></p>
+                <code>iptables -A INPUT -p tcp --dport 80 -d 192.1.2.11 -j ACCEPT</code>
+                <p><small>// Permite conexiones externas al servidor web institucional.</small></p>
+
+                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
+
+                <p><strong>6. Navegación de Usuarios Locales:</strong></p>
+                <code>iptables -A OUTPUT -p tcp --dport 80 -s 192.1.2.0/24 -j ACCEPT</code>
+                <p><small>// Los usuarios de la red local pueden realizar peticiones HTTP hacia Internet.</small></p>
+
+            </div>
+            
+            
+
+            <h3 style="margin-top: 20px;">Resumen de Seguridad</h3>
+            <p>Esta configuración aplica el <strong>Principio de Mínimo Privilegio</strong>, cerrando todas las comunicaciones innecesarias y abriendo exclusivamente los puertos 53 (DNS), 25 (SMTP) y 80 (HTTP) para las IPs correspondientes.</p>
+        </article>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="../pdf/actividad4.pdf" download class="pdf-btn">
+                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA PDF (ACTIVIDAD 4)
+            </a>
+        </div>
+    </section>
+</main>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
