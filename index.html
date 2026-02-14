@@ -1,139 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Portafolio | Seguridad Informática</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portafolio | Seguridad Informática</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- FONDO MATRIX -->
-<canvas id="matrix"></canvas>
-
-<!-- PARTICULAS -->
-<div class="particles"></div>
+<!-- MATRIX LATERAL -->
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
 
 <header id="inicio">
 
-    <div class="profile-container">
-        <img src="img/perfil.png" alt="Foto de perfil">
-    </div>
+<div class="profile-container">
+<img src="img/perfil.png" alt="Foto de perfil">
+</div>
 
-    <h1 id="typewriter"></h1>
+<h1 id="typewriter"></h1>
 
-    <p>174702</p>
-    <p>CNO V – Seguridad Informática</p>
-    <p>Universidad Politécnica de San Luis Potosí</p>
-    <p>Periodo: 2026</p>
+<p>174702</p>
+<p>CNO V – Seguridad Informática</p>
+<p>Universidad Politécnica de San Luis Potosí</p>
+<p>Periodo: 2026</p>
 
-    <nav>
-        <a href="#inicio">Inicio</a>
-        <a href="#presentacion">Presentación</a>
-        <a href="#perfil">Perfil</a>
-        <a href="actividades.html">Actividades</a>
-        <a href="#contacto">Contacto</a>
-    </nav>
+<nav>
+<a href="#inicio">Inicio</a>
+<a href="#presentacion">Presentación</a>
+<a href="#perfil">Perfil</a>
+<a href="actividades.html">Actividades</a>
+<a href="#contacto">Contacto</a>
+</nav>
 
 </header>
 
 <main>
 
-<section id="presentacion" class="terminal-box">
-    <div class="window-buttons">
-        <span class="close"></span>
-        <span class="max"></span>
-        <span class="min"></span>
-    </div>
+<section id="presentacion" class="window">
+<div class="window-bar">
+<span class="btn red"></span>
+<span class="btn yellow"></span>
+<span class="btn green"></span>
+</div>
 
-    <h2>Propósito del Portafolio</h2>
-    <p>
-        Este portafolio digital documenta mi trayectoria académica
-        en la asignatura de Seguridad Informática.
-    </p>
-    <a href="actividades.html" class="btn">Ver Actividades</a>
+<h2>Propósito del Portafolio</h2>
+<p>Este portafolio documenta mi desarrollo en Seguridad Informática.</p>
 </section>
 
-<section id="perfil" class="terminal-box">
-    <div class="window-buttons">
-        <span class="close"></span>
-        <span class="max"></span>
-        <span class="min"></span>
-    </div>
+<section id="perfil" class="window">
+<div class="window-bar">
+<span class="btn red"></span>
+<span class="btn yellow"></span>
+<span class="btn green"></span>
+</div>
 
-    <h2>Perfil Académico</h2>
-    <p>
-        Estudiante de Ingeniería en Tecnologías de la Información
-        con enfoque en ciberseguridad y análisis de vulnerabilidades.
-    </p>
+<h2>Perfil Académico</h2>
+<p>Estudiante de TI con enfoque en ciberseguridad y análisis de vulnerabilidades.</p>
 </section>
 
-<section id="contacto" class="terminal-box">
-    <div class="window-buttons">
-        <span class="close"></span>
-        <span class="max"></span>
-        <span class="min"></span>
-    </div>
+<section id="contacto" class="window">
+<div class="window-bar">
+<span class="btn red"></span>
+<span class="btn yellow"></span>
+<span class="btn green"></span>
+</div>
 
-    <h2>Contacto</h2>
-    <p>Correo institucional (agrega aquí tu correo)</p>
+<h2>Contacto</h2>
+<p>Agrega aquí tu correo institucional</p>
 </section>
 
 </main>
 
 <footer>
-    <p>Portafolio Académico – Seguridad Informática – 2026</p>
+<p>Portafolio Seguridad Informática – 2026</p>
 </footer>
 
-<!-- ================= MATRIX SCRIPT ================= -->
-<script>
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
-
-const letters = "アァカサタナハマヤャラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-const drops = [];
-
-for (let x = 0; x < columns; x++) drops[x] = 1;
-
-function draw() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#00ff66";
-    ctx.font = fontSize + "px monospace";
-
-    for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-        }
-        drops[i]++;
-    }
-}
-setInterval(draw, 35);
-</script>
-
-<!-- ================= TYPEWRITER ================= -->
-<script>
-const text = "Magdalena Yesenia Tristán Rivera";
-let i = 0;
-function typeWriter() {
-    if (i < text.length) {
-        document.getElementById("typewriter").innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, 70);
-    }
-}
-window.onload = typeWriter;
-</script>
+<script src="matrix.js"></script>
+<script src="typewriter.js"></script>
 
 </body>
 </html>
