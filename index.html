@@ -1,84 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portafolio | Seguridad Informática</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio | Seguridad Informática</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
 
-<!-- MATRIX LATERAL -->
 <canvas id="matrix-left"></canvas>
 <canvas id="matrix-right"></canvas>
 
 <header id="inicio">
-
-<div class="profile-container">
-<img src="img/perfil.png" alt="Foto de perfil">
-</div>
-
-<h1 id="typewriter"></h1>
-
-<p>174702</p>
-<p>CNO V – Seguridad Informática</p>
-<p>Universidad Politécnica de San Luis Potosí</p>
-<p>Periodo: 2026</p>
-
-<nav>
-<a href="#inicio">Inicio</a>
-<a href="#presentacion">Presentación</a>
-<a href="#perfil">Perfil</a>
-<a href="actividades.html">Actividades</a>
-<a href="#contacto">Contacto</a>
-</nav>
-
+    <div class="profile-container">
+        <img src="img/perfil.png" alt="Foto de perfil">
+    </div>
+    <h1 id="typewriter"></h1>
+    <p>Matrícula: 174702</p>
+    <p><strong>CNO V – Seguridad Informática</strong></p>
+    <p>Universidad Politécnica de San Luis Potosí</p>
+    <p>ITTI (Ingeniería en Tecnologías de Información)</p>
+    
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#presentacion">Presentación</a>
+        <a href="#habilidades">Habilidades</a>
+        <a href="actividades.html">Actividades</a>
+        <a href="#contacto">Contacto</a>
+    </nav>
 </header>
 
 <main>
+    <section id="presentacion" class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <h2><i class="fas fa-terminal"></i> Propósito del Portafolio</h2>
+        <p>Este espacio digital ha sido diseñado para documentar mi trayectoria académica y técnica en el área de Seguridad Informática. Aquí se recopilan las evidencias de aprendizaje, proyectos y retos superados durante el ciclo escolar 2026.</p>
+    </section>
 
-<section id="presentacion" class="window">
-<div class="window-bar">
-<span class="btn red"></span>
-<span class="btn yellow"></span>
-<span class="btn green"></span>
-</div>
+    <section id="habilidades" class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <h2><i class="fas fa-code"></i> Información Técnica</h2>
+        <div class="skills-grid">
+            <div class="skill-item"><i class="fab fa-python"></i> Python</div>
+            <div class="skill-item"><i class="fas fa-code"></i> C++</div>
+            <div class="skill-item"><i class="fab fa-java"></i> Java (NetBeans)</div>
+            <div class="skill-item"><i class="fab fa-js"></i> JavaScript</div>
+            <div class="skill-item"><i class="fab fa-html5"></i> HTML5 & CSS3</div>
+            <div class="skill-item"><i class="fab fa-github"></i> GitHub</div>
+            <div class="skill-item"><i class="fas fa-microchip"></i> MATLAB</div>
+            <div class="skill-item"><i class="fas fa-vial"></i> VS Code</div>
+            <div class="skill-item"><i class="fas fa-network-wired"></i> Cisco Packet Tracer</div>
+            <div class="skill-item"><i class="fab fa-ubuntu"></i> Ubuntu / Linux</div>
+        </div>
+    </section>
 
-<h2>Propósito del Portafolio</h2>
-<p>Este portafolio documenta mi desarrollo en Seguridad Informática.</p>
-</section>
-
-<section id="perfil" class="window">
-<div class="window-bar">
-<span class="btn red"></span>
-<span class="btn yellow"></span>
-<span class="btn green"></span>
-</div>
-
-<h2>Perfil Académico</h2>
-<p>Estudiante de TI con enfoque en ciberseguridad y análisis de vulnerabilidades.</p>
-</section>
-
-<section id="contacto" class="window">
-<div class="window-bar">
-<span class="btn red"></span>
-<span class="btn yellow"></span>
-<span class="btn green"></span>
-</div>
-
-<h2>Contacto</h2>
-<p>Agrega aquí tu correo institucional</p>
-</section>
-
+    <section id="contacto" class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <h2><i class="fas fa-envelope"></i> Contacto</h2>
+        <p><i class="fas fa-university"></i> <strong>Email:</strong> 174702@upslp.edu.mx</p>
+        <p><i class="fab fa-telegram"></i> <strong>Telegram:</strong> @Magiuwu</p>
+    </section>
 </main>
 
 <footer>
-<p>Portafolio Seguridad Informática – 2026</p>
+    <p>Magdalena Yesenia Tristán Rivera – 2026</p>
 </footer>
 
 <script src="matrix.js"></script>
 <script src="typewriter.js"></script>
-
 </body>
 </html>
