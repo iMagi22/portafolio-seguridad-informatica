@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portafolio | Seguridad Informática</title>
+<title>Portafolio - ITI Ciberseguridad</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -11,28 +11,69 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
-
 <body>
 
 <canvas id="matrix-left"></canvas>
 <canvas id="matrix-right"></canvas>
 
-<header id="inicio">
+<header>
+<h1>Portafolio Académico</h1>
+<p>Alumna de Ingeniería en Tecnologías de la Información (ITI) en Ciberseguridad</p>
 
-<div class="profile-container">
-<img src="img/perfil.png" alt="Foto de perfil">
+<nav>
+<a href="#inicio">Inicio</a>
+<a href="activities.html">Actividades</a>
+<a href="#contacto">Contacto</a>
+</nav>
+</header>
+
+<main>
+
+<!-- ================= INICIO ================= -->
+<section id="inicio" class="window">
+<div class="window-bar">
+<span class="btn red"></span>
+<span class="btn yellow"></span>
+<span class="btn green"></span>
 </div>
 
-<h1 id="typewriter"></h1>
+<h2>Presentación del Portafolio</h2>
 
-<p>174702</p>
-<p>CNO V – Seguridad Informática</p>
-<p>Universidad Politécnica de San Luis Potosí</p>
-<p>Periodo: 2026</p>
+<p>
+Este portafolio reúne las actividades, prácticas y proyectos realizados durante el curso.
+Su objetivo es demostrar el desarrollo de habilidades técnicas y académicas en el área de Tecnologías de la Información.
+</p>
 
-<div class="skills">
-<h3>Lenguajes y Herramientas</h3>
-<div class="skills-icons">
+</section>
+
+<!-- ================= PERFIL ================= -->
+<section class="window">
+<div class="window-bar">
+<span class="btn red"></span>
+<span class="btn yellow"></span>
+<span class="btn green"></span>
+</div>
+
+<h2>Perfil del Estudiante</h2>
+
+<p>
+Estudiante de ITI con enfoque en Ciberseguridad, interesada en el desarrollo de software,
+redes, seguridad informática y administración de sistemas.
+</p>
+
+</section>
+
+<!-- ================= INFORMACION TECNICA ================= -->
+<section class="window">
+<div class="window-bar">
+<span class="btn red"></span>
+<span class="btn yellow"></span>
+<span class="btn green"></span>
+</div>
+
+<h2>Información Técnica Básica</h2>
+
+<div class="tech-icons">
 <span><i class="fa-brands fa-cuttlefish"></i> C++</span>
 <span><i class="fa-brands fa-python"></i> Python</span>
 <span><i class="fa-brands fa-java"></i> Java (NetBeans)</span>
@@ -45,19 +86,11 @@
 <span><i class="fa-solid fa-network-wired"></i> Cisco Packet Tracer</span>
 <span><i class="fa-brands fa-ubuntu"></i> Ubuntu</span>
 </div>
-</div>
 
-<nav>
-<a href="#inicio">Inicio</a>
-<a href="actividades.html">Actividades</a>
-<a href="#contacto">Contacto</a>
-</nav>
+</section>
 
-</header>
-
-<main>
-
-<section id="contacto" class="window large">
+<!-- ================= CONTACTO ================= -->
+<section id="contacto" class="window">
 <div class="window-bar">
 <span class="btn red"></span>
 <span class="btn yellow"></span>
@@ -73,12 +106,7 @@
 
 </main>
 
-<footer>
-<p>Portafolio Seguridad Informática – 2026</p>
-</footer>
-
 <script src="matrix.js"></script>
-<script src="typewriter.js"></script>
 
 </body>
 </html>
