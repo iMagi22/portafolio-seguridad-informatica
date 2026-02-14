@@ -1,6 +1,6 @@
-/* ========================= */
-/* ESTILO BASE CIBERSEGURIDAD */
-/* ========================= */
+/* ============================= */
+/* CONFIGURACIÓN GENERAL */
+/* ============================= */
 
 body {
     margin: 0;
@@ -9,127 +9,143 @@ body {
     color: #00ff66;
 }
 
-/* ========================= */
-/* ENCABEZADO */
-/* ========================= */
+/* ============================= */
+/* HEADER PRINCIPAL */
+/* ============================= */
 
 header {
-    padding: 30px;
     text-align: center;
+    padding: 40px 20px;
     border-bottom: 2px solid #00ff66;
 }
 
-/* ========================= */
-/* FOTO DE PERFIL */
-/* ========================= */
+/* ============================= */
+/* FOTO PERFIL */
+/* ============================= */
 
 .profile-container {
-    text-align: center;
     margin-bottom: 20px;
 }
 
 .profile-container img {
-    width: 160px;
-    height: 160px;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
     object-fit: cover;
     border: 3px solid #00ff66;
-    border-radius: 50%;
     box-shadow: 0 0 15px #00ff66;
 }
 
-/* ========================= */
+/* ============================= */
 /* NAVEGACIÓN */
-/* ========================= */
+/* ============================= */
 
 nav {
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 nav a {
     color: #00ff66;
     text-decoration: none;
-    border: 1px solid #00ff66;
-    padding: 10px 18px;
+    padding: 10px 20px;
     margin: 5px;
-    display: inline-block;
+    border: 1px solid #00ff66;
     transition: 0.3s;
+    display: inline-block;
 }
 
-/* Efecto neón al pasar el mouse */
 nav a:hover {
-    background-color: #00ff66;
-    color: #000000;
+    background: #00ff66;
+    color: black;
     box-shadow: 0 0 10px #00ff66;
 }
 
-/* ========================= */
-/* CONTENIDO PRINCIPAL */
-/* ========================= */
+/* ============================= */
+/* CONTENIDO */
+/* ============================= */
 
 main {
-    max-width: 900px;
+    max-width: 1000px;
     margin: auto;
-    padding: 30px;
+    padding: 40px 20px;
 }
+
+/* ============================= */
+/* VENTANA TIPO TERMINAL */
+/* ============================= */
+
+.terminal-box {
+    background: #050505;
+    border: 1px solid #00ff66;
+    padding: 25px;
+    margin-bottom: 40px;
+    box-shadow: 0 0 12px #00ff66;
+    border-radius: 8px;
+    position: relative;
+}
+
+/* Barra superior tipo ventana */
+.terminal-box::before {
+    content: "● ● ●";
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    font-size: 12px;
+    color: #00ff66;
+}
+
+/* ============================= */
+/* TÍTULOS */
+/* ============================= */
+
+h1, h2 {
+    text-shadow: 0 0 8px #00ff66;
+}
+
+/* ============================= */
+/* BOTONES PROFESIONALES */
+/* ============================= */
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border: 1px solid #00ff66;
+    color: #00ff66;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #00ff66;
+    color: black;
+    box-shadow: 0 0 12px #00ff66;
+}
+
+/* ============================= */
+/* SECCIONES CON DIVISIÓN */
+/* ============================= */
 
 section {
     margin-bottom: 50px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #003300;
 }
 
-/* ========================= */
-/* TÍTULOS */
-/* ========================= */
-
-h1, h2 {
-    color: #00ff66;
-    text-shadow: 0 0 8px #00ff66;
-}
-
-h3 {
-    color: #00ff66;
-}
-
-/* ========================= */
+/* ============================= */
 /* LISTAS */
-/* ========================= */
+/* ============================= */
 
 ul {
-    list-style-type: square;
+    list-style: square;
     padding-left: 20px;
 }
 
-/* ========================= */
-/* ENLACES GENERALES */
-/* ========================= */
-
-a {
-    color: #00ff66;
-    transition: 0.3s;
-}
-
-a:hover {
-    text-shadow: 0 0 8px #00ff66;
-}
-
-/* ========================= */
-/* IFRAME PDF */
-/* ========================= */
-
-iframe {
-    border: 1px solid #00ff66;
-    box-shadow: 0 0 10px #00ff66;
-}
-
-/* ========================= */
-/* PIE DE PÁGINA */
-/* ========================= */
+/* ============================= */
+/* FOOTER */
+/* ============================= */
 
 footer {
     text-align: center;
     padding: 20px;
     border-top: 2px solid #00ff66;
-    font-size: 14px;
     margin-top: 40px;
 }
