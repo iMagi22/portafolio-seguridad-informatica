@@ -13,7 +13,7 @@
 <canvas id="matrix-right"></canvas>
 
 <header>
-    <h1>Configuración de Firewall</h1>
+    <h1>Configuración de Firewall Perimetral</h1>
     <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
 </header>
 
@@ -25,9 +25,7 @@
         <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
             <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
             <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
-            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
             <p><strong>Práctica:</strong> ACTIVIDAD 04 - Mecanismos de defensa en red (iptables)</p>
-            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
         </div>
     </section>
 
@@ -37,71 +35,49 @@
         </div>
         
         <article class="transcription-text">
-            <h2>Configuración de Políticas de Filtrado</h2>
-            <p>A continuación se detallan las reglas implementadas para asegurar la infraestructura de red mediante el uso de <code>iptables</code>, estableciendo un perímetro de seguridad controlado.</p>
+            <h2>1. Introducción Contextual</h2>
+            <p>En el panorama actual de ciberseguridad, el firewall actúa como la primera línea de defensa. Esta actividad se centra en la implementación de un <strong>Firewall de Filtrado de Paquetes</strong> utilizando <code>iptables</code> en Linux, bajo una estrategia de "Denegación Implícita", donde solo el tráfico estrictamente necesario es permitido.</p>
 
-            <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px solid #00ff66; border-radius: 5px; font-family: 'Courier New', Courier, monospace;">
-                
-                <p><strong>1. Establecer una política restrictiva (Lista Blanca):</strong></p>
-                <code style="color: #ff5f56;">iptables -P FORWARD DROP</code><br>
-                <code style="color: #ff5f56;">iptables -P INPUT DROP</code>
-                <p><small>// Se deniega todo tráfico por defecto para asegurar que solo lo explícitamente permitido pase.</small></p>
+            <h2>2. Desarrollo Técnico: Implementación de Reglas</h2>
+            <p>Se configuró el sistema para proteger una red local (192.1.2.0/24) y servidores específicos de correo y web.</p>
 
-                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
-
-                <p><strong>2. Tráfico de conexiones ya establecidas:</strong></p>
-                <code style="color: #27c93f;">iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</code>
-                <p><small>// Permite que las respuestas a peticiones legítimas salgan del sistema.</small></p>
-
-                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
-
-                <p><strong>3. Servicio DNS (Resolución de nombres):</strong></p>
-                <code style="color: #00ff66;">iptables -A OUTPUT -p tcp --dport 53 -s 192.1.2.0/24 -j ACCEPT</code>
-                <p><small>// Acepta tráfico DNS saliente desde la red local para navegar por IP.</small></p>
-
-                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
-
-                <p><strong>4. Servidor de Correo (SMTP):</strong></p>
-                <code>iptables -A INPUT -p tcp --dport 25 -d 192.1.2.10 -j ACCEPT</code><br>
-                <code>iptables -A OUTPUT -p tcp --dport 25 -s 192.1.2.10 -j ACCEPT</code>
-                <p><small>// Se permite el intercambio de correos (entrada y salida) específicamente para el servidor 192.1.2.10.</small></p>
-
-                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
-
-                <p><strong>5. Servidor Web (HTTP):</strong></p>
-                <code>iptables -A INPUT -p tcp --dport 80 -d 192.1.2.11 -j ACCEPT</code>
-                <p><small>// Permite conexiones externas al servidor web institucional.</small></p>
-
-                <hr style="border: 0.5px solid #00ff66; opacity: 0.2;">
-
-                <p><strong>6. Navegación de Usuarios Locales:</strong></p>
-                <code>iptables -A OUTPUT -p tcp --dport 80 -s 192.1.2.0/24 -j ACCEPT</code>
-                <p><small>// Los usuarios de la red local pueden realizar peticiones HTTP hacia Internet.</small></p>
-
+            <div style="background: #1e1e1e; padding: 15px; border-radius: 5px; border: 1px solid #00ff66; margin: 20px 0;">
+                <div style="color: #00ff66; font-family: 'Courier New', monospace; font-size: 0.9em;">
+                    <p><span style="color: #ff5f56;"># 1. Política Restrictiva</span><br>iptables -P INPUT DROP<br>iptables -P FORWARD DROP</p>
+                    <p><span style="color: #27c93f;"># 2. Permitir DNS Saliente</span><br>iptables -A OUTPUT -p tcp --dport 53 -s 192.1.2.0/24 -j ACCEPT</p>
+                </div>
+                <p style="text-align: center; color: #888; font-size: 0.8em; margin-top: 10px;">
+                    <i class="fas fa-camera"></i> Captura simulada de implementación de políticas de seguridad.
+                </p>
             </div>
+
             
-            
 
-            <h3 style="margin-top: 20px;">Resumen de Seguridad</h3>
-            <p>Esta configuración aplica el <strong>Principio de Mínimo Privilegio</strong>, cerrando todas las comunicaciones innecesarias y abriendo exclusivamente los puertos 53 (DNS), 25 (SMTP) y 80 (HTTP) para las IPs correspondientes.</p>
-        </article>
+            <h3>Listado de Políticas Aplicadas:</h3>
+            <ul>
+                <li><strong>Tráfico de Estado:</strong> Se permite el flujo de conexiones ya establecidas para no interrumpir sesiones legítimas.</li>
+                <li><strong>Servidor de Correo (SMTP):</strong> Apertura del puerto 25 exclusivamente para la IP del servidor 192.1.2.10.</li>
+                <li><strong>Acceso Web:</strong> Los usuarios locales pueden navegar (Puerto 80) y el servidor institucional puede recibir peticiones externas.</li>
+            </ul>
 
-        <h3>7. Reflexión Técnica</h3>
-            <p>La implementación de una "Lista Blanca" o política restrictiva por defecto es el estándar de oro en firewalls corporativos. Aunque es más difícil de configurar inicialmente, reduce drásticamente la superficie de ataque. Vincular esto con el "Principio de Mínimo Privilegio" me hace entender que en seguridad informática, todo lo que no está explícitamente permitido, debe ser prohibido para evitar exfiltración de datos por puertos no controlados.</p>
+            <hr class="divider">
 
-            <h3>8. Referencias Técnicas</h3>
+            <h2>3. Opinión y Reflexión Técnica</h2>
+            <p>La implementación de una <strong>"Lista Blanca"</strong> (White Listing) mediante <code>iptables -P DROP</code> es, en mi opinión, la medida más efectiva para reducir la superficie de ataque de una organización. En escenarios reales, esto evita que un malware que haya infectado un equipo interno pueda comunicarse con su servidor de Comando y Control (C2) por puertos no autorizados. Esta práctica refuerza el principio de defensa en profundidad, limitando el movimiento lateral del atacante.</p>
+
+            <h2>4. Referencias Técnicas</h2>
             <ul style="font-size: 0.8em; opacity: 0.7;">
                 <li>NIST SP 800-41. (2022). Guidelines on Firewalls and Firewall Policy.</li>
+                <li>Netfilter Project. (2024). Iptables Documentation and Packet Flow.</li>
                 <li>SANS Institute. (2023). Linux Firewall Configuration Best Practices.</li>
-                <li>Cisco Systems. (2024). Security Policy and Access Control Lists.</li>
             </ul>
-        
 
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="../pdf/actividad4.pdf" download class="pdf-btn">
-                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA PDF (ACTIVIDAD 4)
-            </a>
-        </div>
+            <div style="text-align: center; margin-top: 40px; border-top: 1px solid rgba(0,255,102,0.3); padding-top: 20px;">
+                <a href="../pdf/actividad4.pdf" download class="pdf-btn">
+                    <i class="fas fa-file-pdf"></i> EXPORTAR A PDF (VERSIÓN FORMAL)
+                </a>
+            </div>
+        </article>
     </section>
 </main>
 
