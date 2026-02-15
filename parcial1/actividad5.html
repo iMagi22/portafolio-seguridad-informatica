@@ -1,198 +1,335 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividad 5 - Metodologías de Pentesting</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .method-card { border-left: 4px solid #00ff66; padding: 15px; margin: 20px 0; background: rgba(0,255,102,0.05); }
-        .tech-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
-        .tech-table th, .tech-table td { border: 1px solid #00ff66; padding: 10px; text-align: left; }
-        .tech-table th { background: rgba(0, 255, 102, 0.2); color: #00ff66; }
-        .icon-box { color: #00ff66; margin-right: 10px; }
-    </style>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Actividad 5 - Metodologías de Pentesting</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+
+        .method-card { border-left: 4px solid #00ff66; padding: 15px; margin: 20px 0; background: rgba(0,255,102,0.05); }
+
+        .tech-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
+
+        .tech-table th, .tech-table td { border: 1px solid #00ff66; padding: 10px; text-align: left; }
+
+        .tech-table th { background: rgba(0, 255, 102, 0.2); color: #00ff66; }
+
+        .icon-box { color: #00ff66; margin-right: 10px; }
+
+    </style>
+
 </head>
+
 <body>
 
+
+
 <canvas id="matrix-left"></canvas>
+
 <canvas id="matrix-right"></canvas>
 
+
+
 <header>
-    <h1>Auditoría y Pentesting</h1>
-    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+
+    <h1>Auditoría y Pentesting</h1>
+
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+
 </header>
 
+
+
 <main>
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
-            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
-            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
-            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
-            <p><strong>Práctica:</strong> ACTIVIDAD 05 - Cartografiando el pentesting: análisis comparativo de metodologías</p>
-            <p><strong>Fecha:</strong> 13/02/2026 | <strong>Grupo:</strong> T46B</p>
-        </div>
-    </section>
 
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        
-        <article class="transcription-text">
-            <h2>Análisis Comparativo de Metodologías de Seguridad</h2>
-            <p>El objetivo de esta práctica es identificar las diferencias clave entre los marcos de trabajo más utilizados en la industria de la ciberseguridad para realizar pruebas de penetración y auditorías técnicas.</p>
+    <section class="window">
 
-            
+        <div class="window-bar">
 
-            <div style="overflow-x: auto;">
-                <table class="tech-table">
-                    <thead>
-                        <tr>
-                            <th>Metodología</th>
-                            <th>Descripción Técnica</th>
-                            <th>Objetivo Principal</th>
-                            <th>Enfoque</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>MITRE ATT&CK</strong></td>
-                            <td>Base de conocimiento de tácticas y técnicas (TTPs) basadas en ataques reales.</td>
-                            <td>Clasificar el comportamiento de adversarios.</td>
-                            <td>Detección y Respuesta.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>OWASP WSTG</strong></td>
-                            <td>Estándar de oro para pruebas de seguridad en aplicaciones web.</td>
-                            <td>Seguridad en el ciclo de vida del software.</td>
-                            <td>Capa de Aplicación.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>NIST SP 800-115</strong></td>
-                            <td>Guía técnica federal para planificación y ejecución de pruebas de seguridad.</td>
-                            <td>Cumplimiento y estándares gubernamentales.</td>
-                            <td>Gobernanza Técnica.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>OSSTMM</strong></td>
-                            <td>Metodología científica basada en métricas de visibilidad (Ravs).</td>
-                            <td>Medir la seguridad operativa real.</td>
-                            <td>Métrico / Operativo.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
 
-            <hr class="divider">
+        </div>
 
-            <h2>Justificación Estratégica</h2>
-            
-            <div class="method-card">
-                <h3><i class="fas fa-bug icon-box"></i>1. Seguridad Web (OWASP)</h3>
-                <p>Se prioriza el <strong>OWASP WSTG</strong> para aplicaciones web, ya que profundiza en la lógica de negocio, bypass de autenticación e inyecciones que otros marcos generales omiten.</p>
-            </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
 
-            <div class="method-card">
-                <h3><i class="fas fa-network-wired icon-box"></i>2. Operaciones de Red (PTES)</h3>
-                <p><strong>PTES</strong> es ideal para medir el impacto real, enfocándose en la fase de "Post-Exploitation" para entender qué tanto daño puede hacer un atacante una vez dentro.</p>
-            </div>
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
 
-            <div class="method-card">
-                <h3><i class="fas fa-shield-alt icon-box"></i>3. Detección (MITRE)</h3>
-                <p>El uso de <strong>MITRE ATT&CK</strong> es obligatorio para los equipos de Blue Team (SOC) para comparar sus capacidades de defensa contra grupos APT conocidos.</p>
-            </div>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
 
-            <p style="margin-top: 20px; font-style: italic; color: #00ff66; opacity: 0.8;">
-                <strong>Conclusión:</strong> No existe una metodología única. La excelencia en el pentesting reside en la combinación estratégica de estos marcos según el activo a proteger.
-            </p>
-        </article>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
 
-        <h3>Esquema de Metodologías</h3>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
-    <div>
-        
-    <h3>3. Esquema de Fases de Auditoría</h3>
-<div style="text-align: center; margin: 30px 0;">
-    <div style="background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid #00ff66; border-radius: 10px;">
-        
-        <div style="text-align: center; margin-bottom: 20px;">
+            <p><strong>Práctica:</strong> ACTIVIDAD 05 - Cartografiando el pentesting: análisis comparativo de metodologías</p>
 
-            
-    
-</div>
+            <p><strong>Fecha:</strong> 13/02/2026 | <strong>Grupo:</strong> T46B</p>
 
-<div style="background: rgba(0,0,0,0.4); padding: 15px; border: 1px solid #00ff66; border-radius: 10px; text-align: center; margin-top: 20px;">
-    <h4 style="color: #00ff66; margin-bottom: 10px;">Referencia Visual: Matriz MITRE ATT&CK</h4>
-    
-    <p style="font-size: 0.8em; color: #00ff66; margin-top: 10px; opacity: 0.8;">
-        Esquema de tácticas y técnicas utilizadas para el análisis comparativo.
-    </p>
-</div>
+        </div>
 
-        
-        
-        
-        <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; font-size: 0.85em;">
-            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
-                <strong>Reconocimiento:</strong> Recolección de información del objetivo.
-            </div>
-            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
-                <strong>Escaneo:</strong> Identificación de puertos y servicios.
-            </div>
-            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
-                <strong>Explotación:</strong> Intento de vulnerar las debilidades halladas.
-            </div>
-            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
-                <strong>Post-Explotación:</strong> Análisis del impacto real (PTES).
-            </div>
-        </div>
-    </div>
-    <p style="font-size: 0.8em; color: #00ff66; margin-top: 10px;">
-        <i class="fas fa-sitemap"></i> Estructura técnica de una auditoría profesional.
-    </p>
+    </section>
 
-    <div style="background: rgba(0,0,0,0.4); padding: 15px; border: 1px solid #00ff66; border-radius: 10px; text-align: center; margin-top: 20px;">
-    <h4 style="color: #00ff66; margin-bottom: 10px;">Referencia Visual: Matriz MITRE ATT&CK</h4>
-    
-    <div style="margin: 15px 0; overflow: hidden; border-radius: 5px; border: 1px solid rgba(0, 255, 102, 0.3);">
+
+
+    <section class="window">
+
+        <div class="window-bar">
+
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+
+        </div>
+
         
+
+        <article class="transcription-text">
+
+            <h2>Análisis Comparativo de Metodologías de Seguridad</h2>
+
+            <p>El objetivo de esta práctica es identificar las diferencias clave entre los marcos de trabajo más utilizados en la industria de la ciberseguridad para realizar pruebas de penetración y auditorías técnicas.</p>
+
+
+
+            
+
+
+
+            <div style="overflow-x: auto;">
+
+                <table class="tech-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Metodología</th>
+
+                            <th>Descripción Técnica</th>
+
+                            <th>Objetivo Principal</th>
+
+                            <th>Enfoque</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td><strong>MITRE ATT&CK</strong></td>
+
+                            <td>Base de conocimiento de tácticas y técnicas (TTPs) basadas en ataques reales.</td>
+
+                            <td>Clasificar el comportamiento de adversarios.</td>
+
+                            <td>Detección y Respuesta.</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><strong>OWASP WSTG</strong></td>
+
+                            <td>Estándar de oro para pruebas de seguridad en aplicaciones web.</td>
+
+                            <td>Seguridad en el ciclo de vida del software.</td>
+
+                            <td>Capa de Aplicación.</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><strong>NIST SP 800-115</strong></td>
+
+                            <td>Guía técnica federal para planificación y ejecución de pruebas de seguridad.</td>
+
+                            <td>Cumplimiento y estándares gubernamentales.</td>
+
+                            <td>Gobernanza Técnica.</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><strong>OSSTMM</strong></td>
+
+                            <td>Metodología científica basada en métricas de visibilidad (Ravs).</td>
+
+                            <td>Medir la seguridad operativa real.</td>
+
+                            <td>Métrico / Operativo.</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <hr class="divider">
+
+
+
+            <h2>Justificación Estratégica</h2>
+
+            
+
+            <div class="method-card">
+
+                <h3><i class="fas fa-bug icon-box"></i>1. Seguridad Web (OWASP)</h3>
+
+                <p>Se prioriza el <strong>OWASP WSTG</strong> para aplicaciones web, ya que profundiza en la lógica de negocio, bypass de autenticación e inyecciones que otros marcos generales omiten.</p>
+
+            </div>
+
+
+
+            <div class="method-card">
+
+                <h3><i class="fas fa-network-wired icon-box"></i>2. Operaciones de Red (PTES)</h3>
+
+                <p><strong>PTES</strong> es ideal para medir el impacto real, enfocándose en la fase de "Post-Exploitation" para entender qué tanto daño puede hacer un atacante una vez dentro.</p>
+
+            </div>
+
+
+
+            <div class="method-card">
+
+                <h3><i class="fas fa-shield-alt icon-box"></i>3. Detección (MITRE)</h3>
+
+                <p>El uso de <strong>MITRE ATT&CK</strong> es obligatorio para los equipos de Blue Team (SOC) para comparar sus capacidades de defensa contra grupos APT conocidos.</p>
+
+            </div>
+
+
+
+            <p style="margin-top: 20px; font-style: italic; color: #00ff66; opacity: 0.8;">
+
+                <strong>Conclusión:</strong> No existe una metodología única. La excelencia en el pentesting reside en la combinación estratégica de estos marcos según el activo a proteger.
+
+            </p>
+
+        </article>
+
+
+
+        <h3>Esquema de Metodologías</h3>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+
+    <div>
+
+        
+
+    <h3>3. Esquema de Fases de Auditoría</h3>
+
+<div style="text-align: center; margin: 30px 0;">
+
+    <div style="background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid #00ff66; border-radius: 10px;">
+
+        
+
+        
+
+        <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; font-size: 0.85em;">
+
+            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
+
+                <strong>Reconocimiento:</strong> Recolección de información del objetivo.
+
+            </div>
+
+            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
+
+                <strong>Escaneo:</strong> Identificación de puertos y servicios.
+
+            </div>
+
+            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
+
+                <strong>Explotación:</strong> Intento de vulnerar las debilidades halladas.
+
+            </div>
+
+            <div style="border-left: 2px solid #00ff66; padding-left: 10px;">
+
+                <strong>Post-Explotación:</strong> Análisis del impacto real (PTES).
+
+            </div>
+
+        </div>
+
     </div>
 
-    <p style="font-size: 0.8em; color: #00ff66; margin-top: 10px; opacity: 0.8;">
-        Esquema de tácticas y técnicas utilizadas para el análisis comparativo.
+    <p style="font-size: 0.8em; color: #00ff66; margin-top: 10px;">
+
+        <i class="fas fa-sitemap"></i> Estructura técnica de una auditoría profesional.
+
     </p>
+
 </div>
-    
-</div>
 
-        
-        
 
-        <h2>4. Reflexión Técnica</h2>
-            <p>El análisis de metodologías como MITRE ATT&CK me abre un panorama sobre cómo piensan los atacantes (TTPs). En la práctica profesional de Pentesting, no basta con encontrar una vulnerabilidad; hay que saber en qué fase de la metodología estamos para reportar el riesgo correctamente. Elegir el marco adecuado (como OWASP para web) garantiza que la auditoría sea exhaustiva y útil para el cliente final.</p>
 
-            <h2>5. Referencias Técnicas</h2>
-            <ul style="font-size: 0.8em; opacity: 0.7;">
-                <li>MITRE Corporation. (2024). ATT&CK Framework. https://attack.mitre.org/</li>
-                <li>OWASP Foundation. (2023). Web Security Testing Guide v4.2.</li>
-                <li>NIST SP 800-115. (2008). Technical Guide to Information Security Testing.</li>
-            </ul>
-        
+        
 
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="../pdf/actividad5.pdf" download class="pdf-btn">
-                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA COMPLETA (PDF)
-            </a>
-        </div>
-    </section>
+        
+
+
+
+        <h2>4. Reflexión Técnica</h2>
+
+            <p>El análisis de metodologías como MITRE ATT&CK me abre un panorama sobre cómo piensan los atacantes (TTPs). En la práctica profesional de Pentesting, no basta con encontrar una vulnerabilidad; hay que saber en qué fase de la metodología estamos para reportar el riesgo correctamente. Elegir el marco adecuado (como OWASP para web) garantiza que la auditoría sea exhaustiva y útil para el cliente final.</p>
+
+
+
+            <h2>5. Referencias Técnicas</h2>
+
+            <ul style="font-size: 0.8em; opacity: 0.7;">
+
+                <li>MITRE Corporation. (2024). ATT&CK Framework. https://attack.mitre.org/</li>
+
+                <li>OWASP Foundation. (2023). Web Security Testing Guide v4.2.</li>
+
+                <li>NIST SP 800-115. (2008). Technical Guide to Information Security Testing.</li>
+
+            </ul>
+
+        
+
+
+
+        <div style="text-align: center; margin-top: 30px;">
+
+            <a href="../pdf/actividad5.pdf" download class="pdf-btn">
+
+                <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA COMPLETA (PDF)
+
+            </a>
+
+        </div>
+
+    </section>
+
 </main>
 
-<script src="../matrix.js"></script>
-</body>
-</html>
 
+
+<script src="../matrix.js"></script>
+
+</body>
+
+</html>
