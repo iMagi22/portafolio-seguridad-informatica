@@ -98,7 +98,18 @@
                 <code>iptables -P INPUT DROP</code></li>
             </ul>
         </article>
+        
+<h3>Configuración (Captura de Terminal)</h3>
+<div style="background: #1e1e1e; padding: 10px; border-radius: 5px; border: 1px solid #00ff66;">
+    <div style="background: #333; padding: 5px; margin-bottom: 10px; border-radius: 3px; font-size: 0.8em; color: #ccc;">
+        <i class="fas fa-terminal"></i> root@kali: ~
+    </div>
+    <img src="../img/captura_iptables.png" alt="Captura de comandos iptables" style="width: 100%; opacity: 0.9; filter: grayscale(1) sepia(1) hue-rotate(100deg);">
+    <p style="color: #00ff66; font-family: monospace; font-size: 0.9em; margin-top: 10px;"># Listado de reglas activas en la tabla filter</p>
+</div>
 
+
+<p style="text-align:center;"><small>Diagrama del flujo de paquetes en las cadenas INPUT, FORWARD y OUTPUT.</small></p>
         <h2>5. Reflexión Técnica</h2>
             <p>Dominar la sintaxis de iptables es fundamental para cualquier administrador de servidores Linux. En escenarios reales de mitigación de ataques DoS, la capacidad de aplicar una regla DROP de forma inmediata puede ser la diferencia entre mantener un servicio online o sufrir una caída total. Esta actividad me permitió visualizar cómo el tráfico fluye a través de las cadenas y la importancia del orden de las reglas.</p>
 
