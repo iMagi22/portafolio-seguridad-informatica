@@ -34,10 +34,10 @@
         </div>
         <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
             <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
-            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702 [cite: 3]</p>
-            <p><strong>Profesor:</strong> Mtro. Servando López Contreras [cite: 5]</p>
-            <p><strong>Práctica:</strong> Act.06 – Implementación de IPsec VPN de Sitio a Sitio [cite: 7]</p>
-            <p><strong>Fecha:</strong> 16/02/2026 [cite: 6]</p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702 </p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras ]</p>
+            <p><strong>Práctica:</strong> Act.06 – Implementación de IPsec VPN de Sitio a Sitio </p>
+            <p><strong>Fecha:</strong> 16/02/2026 </p>
         </div>
     </section>
 
@@ -49,15 +49,15 @@
             <h2>1. Fundamentos de IPSec VPN</h2>
             <p>IPSec es un marco de estándares abiertos (framework) que opera en la capa 3 del modelo OSI para proteger datos a través de redes no confiables[cite: 14, 15]. Se basa en tres pilares[cite: 16]:</p>
             <ul>
-                <li><strong>Confidencialidad:</strong> Cifrado AES-256 para que solo el receptor autorizado lea los datos[cite: 17].</li>
-                <li><strong>Integridad:</strong> Algoritmos SHA para garantizar que los paquetes no sean alterados[cite: 18].</li>
-                <li><strong>Autenticación:</strong> Uso de llaves precompartidas (PSK) para validar la identidad de los extremos[cite: 19].</li>
+                <li><strong>Confidencialidad:</strong> Cifrado AES-256 para que solo el receptor autorizado lea los datos.</li>
+                <li><strong>Integridad:</strong> Algoritmos SHA para garantizar que los paquetes no sean alterados.</li>
+                <li><strong>Autenticación:</strong> Uso de llaves precompartidas (PSK) para validar la identidad de los extremos.</li>
             </ul>
 
             <div class="tech-detail">
-                <h3>Fases del Túnel [cite: 20]</h3>
-                <p><strong>Fase 1 (IKE/ISAKMP):</strong> Establece un canal de gestión seguro negociando políticas y el grupo Diffie-Hellman[cite: 21, 22].</p>
-                <p><strong>Fase 2 (IPSec):</strong> Negocia los parámetros de tráfico (Transform-sets) y crea el túnel de datos real[cite: 23].</p>
+                <h3>Fases del Túnel </h3>
+                <p><strong>Fase 1 (IKE/ISAKMP):</strong> Establece un canal de gestión seguro negociando políticas y el grupo Diffie-Hellman.</p>
+                <p><strong>Fase 2 (IPSec):</strong> Negocia los parámetros de tráfico (Transform-sets) y crea el túnel de datos real.</p>
             </div>
         </article>
     </section>
@@ -68,7 +68,7 @@
         </div>
         <div class="transcription-text">
             <h2>2. Escenario de Red y Simulación</h2>
-            <p>Configuración realizada en Packet Tracer interconectando el Sitio A (192.168.1.0/24) con el Sitio B (192.168.3.0/24) a través de un nodo ISP[cite: 12, 26, 28].</p>
+            <p>Configuración realizada en Packet Tracer interconectando el Sitio A (192.168.1.0/24) con el Sitio B (192.168.3.0/24) a través de un nodo ISP.</p>
             
                 </div>
 
@@ -88,29 +88,47 @@
             <h2>3. Implementación de Comandos (Espejo)</h2>
             <div class="config-grid">
                 <div>
-                    <h4>Router R1 (Sitio Local) [cite: 34]</h4>
+                    <h4>Router R1 (Sitio Local) </h4>
                     <div class="command-block">
                         crypto isakmp policy 10<br>
-                        encryption aes 256 [cite: 47]<br>
-                        authentication pre-share [cite: 49]<br>
-                        group 5 [cite: 50]<br>
-                        crypto ipsec transform-set TSET-ESP esp-aes esp-sha-hmac [cite: 54]
+                        encryption aes 256 <br>
+                        authentication pre-share<br>
+                        group 5 <br>
+                        crypto ipsec transform-set TSET-ESP esp-aes esp-sha-hmac 
                     </div>
                 </div>
                 <div>
-                    <h4>Router R2 (Sitio Remoto) [cite: 83]</h4>
+                    <h4>Router R2 (Sitio Remoto) </h4>
                     <div class="command-block">
                         crypto isakmp policy 10<br>
-                        encryption aes 256 [cite: 87]<br>
-                        authentication pre-share [cite: 88]<br>
-                        group 5 [cite: 89]<br>
-                        crypto ipsec transform-set TSET-ESP esp-aes esp-sha-hmac [cite: 102]
+                        encryption aes 256 <br>
+                        authentication pre-share<br>
+                        group 5 <br>
+                        crypto ipsec transform-set TSET-ESP esp-aes esp-sha-hmac 
                     </div>
                 </div>
             </div>
             
-            <p style="margin-top: 20px;"><strong>Verificación:</strong> Se confirma el estado mediante <code>show crypto isakmp sa</code> buscando el estado <code>QM_IDLE</code> (activo)[cite: 112, 113].</p>
+            <p style="margin-top: 20px;"><strong>Verificación:</strong> Se confirma el estado mediante <code>show crypto isakmp sa</code> buscando el estado <code>QM_IDLE</code> (activo).</p>
         </article>
+</section>
+        <section class="window">
+    <div class="window-bar">
+        <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+    </div>
+    <article class="transcription-text">
+        <h2>4. Reflexión Técnica</h2>
+        <p>
+            [cite_start]La implementación de una VPN IPsec subraya la importancia de la <strong>confidencialidad e integridad</strong> en las comunicaciones modernas. Durante esta práctica, comprendí que la seguridad no es un proceso aislado, sino una sincronización exacta de parámetros; un solo error en el <em>Transform-set</em> o en la <em>llave precompartida</em> impide la formación del túnel. Esta tecnología es vital para empresas que necesitan conectar sucursales a través de infraestructuras públicas no confiables de forma transparente.
+        </p>
+
+        <h2>5. Referencias Técnicas</h2>
+        <ul style="font-size: 0.85em; opacity: 0.8; list-style-type: square; padding-left: 20px;">
+            <li>Cisco Systems. (2024). Configuración de Seguridad de Red IPsec. [cite_start]Framework de estándares abiertos.</li>
+            <li>Internet Engineering Task Force (IETF). [cite_start]Protocolo IKEv2 y Gestión de Claves ISAKMP</li>
+            <li>NIST Special Publication 800-77. Guide to IPsec VPNs.</li>
+        </ul>
+    </article>
     </section>
 
     <section class="window">
@@ -119,7 +137,7 @@
         </div>
         <div class="transcription-text" style="text-align: center;">
             <h2>Conclusión</h2>
-            <p style="max-width: 800px; margin: 0 auto 20px;">La importancia de la coincidencia exacta de parámetros en ambos extremos es crítica; cualquier discrepancia en algoritmos o ACLs impediría la comunicación segura[cite: 138, 139].</p>
+            <p style="max-width: 800px; margin: 0 auto 20px;">La importancia de la coincidencia exacta de parámetros en ambos extremos es crítica; cualquier discrepancia en algoritmos o ACLs impediría la comunicación segura.</p>
             
             <a href="../pdf/actividad6.pdf" download class="pdf-btn">
                 <i class="fas fa-file-pdf"></i> DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
