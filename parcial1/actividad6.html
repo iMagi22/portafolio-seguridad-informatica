@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Act06n</title>
+    <title>Actividad 06 - Implementación de IPsec VPN</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .tech-detail { border-left: 2px solid #00ff66; padding-left: 15px; margin: 15px 0; background: rgba(0,255,102,0.03); }
+        .command-block { background: #000; border: 1px solid #00ff66; padding: 10px; font-family: 'Courier New', monospace; color: #00ff66; font-size: 0.9em; margin: 10px 0; }
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .config-grid { grid-template-columns: 1fr; } }
+        .img-box { text-align: center; margin: 25px 0; border: 1px solid #00ff66; padding: 10px; background: rgba(0,0,0,0.4); }
+        .img-box img { max-width: 100%; height: auto; border: 1px solid rgba(0,255,102,0.3); }
+        .pdf-btn { display: inline-block; padding: 10px 20px; border: 1px solid #00ff66; color: #00ff66; text-decoration: none; transition: 0.3s; background: rgba(0,255,102,0.1); }
+        .pdf-btn:hover { background: #00ff66; color: #000; box-shadow: 0 0 10px #00ff66; }
+    </style>
 </head>
 <body>
 
@@ -13,7 +23,7 @@
 <canvas id="matrix-right"></canvas>
 
 <header>
-    <h1>ACTIVIDAD 06 - Implementación de IPSec VPN</h1>
+    <h1>Seguridad de Redes</h1>
     <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
 </header>
 
@@ -24,10 +34,10 @@
         </div>
         <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
             <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
-            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
-            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
-            <p><strong>Práctica:</strong> ACTIVIDAD 06 - Gestión de Vulnerabilidades y Mitigación</p>
-            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702 [cite: 3]</p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras [cite: 5]</p>
+            <p><strong>Práctica:</strong> Act.06 – Implementación de IPsec VPN de Sitio a Sitio [cite: 7]</p>
+            <p><strong>Fecha:</strong> 16/02/2026 [cite: 6]</p>
         </div>
     </section>
 
@@ -35,59 +45,86 @@
         <div class="window-bar">
             <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
         </div>
-        
         <article class="transcription-text">
-            <h2>Resumen Ejecutivo: Mitigación de Riesgos</h2>
-            <p>Tras analizar los protocolos de filtrado y las metodologías de pentesting, la Actividad 06 concluye que la seguridad es un ciclo constante de mejora.</p>
-
-            
-
-            <h3>Estrategias Implementadas:</h3>
+            <h2>1. Fundamentos de IPSec VPN</h2>
+            <p>IPSec es un marco de estándares abiertos (framework) que opera en la capa 3 del modelo OSI para proteger datos a través de redes no confiables[cite: 14, 15]. Se basa en tres pilares[cite: 16]:</p>
             <ul>
-                <li><strong>Reducción de Superficie de Ataque:</strong> Aplicación de políticas <em>DROP</em> en puertos no esenciales.</li>
-                <li><strong>Defensa en Capas:</strong> Integración de reglas de red con políticas de acceso físico y lógico.</li>
-                <li><strong>Resiliencia Operativa:</strong> Capacidad de mantener la disponibilidad (Triada CIA) ante intentos de intrusión.</li>
+                <li><strong>Confidencialidad:</strong> Cifrado AES-256 para que solo el receptor autorizado lea los datos[cite: 17].</li>
+                <li><strong>Integridad:</strong> Algoritmos SHA para garantizar que los paquetes no sean alterados[cite: 18].</li>
+                <li><strong>Autenticación:</strong> Uso de llaves precompartidas (PSK) para validar la identidad de los extremos[cite: 19].</li>
             </ul>
 
-            <hr class="divider">
-
-            <p style="font-style: italic; opacity: 0.8;">
-                "La seguridad informática no es un producto que se compra, es un proceso que se vive y se actualiza día con día."
-            </p>
-
-            <div style="text-align: center; margin-top: 40px; border-top: 1px solid rgba(0,255,102,0.3); padding-top: 20px;">
-                <a href="../pdf/actividad6.pdf" download class="pdf-btn">
-                    <i class="fas fa-file-pdf"></i> DESCARGAR EVIDENCIA PDF (ACTIVIDAD 6)
-                </a>
+            <div class="tech-detail">
+                <h3>Fases del Túnel [cite: 20]</h3>
+                <p><strong>Fase 1 (IKE/ISAKMP):</strong> Establece un canal de gestión seguro negociando políticas y el grupo Diffie-Hellman[cite: 21, 22].</p>
+                <p><strong>Fase 2 (IPSec):</strong> Negocia los parámetros de tráfico (Transform-sets) y crea el túnel de datos real[cite: 23].</p>
             </div>
         </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text">
+            <h2>2. Escenario de Red y Simulación</h2>
+            <p>Configuración realizada en Packet Tracer interconectando el Sitio A (192.168.1.0/24) con el Sitio B (192.168.3.0/24) a través de un nodo ISP[cite: 12, 26, 28].</p>
+            
+            <div class="img-box">
+                                <img src="packet1.png" alt="Topología Packet Tracer VPN IPSec">
+                <p style="color: #00ff66; font-size: 0.8em; margin-top: 10px;"># Diagrama de topología: Túnel IPsec VPN (packet1.png) [cite: 124]</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <article class="transcription-text">
+            <h2>3. Implementación de Comandos (Espejo)</h2>
+            <div class="config-grid">
+                <div>
+                    <h4>Router R1 (Sitio Local) [cite: 34]</h4>
+                    <div class="command-block">
+                        crypto isakmp policy 10<br>
+                        encryption aes 256 [cite: 47]<br>
+                        authentication pre-share [cite: 49]<br>
+                        group 5 [cite: 50]<br>
+                        crypto ipsec transform-set TSET-ESP esp-aes esp-sha-hmac [cite: 54]
+                    </div>
+                </div>
+                <div>
+                    <h4>Router R2 (Sitio Remoto) [cite: 83]</h4>
+                    <div class="command-block">
+                        crypto isakmp policy 10<br>
+                        encryption aes 256 [cite: 87]<br>
+                        authentication pre-share [cite: 88]<br>
+                        group 5 [cite: 89]<br>
+                        crypto ipsec transform-set TSET-ESP esp-aes esp-sha-hmac [cite: 102]
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px;"><strong>Verificación:</strong> Se confirma el estado mediante <code>show crypto isakmp sa</code> buscando el estado <code>QM_IDLE</code> (activo)[cite: 112, 113].</p>
+        </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center;">
+            <h2>Conclusión</h2>
+            <p style="max-width: 800px; margin: 0 auto 20px;">La importancia de la coincidencia exacta de parámetros en ambos extremos es crítica; cualquier discrepancia en algoritmos o ACLs impediría la comunicación segura[cite: 138, 139].</p>
+            
+            <a href="../pdf/actividad6.pdf" download class="pdf-btn">
+                <i class="fas fa-file-pdf"></i> DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+            </a>
+        </div>
     </section>
 </main>
 
 <script src="../matrix.js"></script>
 </body>
 </html>
-<h2>1. Introducción: Implementación de IPSec VPN</h2>
-            <p>IPSec (Internet Protocol Security) es un conjunto de protocolos que aseguran las comunicaciones a través de redes IP mediante la autenticación y el cifrado de cada paquete de datos en una sesión.</p>
-
-            
-
-            <h2>2. Desarrollo Técnico</h2>
-            <p>La configuración se centra en establecer un túnel seguro entre dos puntos (Site-to-Site) utilizando los siguientes componentes:</p>
-            <ul>
-                <li><strong>IKE (Internet Key Exchange):</strong> Negociación de claves y asociaciones de seguridad.</li>
-                <li><strong>ESP (Encapsulating Security Payload):</strong> Proporciona confidencialidad y autenticación del origen de datos.</li>
-                <li><strong>Fase 1 y Fase 2:</strong> Establecimiento del canal seguro y definición de los algoritmos de cifrado (AES-256).</li>
-            </ul>
-
-            <hr class="divider">
-
-            <h2>3. Reflexión Técnica</h2>
-            <p>La implementación de VPNs con IPSec es vital en la era del trabajo remoto y la interconexión de sucursales. A diferencia de otros métodos, IPSec trabaja a nivel de red, lo que lo hace invisible para las aplicaciones pero extremadamente robusto. En escenarios reales, esto protege la integridad de los datos financieros y operativos cuando viajan por la internet pública, convirtiéndola en una extensión segura de la red privada.</p>
-
-            <h2>4. Referencias Técnicas</h2>
-            <ul style="font-size: 0.8em; opacity: 0.7;">
-                <li>IETF RFC 4301. (2005). Security Architecture for the Internet Protocol.</li>
-                <li>Cisco Networking Academy. (2023). VPN Concepts and IPSec.</li>
-                <li>Fortinet Security. (2024). Virtual Private Networks and Tunneling.</li>
-            </ul>
