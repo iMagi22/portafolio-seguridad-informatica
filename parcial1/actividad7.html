@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 07 - El caso OxyMonster</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .question-box { border-bottom: 1px solid rgba(0, 255, 102, 0.2); padding: 10px 0; margin-bottom: 10px; }
+        .question { color: #00ff66; font-weight: bold; display: block; margin-bottom: 5px; }
+        .answer { color: #fff; opacity: 0.9; font-style: italic; padding-left: 15px; display: block; border-left: 2px solid #00ff66; }
+        .video-container { margin: 30px auto; max-width: 800px; border: 1px solid #00ff66; box-shadow: 0 0 15px rgba(0, 255, 102, 0.3); }
+    </style>
+</head>
+<body>
 
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Investigación de Ciberdelincuencia</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
+            <p><strong>Práctica:</strong> Act.07 – La caída del mayor traficante de la dark web (OxyMonster)</p>
+            <p><strong>Fecha:</strong> 10/02/2026 | <strong>Calificación:</strong> A-10</p>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        
+        <article class="transcription-text">
+            <h2>Análisis de Caso: Operación Bayoneta</h2>
+            
+            <div class="question-box">
+                <span class="question">1. ¿Qué policía inició las investigaciones?</span>
+                <span class="answer">Un equipo en conjunto de agentes federales de EE.UU. liderado por la DEA y el FBI.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">2. ¿Cómo se llamaba la operación para cerrar el mercado principal?</span>
+                <span class="answer">Operación Bayoneta.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">3. ¿Cuál es el principal mercado malicioso que existía?</span>
+                <span class="answer">Dream Market.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">4. ¿Cómo conseguían tener reputación en Dream Market?</span>
+                <span class="answer">En un sistema de reseñas/calificaciones de compradores similar a Amazon o eBay.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">5. ¿Cuál era la principal droga en venta en ese momento?</span>
+                <span class="answer">Analgésicos, opioides, oxicodona y medicina (Rinalin).</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">6. ¿En qué consiste el sistema "Escrow"?</span>
+                <span class="answer">Fideicomiso donde el mercado retiene el pago al vendedor hasta que el comprador confirma la entrega y libera el pago.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">7. ¿En qué consiste el "The Mixer"?</span>
+                <span class="answer">Servicio de mezcla de criptos combinadas con fondos de diferentes fuentes para ocultar la fuente de origen.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">10. ¿Cuál fue el error de OxyMonster para lograr su detención?</span>
+                <span class="answer">Uso de estilo de escritura idéntico en sus redes sociales como Instagram, Twitter y la Dark Web, y vincular su clave PGP a su identificación real.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">11. ¿Cuál era el nombre real de "OxyMonster"?</span>
+                <span class="answer">Gal Vallerius.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">12. ¿Cómo los agentes del orden lograron vincular a "OxyMonster" para conseguir la orden de arresto?</span>
+                <span class="answer">En un análisis forense lingüístico de sus textos y el rastreo de las transferencias de BTC a su cuenta personal.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">13. ¿Cuál fue la prueba definitiva para vincular a "OxyMonster" con los delitos de conspiración?</span>
+                <span class="answer">La laptop que fue incautada en el aeropuerto que contenía las claves de admin de Dream Market y la llave cifrada de PGP.</span>
+            </div>
+        </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text">
+            <h2>Multimedia: El arresto de Gal Vallerius</h2>
+            <div class="video-container">
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                    <iframe 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                        src="https://www.youtube.com/embed/8-9-L1W_lO0" 
+                        title="The arrest of Gal Vallerius - OxyMonster" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            <p style="text-align: center; color: #00ff66; font-size: 0.9em;">
+                <i class="fas fa-info-circle"></i> Documental complementario sobre la Operación Bayoneta y el rastreo de transacciones en la Dark Web.
+            </p>
+        </div>
+    </section>
+</main>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
