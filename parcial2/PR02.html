@@ -1,19 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR02 - Investigación Comparativa de Phishing</title>
+    <title>PR02 - El eslabón más débil</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .platform-card { background: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-        .platform-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #00ff66; padding-bottom: 10px; margin-bottom: 15px; }
-        .tech-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9em; background: rgba(0,0,0,0.3); }
-        .tech-table th, .tech-table td { border: 1px solid #00ff66; padding: 12px; text-align: left; }
-        .tech-table th { background: rgba(0, 255, 102, 0.2); color: #00ff66; }
-        .tag { background: #00ff66; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+        .platform-card { background: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #00ff66; }
+        .platform-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(0, 255, 102, 0.3); padding-bottom: 10px; margin-bottom: 15px; }
+        .tech-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85em; background: rgba(0,0,0,0.5); }
+        .tech-table th, .tech-table td { border: 1px solid #00ff66; padding: 10px; text-align: left; }
+        .tech-table th { background: rgba(0, 255, 102, 0.2); color: #00ff66; text-transform: uppercase; }
+        .tag { background: #00ff66; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; margin-left: 10px; }
+        .objective-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
+        @media (max-width: 768px) { .objective-box { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -22,8 +23,8 @@
 <canvas id="matrix-right"></canvas>
 
 <header>
-    <h1>PARCIAL II: Ingeniería Social</h1>
-   <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+    <h1>EL ESLABÓN MÁS DÉBIL: DISEÑO ÉTICO DE UNA CAMPAÑA DE INGENIERÍA SOCIAL</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
 </header>
 
 <main>
@@ -33,9 +34,8 @@
         </div>
         <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
             <p><strong>PROYECTO PR02</strong></p>
-            <p><strong>Título:</strong> El eslabón más débil: diseño ético de una campaña de ingeniería social</p>
-            <p><strong>Módulo:</strong> Investigación comparativa de plataformas profesionales</p>
-            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia | <strong>Fecha:</strong> Marzo 2026</p>
+            <p><strong>Clase:</strong> Ciberseguridad</p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia | <strong>Fecha:</strong> 05 de Marzo 2026</p>
         </div>
     </section>
 
@@ -44,13 +44,21 @@
             <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
         </div>
         <article class="transcription-text">
-            <h2>1. Marco Teórico y Objetivos</h2>
-            <p>El objetivo es diseñar e implementar una simulación de phishing ética para medir el nivel de reconocimiento de amenazas en usuarios. Se analizan plataformas líderes para identificar capacidades técnicas y enfoques educativos.</p>
-            
-            <ul>
-                <li><strong>Métricas clave:</strong> Click rate (Tasa de apertura), Reporting rate (Tasa de reporte) y Risk score.</li>
-                <li><strong>Enfoque:</strong> Entrenamiento preventivo basado en la gestión responsable del riesgo humano.</li>
-            </ul>
+            <h2><i class="fas fa-bullseye"></i> Definición de Objetivos</h2>
+            <div class="objective-box">
+                <div>
+                    <h4 style="color: #00ff66;">Objetivo General</h4>
+                    <p>Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas profesionales, para medir el nivel de reconocimiento de amenazas e interpretar resultados mediante un sistema de puntuación global.</p>
+                </div>
+                <div>
+                    <h4 style="color: #00ff66;">Objetivos Específicos</h4>
+                    <ul style="font-size: 0.9em;">
+                        <li>Analizar y comparar 8 plataformas líderes de simulación.</li>
+                        <li>Diseñar un Phishing Quiz interactivo con 10 escenarios realistas.</li>
+                        <li>Desarrollar un sistema de "Score Global" bajo principios de privacidad.</li>
+                    </ul>
+                </div>
+            </div>
         </article>
     </section>
 
@@ -59,103 +67,19 @@
             <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
         </div>
         <article class="transcription-text">
-            <h2>2. Tabla Técnica de Plataformas</h2>
+            <h2><i class="fas fa-table"></i> Comparativa Técnica de Plataformas</h2>
             <div style="overflow-x: auto;">
                 <table class="tech-table">
                     <thead>
                         <tr>
                             <th>Plataforma</th>
-                            <th>Capacidad Técnica</th>
-                            <th>Métrica Principal</th>
-                            <th>Enfoque Ético</th>
+                            <th>Capacidad Técnica Destacada</th>
+                            <th>Métricas de Medición</th>
+                            <th>Enfoque Ético / Educativo</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>KnowBe4</strong></td>
-                            <td>Simulaciones masivas con IA.</td>
-                            <td>Phish-prone %</td>
-                            <td>Consentimiento corporativo.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Infosec IQ</strong></td>
-                            <td>Integración con AD y reporte avanzado.</td>
-                            <td>Risk Score individual.</td>
-                            <td>Aprendizaje por error.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Cofense</strong></td>
-                            <td>Detección colaborativa (PDR).</td>
-                            <td>Reporting Rate.</td>
-                            <td>Empoderamiento del usuario.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <article class="transcription-text">
-            <h2>3. Fichas de Análisis Individual</h2>
-            
-            <div class="platform-card">
-                <div class="platform-header">
-                    <i class="fas fa-shield-virus" style="font-size: 2em; color: #00ff66;"></i>
-                    <h3>KnowBe4 <span class="tag">LÍDER DE MERCADO</span></h3>
-                </div>
-                <p>Destaca por su biblioteca de plantillas que imitan ataques de grupos APT reales, permitiendo un entrenamiento de alta fidelidad.</p>
-            </div>
-
-            <div class="platform-card">
-                <div class="platform-header">
-                    <i class="fas fa-user-check" style="font-size: 2em; color: #00ff66;"></i>
-                    <h3>Hoxhunt <span class="tag">GAMIFICACIÓN</span></h3>
-                </div>
-                <p>Prioriza la recompensa sobre el castigo, gamificando el proceso de reporte de correos sospechosos para crear cultura de ciberseguridad.</p>
-            </div>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <article class="transcription-text">
-            <h2>4. Reflexión Técnica</h2>
-            <p>
-                La investigación comparativa demuestra que la ingeniería social no se combate únicamente con firewalls, sino con educación. Al analizar plataformas como KnowBe4 o Cofense, observo que la tendencia actual no es "atrapar" al usuario en el error, sino convertirlo en un sensor humano capaz de detectar y reportar amenazas de forma proactiva. La clave del proyecto PR02 reside en diseñar una campaña que sea lo suficientemente realista para ser efectiva, pero lo suficientemente ética para no vulnerar la confianza del colaborador.
-            </p>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <article class="transcription-text">
-            <h2>5. Referencias Técnicas</h2>
-            <ul style="font-size: 0.85em; opacity: 0.8; list-style-type: square; padding-left: 20px;">
-                <li>KnowBe4. (2024). 2024 Phishing by Industry Benchmarking Report.</li>
-                <li>Cofense Resources. (2023). The State of Phishing Defense and Reporting.</li>
-                <li>NIST SP 800-53. Security and Privacy Controls (Human-Centered Defense).</li>
-            </ul>
-        </article>
-    </section>
-
-    <div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
-        <a href="../pdf/investigacion_pr02.pdf" 
-           download 
-           style="display: inline-block; padding: 12px 25px; border: 2px solid #00ff66; color: #00ff66; text-decoration: none; font-weight: bold; font-size: 1.1em; text-transform: uppercase; background: rgba(0, 255, 102, 0.1); box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); transition: 0.3s; letter-spacing: 1px;">
-            <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
-            DESCARGAR INVESTIGACIÓN COMPLETA (PDF)
-        </a>
-    </div>
-</main>
-
-<script src="../matrix.js"></script>
-</body>
-</html>
+                        <tr><td>KnowBe4</td><td>Biblioteca de plantillas APT reales.</td><td>Phish-prone % / Benchmarking.</td><td>Entrenamiento preventivo masivo.</td></tr>
+                        <tr><td>Hoxhunt</td><td>IA adaptativa personalizada por usuario.</td><td>Reporting rate / Engagement rate.</td><td>Gamificación y recompensas positivas.</td></tr>
+                        <tr><td>Proofpoint</td><td>Integración con seguridad de correo real.</td><td>Vulnerability Score / Click rate.</td><td>Protección de usuarios "VAP".</td></tr>
+                        <tr><td>Cofense</td><td>Detección colaborativa y triaje de correos.</td><td>Resiliency rate / Reporting.</td><td>Empoderamiento (Sensor Humano).</td></tr>
