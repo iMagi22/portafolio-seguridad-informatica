@@ -22,7 +22,7 @@
 
 <header>
     <h1>PARCIAL II: Ingeniería Social</h1>
-    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+   <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
 </header>
 
 <main>
