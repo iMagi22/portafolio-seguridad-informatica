@@ -44,9 +44,10 @@
         </div>
         <article class="transcription-text">
             <h2>1. Marco Teórico y Objetivos</h2>
-            <p>El objetivo es diseñar e implementar una simulación de phishing ética para medir el nivel de reconocimiento de amenazas en usuarios. Como primer paso, se analizan las plataformas líderes del mercado para identificar sus capacidades técnicas y enfoques éticos.</p>
+            <p>El objetivo es diseñar e implementar una simulación de phishing ética para medir el nivel de reconocimiento de amenazas en usuarios. Se analizan plataformas líderes para identificar capacidades técnicas y enfoques educativos.</p>
+            
             <ul>
-                <li><strong>Métricas clave:</strong> Click rate, Reporting rate y Risk score[cite: 14].</li>
+                <li><strong>Métricas clave:</strong> Click rate (Tasa de apertura), Reporting rate (Tasa de reporte) y Risk score.</li>
                 <li><strong>Enfoque:</strong> Entrenamiento preventivo basado en la gestión responsable del riesgo humano.</li>
             </ul>
         </article>
@@ -71,8 +72,8 @@
                     <tbody>
                         <tr>
                             <td><strong>KnowBe4</strong></td>
-                            <td>Simulaciones automatizadas masivas.</td>
-                            <td>Personal Phish-prone %</td>
+                            <td>Simulaciones masivas con IA.</td>
+                            <td>Phish-prone %</td>
                             <td>Consentimiento corporativo.</td>
                         </tr>
                         <tr>
@@ -84,14 +85,8 @@
                         <tr>
                             <td><strong>Cofense</strong></td>
                             <td>Detección colaborativa (PDR).</td>
-                            <td>Reporting Rate (Resiliencia).</td>
+                            <td>Reporting Rate.</td>
                             <td>Empoderamiento del usuario.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Proofpoint</strong></td>
-                            <td>Análisis de amenazas en tiempo real.</td>
-                            <td>Vulnerabilidad de ataque.</td>
-                            <td>Protección proactiva.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -111,7 +106,7 @@
                     <i class="fas fa-shield-virus" style="font-size: 2em; color: #00ff66;"></i>
                     <h3>KnowBe4 <span class="tag">LÍDER DE MERCADO</span></h3>
                 </div>
-                <p>Permite entrenar a los empleados para tomar mejores decisiones de seguridad. Destaca por su enorme biblioteca de plantillas realistas que imitan ataques de grupos APT.</p>
+                <p>Destaca por su biblioteca de plantillas que imitan ataques de grupos APT reales, permitiendo un entrenamiento de alta fidelidad.</p>
             </div>
 
             <div class="platform-card">
@@ -119,7 +114,7 @@
                     <i class="fas fa-user-check" style="font-size: 2em; color: #00ff66;"></i>
                     <h3>Hoxhunt <span class="tag">GAMIFICACIÓN</span></h3>
                 </div>
-                <p>Se enfoca en la gamificación, recompensando a los usuarios que reportan correos sospechosos en lugar de castigar a quienes hacen clic, mejorando la cultura de seguridad.</p>
+                <p>Prioriza la recompensa sobre el castigo, gamificando el proceso de reporte de correos sospechosos para crear cultura de ciberseguridad.</p>
             </div>
         </article>
     </section>
@@ -129,19 +124,35 @@
             <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
         </div>
         <article class="transcription-text">
-            <h2>4. Análisis Crítico</h2>
-            <p>La ingeniería social aprovecha "el eslabón más débil". El análisis revela que las herramientas modernas han pasado de ser punitivas a ser educativas, priorizando la resiliencia del usuario sobre el simple bloqueo técnico[cite: 14].</p>
-            
-            <div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
-                <a href="../pdf/investigacion_pr02.pdf" 
-                   download 
-                   style="display: inline-block; padding: 12px 25px; border: 2px solid #00ff66; color: #00ff66; text-decoration: none; font-weight: bold; font-size: 1.1em; text-transform: uppercase; background: rgba(0, 255, 102, 0.1); box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); transition: 0.3s; letter-spacing: 1px;">
-                    <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
-                    DESCARGAR INVESTIGACIÓN COMPLETA (PDF)
-                </a>
-            </div>
+            <h2>4. Reflexión Técnica</h2>
+            <p>
+                La investigación comparativa demuestra que la ingeniería social no se combate únicamente con firewalls, sino con educación. Al analizar plataformas como KnowBe4 o Cofense, observo que la tendencia actual no es "atrapar" al usuario en el error, sino convertirlo en un sensor humano capaz de detectar y reportar amenazas de forma proactiva. La clave del proyecto PR02 reside en diseñar una campaña que sea lo suficientemente realista para ser efectiva, pero lo suficientemente ética para no vulnerar la confianza del colaborador.
+            </p>
         </article>
     </section>
+
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <article class="transcription-text">
+            <h2>5. Referencias Técnicas</h2>
+            <ul style="font-size: 0.85em; opacity: 0.8; list-style-type: square; padding-left: 20px;">
+                <li>KnowBe4. (2024). 2024 Phishing by Industry Benchmarking Report.</li>
+                <li>Cofense Resources. (2023). The State of Phishing Defense and Reporting.</li>
+                <li>NIST SP 800-53. Security and Privacy Controls (Human-Centered Defense).</li>
+            </ul>
+        </article>
+    </section>
+
+    <div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
+        <a href="../pdf/investigacion_pr02.pdf" 
+           download 
+           style="display: inline-block; padding: 12px 25px; border: 2px solid #00ff66; color: #00ff66; text-decoration: none; font-weight: bold; font-size: 1.1em; text-transform: uppercase; background: rgba(0, 255, 102, 0.1); box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); transition: 0.3s; letter-spacing: 1px;">
+            <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
+            DESCARGAR INVESTIGACIÓN COMPLETA (PDF)
+        </a>
+    </div>
 </main>
 
 <script src="../matrix.js"></script>
