@@ -1,1 +1,186 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR02 - El eslabón más débil</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .platform-card { background: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #00ff66; }
+        .platform-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(0, 255, 102, 0.3); padding-bottom: 10px; margin-bottom: 15px; }
+        .tech-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85em; background: rgba(0,0,0,0.5); }
+        .tech-table th, .tech-table td { border: 1px solid #00ff66; padding: 10px; text-align: left; }
+        .tech-table th { background: rgba(0, 255, 102, 0.2); color: #00ff66; text-transform: uppercase; }
+        .tag { background: #00ff66; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
+        .objective-box { border: 1px double #00ff66; padding: 15px; margin: 15px 0; background: rgba(0, 20, 0, 0.4); }
+    </style>
+</head>
+<body>
+
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>EL ESLABÓN MÁS DÉBIL: DISEÑO ÉTICO DE UNA CAMPAÑA DE INGENIERÍA SOCIAL</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
+            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
+            <p><strong>Práctica:</strong> ACTIVIDAD PR02 - Eslabon mas debil</p>
+            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
+        </div>
+    </section>
+
+    <section class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-bullseye"></i> Marco Teórico y Objetivos</h2>
+            <p><strong>Objetivo General:</strong> Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas del mercado, para medir el nivel de reconocimiento de amenazas, interpretar resultados mediante un score global y reflexionar sobre la gestión responsable del riesgo humano.</p>
+            <p><strong>Objetivos Específicos:</strong></p>
+            <ul>
+                <li><strong>Analizar y comparar</strong> las 8 plataformas líderes (Hoxhunt, Proofpoint, KnowBe4, Cofense, Phished, NINJIO, Mimecast e Infosec IQ) identificando métricas como click rate y reporting rate.</li>
+                <li><strong>Diseñar e implementar</strong> un Phishing Quiz de 10 escenarios realistas con retroalimentación formativa y sin captura de credenciales.</li>
+                <li><strong>Desarrollar e interpretar</strong> un sistema de score global respetando principios de privacidad y ética digital.</li>
+            </ul>
+        </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-table"></i> 1. Tabla Técnica Comparativa</h2>
+            <div style="overflow-x: auto;">
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Capacidades y Analítica</th>
+                            <th>Métrica Principal</th>
+                            <th>Enfoque Ético / Entrenamiento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>KnowBe4</strong></td><td>Biblioteca gigante de plantillas; benchmarking por industria.</td><td>Phish-prone %</td><td>Entrenamiento masivo preventivo.</td></tr>
+                        <tr><td><strong>Proofpoint</strong></td><td>Inteligencia de amenazas; foco en usuarios atacados (VAP).</td><td>Vulnerability Score</td><td>Protección proactiva del individuo.</td></tr>
+                        <tr><td><strong>Hoxhunt</strong></td><td>Personalización con IA; extensión de reporte en navegador.</td><td>Reporting Rate</td><td>Gamificación; aprendizaje positivo.</td></tr>
+                        <tr><td><strong>Cofense</strong></td><td>Triage de correos; defensa colaborativa humana (PDR).</td><td>Resiliency Rate</td><td>Empoderamiento de usuarios.</td></tr>
+                        <tr><td><strong>Phished</strong></td><td>Simulaciones 100% automatizadas sin intervención manual.</td><td>Risk Score Personal</td><td>Privacidad y automatización total.</td></tr>
+                        <tr><td><strong>Infosec IQ</strong></td><td>Integración con Active Directory para rutas de aprendizaje.</td><td>Learner Score</td><td>Capacitación basada en roles.</td></tr>
+                        <tr><td><strong>Mimecast</strong></td><td>Módulos de concientización cinematográficos/humorísticos.</td><td>Engagement Rate</td><td>Reducción de fatiga de seguridad.</td></tr>
+                        <tr><td><strong>Ninjio</strong></td><td>Micro-learning animado basado en brechas de seguridad reales.</td><td>Retention Score</td><td>Storytelling y conexión emocional.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-address-card"></i> Fichas Descriptivas de las 8 Plataformas</h2>
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <h3>Hoxhunt <span class="tag">Gamificación</span></h3>
+                    <p><strong>Técnica:</strong> Envía simulaciones personalizadas con IA y facilita el reporte con un plugin. <br><strong>Ética:</strong> No castiga el clic, premia el reporte con puntos, reduciendo la ansiedad del empleado.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>Proofpoint <span class="tag">VAP Focus</span></h3>
+                    <p><strong>Técnica:</strong> Integra la pasarela de correo con el entrenamiento para identificar "Very Attacked People". <br><strong>Ética:</strong> Enfoca los recursos en proteger a quienes más reciben ataques reales.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>KnowBe4 <span class="tag">Líder Mercado</span></h3>
+                    <p><strong>Técnica:</strong> Permite simular ataques de Ingeniería Social complejos (Vishing, Smishing). <br><strong>Ética:</strong> Transparencia total de resultados mediante benchmarking corporativo.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>Cofense <span class="tag">Colaborativo</span></h3>
+                    <p><strong>Técnica:</strong> Si un usuario reporta un phishing, la plataforma asiste al SOC para borrarlo de la red. <br><strong>Ética:</strong> Convierte al usuario en un "sensor humano" valioso para la organización.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>Phished <span class="tag">IA Autónoma</span></h3>
+                    <p><strong>Técnica:</strong> Algoritmos que determinan cuándo y qué simulación enviar sin trabajo manual del Admin. <br><strong>Ética:</strong> Minimiza el sesgo humano al evaluar a los empleados.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>NINJIO <span class="tag">Storytelling</span></h3>
+                    <p><strong>Técnica:</strong> Usa episodios cortos estilo anime basados en hacks recientes. <br><strong>Ética:</strong> Fomenta el aprendizaje a través de la empatía con las historias de las víctimas.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>Mimecast <span class="tag">Video Learning</span></h3>
+                    <p><strong>Técnica:</strong> Combina seguridad perimetral de email con videos de alta producción. <br><strong>Ética:</strong> Combate la apatía y el aburrimiento con humor, mejorando la retención.</p>
+                </div>
+                <div class="platform-card">
+                    <h3>Infosec IQ <span class="tag">Role-Based</span></h3>
+                    <p><strong>Técnica:</strong> Mapea simulaciones según el rol en el Directorio Activo (ej. Finanzas vs. TI). <br><strong>Ética:</strong> Exige a cada empleado solo los conocimientos pertinentes a sus funciones.</p>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-pencil-ruler"></i> 2. Diseño de Campaña y 3. Score Global</h2>
+            <p><strong>Diseño del Phishing Quiz (10 Escenarios):</strong><br>
+            La simulación se basa en vectores reales: Falsas alertas de TI, facturas de proveedores y problemas de nómina. Tras interactuar, el usuario recibe retroalimentación inmediata sobre las "Red Flags" (remitente falso, urgencia, enlaces ocultos) garantizando el consentimiento y sin robar credenciales reales.</p>
+            
+            <p><strong>Sistema de Score Global:</strong><br>
+            Se implementa un panel que registra: Tasa de apertura, tasa de clic y tiempo de respuesta. Para cumplir con la ética digital, los reportes globales se anonimizan para análisis de tendencias, mientras que el "Risk Score" individual se usa solo para asignar capacitación de refuerzo, no para penalizaciones.</p>
+        </article>
+    </section>
+
+    <section class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-balance-scale"></i> Reflexión sobre Gestión del Riesgo Humano</h2>
+            <p>A través de la comparativa, se concluye que las simulaciones tradicionales basadas en el "miedo a fallar" son contraproducentes. Plataformas como Hoxhunt y Cofense demuestran que el objetivo de la ciberseguridad moderna no es lograr un "0% de clics", sino alcanzar un alto "Reporting Rate". Un programa ético transforma la vulnerabilidad humana en resiliencia institucional mediante el refuerzo positivo y el respeto a la privacidad del empleado.</p>
+            
+        </article>
+    </section>
+    
+  <section class="window">
+        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+        <article class="transcription-text">
+        <h2>Referencias Tecnicas</h2>
+            <ul style="font-size: 0.9em; opacity: 0.8;">
+                <li>NIST SP 800-50: <em>Building an Information Technology Security Awareness and Training Program.</em></li>
+                <li>Gartner (2024). <em>Magic Quadrant for Security Awareness Computer-Based Training.</em></li>
+                <li>SANS Institute. <em>Security Awareness Report: Managing Human Risk.</em></li>
+            </ul>
+    </article>
+  </section>
+    
+ </main>
+          <div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
+    <a href="../pdf/ActividadPR02.pdf" 
+       download 
+       style="display: inline-block; 
+              padding: 12px 25px; 
+              border: 2px solid #00ff66; 
+              color: #00ff66; 
+              text-decoration: none; 
+              font-weight: bold; 
+              font-size: 1.1em; 
+              text-transform: uppercase; 
+              background: rgba(0, 255, 102, 0.1); 
+              box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); 
+              transition: 0.3s;
+              letter-spacing: 1px;">
+        <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
+        DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+    </a>
+    </section>
+
+</main>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
