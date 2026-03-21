@@ -1,186 +1,2311 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR02 - El eslabón más débil</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>PR02 - El eslabón más débil: Diseño Ético de Campaña de Ingeniería Social</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .platform-card { background: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #00ff66; }
-        .platform-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(0, 255, 102, 0.3); padding-bottom: 10px; margin-bottom: 15px; }
-        .tech-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85em; background: rgba(0,0,0,0.5); }
-        .tech-table th, .tech-table td { border: 1px solid #00ff66; padding: 10px; text-align: left; }
-        .tech-table th { background: rgba(0, 255, 102, 0.2); color: #00ff66; text-transform: uppercase; }
-        .tag { background: #00ff66; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
-        .objective-box { border: 1px double #00ff66; padding: 15px; margin: 15px 0; background: rgba(0, 20, 0, 0.4); }
+        :root {
+            --primary: #00ff66;
+            --dark: #0a0a0a;
+            --glass: rgba(0, 20, 0, 0.9);
+            --alert: #ff4444;
+            --warning: #ffaa00;
+            --info: #4488ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Matrix Background */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.12;
+        }
+        
+        header {
+            background: linear-gradient(180deg, rgba(0,40,0,0.95) 0%, rgba(0,20,0,0.95) 100%);
+            padding: 2rem 1rem;
+            border-bottom: 3px solid var(--primary);
+            box-shadow: 0 0 40px rgba(0,255,102,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(0,255,102,0.6);
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+        
+        .meta-info {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: var(--glass);
+            border: 2px dashed var(--primary);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0,255,102,0.1);
+        }
+        
+        .meta-info p {
+            margin: 0.8rem 0;
+            border-bottom: 1px solid rgba(0,255,102,0.2);
+            padding-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .meta-info strong {
+            color: var(--primary);
+        }
+        
+        /* Navigation Buttons */
+        .nav-container {
+            max-width: 900px;
+            margin: -1rem auto 2rem auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+        
+        .nav-btn {
+            background: rgba(0, 40, 0, 0.8);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 0 20px rgba(0,255,102,0.1);
+        }
+        
+        .nav-btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0,255,102,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.active {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0,255,102,0.6);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem 2rem 1rem;
+        }
+        
+        .section-content {
+            display: none;
+        }
+        
+        .section-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .window {
+            background: var(--glass);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            position: relative;
+        }
+        
+        .window::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
+        }
+        
+        .window-bar {
+            background: rgba(0,40,0,0.95);
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            gap: 0.8rem;
+            border-bottom: 1px solid var(--primary);
+        }
+        
+        .btn-win {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 5px currentColor;
+        }
+        
+        .btn-win.red { background: #ff5f56; color: #ff5f56; }
+        .btn-win.yellow { background: #ffbd2e; color: #ffbd2e; }
+        .btn-win.green { background: #27c93f; color: #27c93f; }
+        
+        .content {
+            padding: 2.5rem;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-left: 5px solid var(--primary);
+            padding-left: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0,255,102,0.3);
+        }
+        
+        h3 {
+            color: #00ff66;
+            margin: 2rem 0 1rem 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .objective-box {
+            border: 2px double var(--primary);
+            padding: 1.8rem;
+            margin: 2rem 0;
+            background: rgba(0, 40, 0, 0.4);
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .objective-box::before {
+            content: 'OBJETIVO';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--dark);
+            color: var(--primary);
+            padding: 0 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .highlight-box {
+            background: rgba(0, 255, 102, 0.08);
+            border-left: 5px solid var(--primary);
+            padding: 1.8rem;
+            margin: 2rem 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .theory-card {
+            background: rgba(0,30,0,0.6);
+            border: 1px solid rgba(0,255,102,0.3);
+            padding: 1.8rem;
+            border-radius: 10px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .theory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,255,102,0.15);
+            border-color: var(--primary);
+        }
+        
+        .theory-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .theory-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2.5rem 0;
+            font-size: 0.9rem;
+            background: rgba(0,10,0,0.6);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0,255,102,0.1);
+        }
+        
+        .tech-table th, .tech-table td {
+            border: 1px solid rgba(0,255,102,0.3);
+            padding: 15px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .tech-table th {
+            background: rgba(0, 80, 0, 0.8);
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        
+        .tech-table tr:nth-child(even) {
+            background: rgba(0,40,0,0.3);
+        }
+        
+        .tech-table tr:hover {
+            background: rgba(0,255,102,0.08);
+            transition: background 0.3s;
+        }
+        
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        .platform-card {
+            background: linear-gradient(135deg, rgba(0,50,0,0.6) 0%, rgba(0,20,0,0.8) 100%);
+            border: 1px solid rgba(0,255,102,0.25);
+            border-left: 5px solid var(--primary);
+            padding: 2rem;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .platform-card:hover {
+            transform: translateX(5px);
+            box-shadow: -5px 0 20px rgba(0,255,102,0.2);
+        }
+        
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,102,0.03));
+            pointer-events: none;
+        }
+        
+        .platform-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid rgba(0,255,102,0.3);
+            padding-bottom: 0.8rem;
+        }
+        
+        .platform-name {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+        
+        .tag {
+            background: var(--primary);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0,255,102,0.3);
+        }
+        
+        .platform-content {
+            color: #ccc;
+            line-height: 1.8;
+        }
+        
+        .platform-content strong {
+            color: #fff;
+        }
+        
+        .metric-box {
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(0,255,102,0.2);
+        }
+        
+        .metric {
+            display: inline-block;
+            background: rgba(0,255,102,0.15);
+            border: 1px solid var(--primary);
+            padding: 4px 10px;
+            margin: 0.3rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+        
+        .critical-analysis {
+            background: rgba(255, 170, 0, 0.08);
+            border: 2px solid var(--warning);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            position: relative;
+        }
+        
+        .critical-analysis::before {
+            content: '!';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--warning);
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .critical-analysis h3 {
+            color: var(--warning);
+            margin-top: 0.5rem;
+        }
+        
+        .conclusion-box {
+            background: rgba(0, 100, 255, 0.08);
+            border: 2px solid var(--info);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        .conclusion-box h3 {
+            color: var(--info);
+        }
+        
+        .references {
+            background: rgba(0,0,0,0.4);
+            padding: 2.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0,255,102,0.2);
+        }
+        
+        .references li {
+            margin: 1.2rem 0;
+            padding-left: 1.5rem;
+            border-left: 3px solid rgba(0,255,102,0.3);
+            line-height: 1.8;
+        }
+        
+        .ethical-framework {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .ethical-pillar {
+            background: rgba(0,255,102,0.05);
+            border: 2px solid rgba(0,255,102,0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .ethical-pillar:hover {
+            background: rgba(0,255,102,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .ethical-pillar i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(0,20,0,0.95);
+            border-top: 2px solid var(--primary);
+            margin-top: 4rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        ul.custom-list {
+            margin-left: 2rem;
+            line-height: 2.2;
+        }
+        
+        ul.custom-list li {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        ul.custom-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .platform-grid { grid-template-columns: 1fr; }
+            .theory-grid { grid-template-columns: 1fr; }
+            .tech-table { font-size: 0.8rem; }
+            h1 { font-size: 1.3rem; }
+            .content { padding: 1.5rem; }
+            .nav-container { grid-template-columns: 1fr; }
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* QUIZ STYLES */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--glass);
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(0,255,102,0.2);
+        }
+        
+        .quiz-header h2 {
+            border-left: none;
+            padding-left: 0;
+            justify-content: center;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border: 1px solid rgba(0,255,102,0.3);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #00ff66);
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(0,255,102,0.5);
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .consent-box {
+            border: 2px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            background: rgba(0,255,102,0.05);
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .checkbox-container:hover {
+            border-color: var(--primary);
+            background: rgba(0,255,102,0.05);
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            margin-top: 2px;
+        }
+        
+        .input-group {
+            margin: 2rem 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,102,0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0,255,102,0.3);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0,255,102,0.3);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,255,102,0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0,255,102,0.1);
+        }
+        
+        .btn-danger {
+            background: var(--alert);
+            color: #fff;
+        }
+        
+        .btn-safe {
+            background: var(--primary);
+            color: #000;
+        }
+        
+        .email-client, .sms-phone, .social-post {
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .feedback {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .feedback.correct {
+            background: rgba(0,255,102,0.1);
+            border: 2px solid var(--primary);
+        }
+        
+        .feedback.incorrect {
+            background: rgba(255,68,68,0.1);
+            border: 2px solid var(--alert);
+        }
+        
+        .red-flags {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .red-flags h4 {
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+        }
+        
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            margin: 2rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,255,102,0.05);
+            box-shadow: 0 0 40px rgba(0,255,102,0.2);
+        }
+        
+        .score-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* SCORE GLOBAL STYLES */
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(0,10,0,0.6);
+            border: 1px solid var(--primary);
+        }
+        
+        .score-table th, .score-table td {
+            border: 1px solid rgba(0,255,102,0.3);
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .score-table th {
+            background: rgba(0, 80, 0, 0.8);
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+        
+        .score-table tr:nth-child(even) {
+            background: rgba(0,40,0,0.3);
+        }
+        
+        .score-table tr:hover {
+            background: rgba(0,255,102,0.1);
+        }
+        
+        .rank-1 { color: gold; font-weight: bold; }
+        .rank-2 { color: silver; font-weight: bold; }
+        .rank-3 { color: #cd7f32; font-weight: bold; }
+        
+        .warning-banner {
+            background: rgba(255,170,0,0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .hidden { display: none !important; }
+        
+        @media (max-width: 768px) {
+            .platform-grid { grid-template-columns: 1fr; }
+            .theory-grid { grid-template-columns: 1fr; }
+            .tech-table { font-size: 0.8rem; }
+            h1 { font-size: 1.3rem; }
+            .content { padding: 1.5rem; }
+            .nav-container { grid-template-columns: 1fr; }
+        }
+        
+        /* Print styles for PDF generation */
+        @media print {
+            body { background: white; color: black; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body>
-
-<canvas id="matrix-left"></canvas>
-<canvas id="matrix-right"></canvas>
-
-<header>
-    <h1>EL ESLABÓN MÁS DÉBIL: DISEÑO ÉTICO DE UNA CAMPAÑA DE INGENIERÍA SOCIAL</h1>
-    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
-</header>
-
-<main>
-    <section class="window">
-        <div class="window-bar">
-            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
-        </div>
-        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
-            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
-            <p><strong>Alumna:</strong> Tristan Rivera Magdalena Yesenia - 174702</p>
-            <p><strong>Profesor:</strong> Mtro. Servando López Contreras</p>
-            <p><strong>Práctica:</strong> ACTIVIDAD PR02 - Eslabon mas debil</p>
-            <p><strong>Grupo:</strong> T46B | <strong>Horario:</strong> 20:00 - 21:00</p>
-        </div>
-    </section>
-
-    <section class="window">
-        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
-        <article class="transcription-text">
-            <h2><i class="fas fa-bullseye"></i> Marco Teórico y Objetivos</h2>
-            <p><strong>Objetivo General:</strong> Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas del mercado, para medir el nivel de reconocimiento de amenazas, interpretar resultados mediante un score global y reflexionar sobre la gestión responsable del riesgo humano.</p>
-            <p><strong>Objetivos Específicos:</strong></p>
-            <ul>
-                <li><strong>Analizar y comparar</strong> las 8 plataformas líderes (Hoxhunt, Proofpoint, KnowBe4, Cofense, Phished, NINJIO, Mimecast e Infosec IQ) identificando métricas como click rate y reporting rate.</li>
-                <li><strong>Diseñar e implementar</strong> un Phishing Quiz de 10 escenarios realistas con retroalimentación formativa y sin captura de credenciales.</li>
-                <li><strong>Desarrollar e interpretar</strong> un sistema de score global respetando principios de privacidad y ética digital.</li>
-            </ul>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
-        <article class="transcription-text">
-            <h2><i class="fas fa-table"></i> 1. Tabla Técnica Comparativa</h2>
-            <div style="overflow-x: auto;">
-                <table class="tech-table">
-                    <thead>
-                        <tr>
-                            <th>Plataforma</th>
-                            <th>Capacidades y Analítica</th>
-                            <th>Métrica Principal</th>
-                            <th>Enfoque Ético / Entrenamiento</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>KnowBe4</strong></td><td>Biblioteca gigante de plantillas; benchmarking por industria.</td><td>Phish-prone %</td><td>Entrenamiento masivo preventivo.</td></tr>
-                        <tr><td><strong>Proofpoint</strong></td><td>Inteligencia de amenazas; foco en usuarios atacados (VAP).</td><td>Vulnerability Score</td><td>Protección proactiva del individuo.</td></tr>
-                        <tr><td><strong>Hoxhunt</strong></td><td>Personalización con IA; extensión de reporte en navegador.</td><td>Reporting Rate</td><td>Gamificación; aprendizaje positivo.</td></tr>
-                        <tr><td><strong>Cofense</strong></td><td>Triage de correos; defensa colaborativa humana (PDR).</td><td>Resiliency Rate</td><td>Empoderamiento de usuarios.</td></tr>
-                        <tr><td><strong>Phished</strong></td><td>Simulaciones 100% automatizadas sin intervención manual.</td><td>Risk Score Personal</td><td>Privacidad y automatización total.</td></tr>
-                        <tr><td><strong>Infosec IQ</strong></td><td>Integración con Active Directory para rutas de aprendizaje.</td><td>Learner Score</td><td>Capacitación basada en roles.</td></tr>
-                        <tr><td><strong>Mimecast</strong></td><td>Módulos de concientización cinematográficos/humorísticos.</td><td>Engagement Rate</td><td>Reducción de fatiga de seguridad.</td></tr>
-                        <tr><td><strong>Ninjio</strong></td><td>Micro-learning animado basado en brechas de seguridad reales.</td><td>Retention Score</td><td>Storytelling y conexión emocional.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
-        <article class="transcription-text">
-            <h2><i class="fas fa-address-card"></i> Fichas Descriptivas de las 8 Plataformas</h2>
-            <div class="platform-grid">
-                <div class="platform-card">
-                    <h3>Hoxhunt <span class="tag">Gamificación</span></h3>
-                    <p><strong>Técnica:</strong> Envía simulaciones personalizadas con IA y facilita el reporte con un plugin. <br><strong>Ética:</strong> No castiga el clic, premia el reporte con puntos, reduciendo la ansiedad del empleado.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>Proofpoint <span class="tag">VAP Focus</span></h3>
-                    <p><strong>Técnica:</strong> Integra la pasarela de correo con el entrenamiento para identificar "Very Attacked People". <br><strong>Ética:</strong> Enfoca los recursos en proteger a quienes más reciben ataques reales.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>KnowBe4 <span class="tag">Líder Mercado</span></h3>
-                    <p><strong>Técnica:</strong> Permite simular ataques de Ingeniería Social complejos (Vishing, Smishing). <br><strong>Ética:</strong> Transparencia total de resultados mediante benchmarking corporativo.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>Cofense <span class="tag">Colaborativo</span></h3>
-                    <p><strong>Técnica:</strong> Si un usuario reporta un phishing, la plataforma asiste al SOC para borrarlo de la red. <br><strong>Ética:</strong> Convierte al usuario en un "sensor humano" valioso para la organización.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>Phished <span class="tag">IA Autónoma</span></h3>
-                    <p><strong>Técnica:</strong> Algoritmos que determinan cuándo y qué simulación enviar sin trabajo manual del Admin. <br><strong>Ética:</strong> Minimiza el sesgo humano al evaluar a los empleados.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>NINJIO <span class="tag">Storytelling</span></h3>
-                    <p><strong>Técnica:</strong> Usa episodios cortos estilo anime basados en hacks recientes. <br><strong>Ética:</strong> Fomenta el aprendizaje a través de la empatía con las historias de las víctimas.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>Mimecast <span class="tag">Video Learning</span></h3>
-                    <p><strong>Técnica:</strong> Combina seguridad perimetral de email con videos de alta producción. <br><strong>Ética:</strong> Combate la apatía y el aburrimiento con humor, mejorando la retención.</p>
-                </div>
-                <div class="platform-card">
-                    <h3>Infosec IQ <span class="tag">Role-Based</span></h3>
-                    <p><strong>Técnica:</strong> Mapea simulaciones según el rol en el Directorio Activo (ej. Finanzas vs. TI). <br><strong>Ética:</strong> Exige a cada empleado solo los conocimientos pertinentes a sus funciones.</p>
-                </div>
-            </div>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
-        <article class="transcription-text">
-            <h2><i class="fas fa-pencil-ruler"></i> 2. Diseño de Campaña y 3. Score Global</h2>
-            <p><strong>Diseño del Phishing Quiz (10 Escenarios):</strong><br>
-            La simulación se basa en vectores reales: Falsas alertas de TI, facturas de proveedores y problemas de nómina. Tras interactuar, el usuario recibe retroalimentación inmediata sobre las "Red Flags" (remitente falso, urgencia, enlaces ocultos) garantizando el consentimiento y sin robar credenciales reales.</p>
-            
-            <p><strong>Sistema de Score Global:</strong><br>
-            Se implementa un panel que registra: Tasa de apertura, tasa de clic y tiempo de respuesta. Para cumplir con la ética digital, los reportes globales se anonimizan para análisis de tendencias, mientras que el "Risk Score" individual se usa solo para asignar capacitación de refuerzo, no para penalizaciones.</p>
-        </article>
-    </section>
-
-    <section class="window">
-        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
-        <article class="transcription-text">
-            <h2><i class="fas fa-balance-scale"></i> Reflexión sobre Gestión del Riesgo Humano</h2>
-            <p>A través de la comparativa, se concluye que las simulaciones tradicionales basadas en el "miedo a fallar" son contraproducentes. Plataformas como Hoxhunt y Cofense demuestran que el objetivo de la ciberseguridad moderna no es lograr un "0% de clics", sino alcanzar un alto "Reporting Rate". Un programa ético transforma la vulnerabilidad humana en resiliencia institucional mediante el refuerzo positivo y el respeto a la privacidad del empleado.</p>
-            
-        </article>
-    </section>
+    <canvas id="matrix-canvas"></canvas>
     
-  <section class="window">
-        <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
-        <article class="transcription-text">
-        <h2>Referencias Tecnicas</h2>
-            <ul style="font-size: 0.9em; opacity: 0.8;">
-                <li>NIST SP 800-50: <em>Building an Information Technology Security Awareness and Training Program.</em></li>
-                <li>Gartner (2024). <em>Magic Quadrant for Security Awareness Computer-Based Training.</em></li>
-                <li>SANS Institute. <em>Security Awareness Report: Managing Human Risk.</em></li>
-            </ul>
-    </article>
-  </section>
-    
- </main>
-          <div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
-    <a href="../pdf/ActividadPR02.pdf" 
-       download 
-       style="display: inline-block; 
-              padding: 12px 25px; 
-              border: 2px solid #00ff66; 
-              color: #00ff66; 
-              text-decoration: none; 
-              font-weight: bold; 
-              font-size: 1.1em; 
-              text-transform: uppercase; 
-              background: rgba(0, 255, 102, 0.1); 
-              box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); 
-              transition: 0.3s;
-              letter-spacing: 1px;">
-        <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
-        DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
-    </a>
-    </section>
+    <header>
+        <h1><i class="fas fa-shield-virus"></i> PR02: El Eslabón Más Débil</h1>
+        <div class="subtitle">Diseño Ético de una Campaña de Ingeniería Social</div>
+        <div class="subtitle blink" style="color: var(--primary); margin-top: 0.5rem;">_</div>
+    </header>
 
-</main>
+    <div class="meta-info">
+        <p><strong><i class="fas fa-graduation-cap"></i> Asignatura:</strong> Seguridad Informática (CNO V)</p>
+        <p><strong><i class="fas fa-user"></i> Alumna:</strong><br>Magdalena Yesenia Tristan Rivera - 174702</p>
+        <p><strong><i class="fas fa-chalkboard-teacher"></i> Docente:</strong> Mtro. Servando López Contreras</p>
+        <p><strong><i class="fas fa-users"></i> Grupo:</strong> T46B</p>
+        <p><strong><i class="fas fa-clock"></i> Horario:</strong> 20:00 - 21:00 hrs</p>
+    </div>
 
-<script src="../matrix.js"></script>
+    <!-- NAVIGATION BUTTONS -->
+    <div class="nav-container">
+        <button class="nav-btn active" onclick="showSection('investigacion')">
+            <i class="fas fa-search"></i> Investigación
+        </button>
+        <button class="nav-btn" onclick="showSection('quiz')">
+            <i class="fas fa-question-circle"></i> Phishing Quiz
+        </button>
+        <button class="nav-btn" onclick="showSection('scores')">
+            <i class="fas fa-trophy"></i> Score Global
+        </button>
+    </div>
+
+    <main>
+        <!-- SECCIÓN INVESTIGACIÓN -->
+        <div id="section-investigacion" class="section-content active">
+            <section class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <h2><i class="fas fa-bullseye"></i> Marco Teórico y Fundamentación Técnica</h2>
+                    
+                    <div class="objective-box">
+                        <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-flag"></i> Objetivo General</h3>
+                        <p style="font-size:1.1rem; line-height:1.8;">Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas profesionales del mercado, con el propósito de medir el nivel de reconocimiento de amenazas de ingeniería social en usuarios, interpretar los resultados mediante un sistema de puntuación global y reflexionar sobre la gestión responsable del riesgo humano en seguridad informática.</p>
+                    </div>
+
+                    <h3><i class="fas fa-tasks"></i> Objetivos Específicos</h3>
+                    <ul class="custom-list">
+                        <li><strong>Analizar y comparar</strong> plataformas profesionales de simulación de phishing (Hoxhunt, Proofpoint, KnowBe4, Cofense, Phished, NINJIO, Mimecast e Infosec IQ), identificando sus capacidades técnicas, métricas de medición, enfoques de entrenamiento y controles éticos en la gestión del riesgo humano.</li>
+                        <li><strong>Diseñar e implementar</strong> una simulación interactiva tipo <em>Phishing Quiz</em> compuesta por 10 escenarios realistas de ingeniería social, incorporando criterios de evaluación, retroalimentación formativa y un sistema de puntuación individual.</li>
+                        <li><strong>Desarrollar e interpretar</strong> un sistema de score global que consolide los resultados de los participantes, permitiendo analizar tendencias de desempeño, niveles de vulnerabilidad y oportunidades de mejora en la concientización en ciberseguridad, bajo principios de privacidad y ética digital.</li>
+                    </ul>
+
+                    <h3 style="margin-top:2rem;"><i class="fas fa-book-open"></i> 1.1 Fundamentos Teóricos y Modelos Pedagógicos</h3>
+                    
+                    <p>La ingeniería social representa el vector de ataque más crítico en la ciberseguridad contemporánea. Según el <strong>Verizon DBIR 2024</strong>, el 74% de todas las brechas de seguridad involucran el factor humano, ya sea mediante errores, uso indebido de privilegios o ingeniería social directa. Esta realidad demanda un paradigma de seguridad centrado en el humano (Human-Centric Security) que trascienda la postura tradicional de "prohibir y castigar".</p>
+
+                    <div class="theory-grid">
+                        <div class="theory-card">
+                            <h4><i class="fas fa-brain"></i> Modelo ADKAR</h4>
+                            <p>Aplicado al cambio conductual en ciberseguridad: <strong>A</strong>wareness (consciencia de amenazas), <strong>D</strong>esire (motivación para proteger), <strong>K</strong>nowledge (conocimiento de técnicas), <strong>A</strong>bility (capacidad de respuesta), <strong>R</strong>einforcement (refuerzo continuo). Las plataformas modernas deben medir no solo el conocimiento (K) sino la capacidad de reporte real (A).</p>
+                        </div>
+                        
+                        <div class="theory-card">
+                            <h4><i class="fas fa-graduation-cap"></i> Teoría de las 9 Condiciones (Gagné)</h4>
+                            <p>Robert Gagné establece que para que el aprendizaje ocurra debe: (1) ganar atención, (2) presentar objetivos, (3) recordar conocimiento previo, (4) presentar estímulo (simulación), (5) guiar el aprendizaje, (6) provocar desempeño, (7) proporcionar <strong>retroalimentación formativa</strong>, (8) evaluar, y (9) mejorar retención.</p>
+                        </div>
+                        
+                        <div class="theory-card">
+                            <h4><i class="fas fa-balance-scale"></i> Ética del Cuidado (Gilligan, 1982)</h4>
+                            <p>Carol Gilligan propone que la ética debe basarse en responsabilidad y cuidado, no solo en derechos abstractos. En ciberseguridad, esto implica que las simulaciones no deben generar ansiedad crónica o desconfianza sistémica, sino empoderar al usuario como "sensor humano" sin causar daño psicológico.</p>
+                        </div>
+                        
+                        <div class="theory-card">
+                            <h4><i class="fas fa-chart-line"></i> Teoría del Comportamiento Planificado (TPB)</h4>
+                            <p>La intención de reportar phishing depende de tres factores: actitud hacia el comportamiento (utilidad percibida), norma subjetiva (presión social/cultural) y control conductual percibido (facilidad técnica para reportar). Las plataformas como Hoxhunt optimizan este último factor.</p>
+                        </div>
+                    </div>
+
+                    <h3><i class="fas fa-gavel"></i> 1.2 Marco Normativo Internacional</h3>
+                    <ul class="custom-list">
+                        <li><strong>NIST SP 800-50 (Rev. 1):</strong> <em>Building an Information Technology Security Awareness and Training Program</em>. Establece ciclos de formación continuos y evaluación basada en resultados (<em>outcome-based metrics</em>), no solo en horas de entrenamiento.</li>
+                        <li><strong>ISO/IEC 27001:2022 (Anexo A 6.3):</strong> Requisitos específicos para formación en seguridad de la información, incluyendo la realización de simulaciones controladas y éticas.</li>
+                        <li><strong>Regulación (EU) 2016/679 (GDPR):</strong> Artículo 32 sobre seguridad de tratamiento; principio de minimización de datos en simulaciones y derecho al olvido de registros de error antiguos.</li>
+                        <li><strong>NIST Cybersecurity Framework 2.0 (2024):</strong> Nueva función <em>Govern</em> (Gobernar) que enfatiza la gestión de riesgos humanos como parte de la gobernanza organizacional.</li>
+                    </ul>
+
+                    <h3><i class="fas fa-calculator"></i> 1.3 Métricas de Efectividad en Concientización</h3>
+                    <div class="ethical-framework">
+                        <div class="ethical-pillar">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <h4>Phish-prone %</h4>
+                            <p>Porcentaje de usuarios que interactúan con enlaces maliciosos. Benchmark global: 3.4% (KnowBe4, 2024).</p>
+                        </div>
+                        <div class="ethical-pillar">
+                            <i class="fas fa-flag"></i>
+                            <h4>Reporting Rate</h4>
+                            <p>Capacidad de reporte de amenazas. Meta óptima según SANS: >80% de reportes vs. clics.</p>
+                        </div>
+                        <div class="ethical-pillar">
+                            <i class="fas fa-clock"></i>
+                            <h4>Time-to-Detect</h4>
+                            <p>Tiempo entre recepción de amenaza y reporte. Indicador de madurez de cultura de seguridad.</p>
+                        </div>
+                        <div class="ethical-pillar">
+                            <i class="fas fa-shield-alt"></i>
+                            <h4>Resiliency Ratio</h4>
+                            <p>Relación reportes exitosos / clics maliciosos. >1.0 indica organización resiliente.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <h2><i class="fas fa-table"></i> 2. Tabla Técnica Comparativa de Plataformas</h2>
+                    <p style="margin-bottom:1.5rem; color:#aaa; font-size:0.95rem;">
+                        Análisis comparativo de 8 plataformas líderes del mercado global (2024-2026). Criterios: arquitectura técnica, métricas principales, enfoque pedagógico y modelo ético.
+                    </p>
+
+                    <table class="tech-table">
+                        <thead>
+                            <tr>
+                                <th style="width:15%;">Plataforma</th>
+                                <th style="width:25%;">Capacidades Técnicas y Analítica</th>
+                                <th style="width:15%;">Métrica Principal</th>
+                                <th style="width:25%;">Enfoque Ético / Entrenamiento</th>
+                                <th style="width:20%;">Diferenciador Clave</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>KnowBe4</strong><br><span style="font-size:0.8em; color:#888;">Líder de Mercado</span></td>
+                                <td>Biblioteca de 20,000+ plantillas; benchmarking por industria; integración SIEM/SOAR; API REST completa; simulación multi-vector (email, SMS, USB).</td>
+                                <td><span style="color:var(--primary);">Phish-prone %</span><br>Benchmarking global</td>
+                                <td>Entrenamiento masivo preventivo. Transparencia total de resultados mediante benchmarking corporativo. Modelo "Cantidad sobre calidad".</td>
+                                <td>Máxima variedad de plantillas y vectores de ataque simulables.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Proofpoint</strong><br><span style="font-size:0.8em; color:#888;">Integración Perimetral</span></td>
+                                <td>Threat Intelligence integrada; foco en VAP (Very Attacked People); TAP (Targeted Attack Protection); análisis de riesgo individual vs. grupal.</td>
+                                <td><span style="color:var(--primary);">Vulnerability Score</span><br>Attack Index</td>
+                                <td>Protección proactiva del individuo. Privacidad mediante "Privacy Modes" donde managers ven agregados, no individuos.</td>
+                                <td>Identifica usuarios atacados por amenazas reales (no solo simuladas).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hoxhunt</strong><br><span style="font-size:0.8em; color:#888;">Gamificación</span></td>
+                                <td>Personalización con IA/ML; extensión de reporte en navegador; motor de recompensas; adaptive learning paths.</td>
+                                <td><span style="color:var(--primary);">Reporting Rate</span><br>(primaria)</td>
+                                <td>Gamificación; aprendizaje positivo. No castiga el clic, premia el reporte con puntos, reduciendo ansiedad del empleado.</td>
+                                <td>Plugin de reporte instantáneo que convierte al usuario en "sensor humano" activo.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cofense</strong><br><span style="font-size:0.8em; color:#888;">Colaborativo</span></td>
+                                <td>Triage de correos reportados; defensa colaborativa humana (PDR - Phishing Detection and Response); integración SOC.</td>
+                                <td><span style="color:var(--primary);">Resiliency Rate</span><br>Reporter Accuracy</td>
+                                <td>Empoderamiento de usuarios como sensores humanos valiosos. Feedback inmediato sobre el valor de su reporte.</td>
+                                <td>Si un usuario reporta phishing real, asiste al SOC para borrarlo de toda la red.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phished.io</strong><br><span style="font-size:0.8em; color:#888;">IA Autónoma</span></td>
+                                <td>Simulaciones 100% automatizadas sin intervención manual; algoritmos de scheduling óptimo; Risk Score personal automatizado.</td>
+                                <td><span style="color:var(--primary);">Risk Score Personal</span></td>
+                                <td>Privacidad y automatización total. Minimiza sesgo humano al evaluar empleados mediante algoritmos objetivos.</td>
+                                <td>Zero-touch administration; el sistema decide qué, cuándo y a quién simular.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Infosec IQ</strong><br><span style="font-size:0.8em; color:#888;">Role-Based</span></td>
+                                <td>Integración nativa Active Directory; rutas de aprendizaje personalizadas por rol (RBAC); soporte SCORM/xAPI.</td>
+                                <td><span style="color:var(--primary);">Learner Score</span><br>Role-based Risk</td>
+                                <td>Capacitación basada en roles. Exige a cada empleado solo conocimientos pertinentes a sus funciones (principio de necesidad).</td>
+                                <td>Automatización de asignaciones según departamento/ubicación en AD.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mimecast</strong><br><span style="font-size:0.8em; color:#888;">Video Learning</span></td>
+                                <td>Módulos de concientización cinematográficos/humorísticos; integración con gateway de email; producción broadcast-quality.</td>
+                                <td><span style="color:var(--primary);">Engagement Rate</span><br>Video Completion</td>
+                                <td>Reducción de fatiga de seguridad. Combate apatía con humor y narrativa profesional, mejorando retención.</td>
+                                <td>Videos de 2-3 min con calidad de TV que reducen "security fatigue".</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NINJIO</strong><br><span style="font-size:0.8em; color:#888;">Storytelling</span></td>
+                                <td>Micro-learning animado (anime-style); casos de breaches reales documentados; narrativa emocional episódica.</td>
+                                <td><span style="color:var(--primary);">Retention Score</span><br>Emotional Engagement</td>
+                                <td>Storytelling y conexión emocional. Humanización de víctimas reales vs. técnicas de ataque. No revictimización.</td>
+                                <td>Episodios basados en breaches reales (Uber, Target, Equifax) contados desde perspectiva humana.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="critical-analysis">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Análisis Crítico: Limitaciones y Sesgos del Mercado</h3>
+                        <p style="margin-bottom:1rem;"><strong>Sesgo del "Click Rate" como métrica única:</strong> Las organizaciones tradicionales utilizan el "phish-prone percentage" como KPI principal, generando una cultura del miedo. Investigaciones recientes (Burns et al., 2023) demuestran que enfocarse exclusivamente en reducir clics aumenta la ansiedad laboral sin mejorar la resiliencia real ante amenazas avanzadas.</p>
+                        
+                        <p style="margin-bottom:1rem;"><strong>Problema de la "Seguridad Teatral" (Security Theater):</strong> Plataformas con miles de plantillas obsoletas generan simulaciones que lucen impresionantes pero no reflejan técnicas APT modernas. La efectividad declina después de 3 meses sin actualización (efecto de inmunidad).</p>
+                        
+                        <p><strong>Panóptico Digital:</strong> El tracking granular (tiempo en email, movimientos de mouse, análisis de sentimiento) puede violar la expectativa razonable de privacidad. Se requiere <em>consentimiento informado explícito</em>, no solo aceptación de políticas genéricas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <h2><i class="fas fa-address-card"></i> 3. Fichas Descriptivas de las 8 Plataformas</h2>
+                    <p style="margin-bottom:2rem; color:#aaa;">Análisis detallado de capacidades técnicas, enfoques pedagógicos e implicaciones éticas de cada solución.</p>
+
+                    <div class="platform-grid">
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-gamepad"></i> Hoxhunt</span>
+                                <span class="tag">Gamificación</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Envía simulaciones personalizadas con IA y facilita el reporte con un plugin de navegador (button-based reporting). El algoritmo analiza el horario, dispositivo y historial de respuestas para enviar simulaciones en momentos óptimos de atención.</p>
+                                <p style="margin-top:1rem;"><strong>Innovación Ética:</strong> Modelo de "recompensa por reporte" que elimina el estigma del error. Los usuarios acumulan estrellas y suben de nivel incluso si fallaron primero, fomentando la transparencia sobre el ocultamiento.</p>
+                                <div class="metric-box">
+                                    <span class="metric">Reporting Rate: >70%</span>
+                                    <span class="metric">AI/ML: Avanzado</span>
+                                    <span class="metric">Plugin: Navegador</span>
+                                    <span class="metric">Precio: $$$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-user-shield"></i> Proofpoint</span>
+                                <span class="tag">VAP Focus</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Integra la pasarela de correo (email gateway) con el entrenamiento para identificar "Very Attacked People" (VAPs) —usuarios seleccionados específicamente por atacantes reales— y les aplica protección prioritaria y entrenamiento intensivo.</p>
+                                <p style="margin-top:1rem;"><strong>Ética:</strong> Enfoca los recursos en proteger a quienes objetivamente más reciben ataques reales, no a quienes "fallan más simulaciones". Implementa "Privacy Modes" donde los managers solo ven datos agregados.</p>
+                                <div class="metric-box">
+                                    <span class="metric">Threat Intel: Integrada</span>
+                                    <span class="metric">VAP Analysis: Sí</span>
+                                    <span class="metric">Gateway: Nativo</span>
+                                    <span class="metric">Precio: $$$$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-crown"></i> KnowBe4</span>
+                                <span class="tag">Líder Mercado</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Permite simular ataques de Ingeniería Social complejos: Vishing (voz telefónica), Smishing (SMS), Quishing (QR codes), USB drops (baiting físico) y spear-phishing. Biblioteca de 20,000+ plantillas actualizadas mensualmente.</p>
+                                <p style="margin-top:1rem;"><strong>Crítica Ética:</strong> Enfoque "cantidad sobre calidad" puede saturar a usuarios. Algunas plantillas son obsoletas o culturalmente inapropiadas para Latinoamérica. Genera riesgo de "Security Theater" si no se curan los escenarios.</p>
+                                <div class="metric-box">
+                                    <span class="metric">Plantillas: 20,000+</span>
+                                    <span class="metric">Multi-vector: Total</span>
+                                    <span class="metric">Benchmarking: Global</span>
+                                    <span class="metric">Precio: $$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-network-wired"></i> Cofense</span>
+                                <span class="tag">Colaborativo</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Si un usuario reporta un phishing, la plataforma (Triage) asiste al SOC para analizar, cuarentenar y borrar el email de toda la organización automáticamente. Convierte reportes humanos en inteligencia accionable.</p>
+                                <p style="margin-top:1rem;"><strong>Ética:</strong> Convierte al usuario en un "sensor humano" valioso para la organización, no en un "problema de seguridad". Retroalimentación inmediata sobre el impacto de su reporte ("Gracias, eliminamos este malware de 500 buzones gracias a ti").</p>
+                                <div class="metric-box">
+                                    <span class="metric">PDR: Automático</span>
+                                    <span class="metric">SOC Integration: Total</span>
+                                    <span class="metric">Remediación: 1-click</span>
+                                    <span class="metric">Precio: $$$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-robot"></i> Phished.io</span>
+                                <span class="tag">IA Autónoma</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Algoritmos que determinan cuándo y qué simulación enviar sin trabajo manual del Admin. Machine learning adapta la dificultad basándose en el historial individual, creando perfiles de riesgo dinámicos.</p>
+                                <p style="margin-top:1rem;"><strong>Consideración Ética:</strong> Minimiza el sesgo humano al evaluar a los empleados (el algoritmo no tiene prejuicios), pero la falta de supervisión humana puede generar simulaciones insensibles (ej. durante despidos masivos si el sistema no tiene contexto).</p>
+                                <div class="metric-box">
+                                    <span class="metric">Automatización: 100%</span>
+                                    <span class="metric">Adaptive: Sí</span>
+                                    <span class="metric">Zero-touch: Sí</span>
+                                    <span class="metric">Precio: $$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-film"></i> NINJIO</span>
+                                <span class="tag">Storytelling</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Usa episodios cortos estilo anime (3-4 min) basados en hacks recientes reales. Cada episodio presenta un caso real (Equifax, Target, Uber) desde la perspectiva de la víctima humana, no técnica.</p>
+                                <p style="margin-top:1rem;"><strong>Ética:</strong> Fomenta el aprendizaje a través de la empatía con las historias de las víctimas. Evita la revictimización enfocándose en las consecuencias humanas (pérdida de empleo, daño reputacional) más que en fallas técnicas.</p>
+                                <div class="metric-box">
+                                    <span class="metric">Formato: Anime 3D</span>
+                                    <span class="metric">Casos reales: Sí</span>
+                                    <span class="metric">Emocional: Alto</span>
+                                    <span class="metric">Precio: $$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-video"></i> Mimecast</span>
+                                <span class="tag">Video Learning</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Combina seguridad perimetral de email con videos de alta producción (calidad broadcast). Módulos humorísticos que abordan la "seguridad del buzón" como problema de productividad, no solo de TI.</p>
+                                <p style="margin-top:1rem;"><strong>Ética:</strong> Combate la apatía y el aburrimiento (security fatigue) con humor culturalmente relevante, mejorando la retención sin recurrir al miedo o la ansiedad. Contenido localizado para diferentes regiones.</p>
+                                <div class="metric-box">
+                                    <span class="metric">Calidad: Broadcast</span>
+                                    <span class="metric">Humor: Sí</span>
+                                    <span class="metric">Gateway: Integrado</span>
+                                    <span class="metric">Precio: $$$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <span class="platform-name"><i class="fas fa-id-badge"></i> Infosec IQ</span>
+                                <span class="tag">Role-Based</span>
+                            </div>
+                            <div class="platform-content">
+                                <p><strong>Técnica:</strong> Mapea simulaciones según el rol en el Directorio Activo (AD). Ej: Finanzas recibe simulaciones de BEC (Business Email Compromise), TI recibe spear-phishing técnico, HR recibe phishing de W-2/tax.</p>
+                                <p style="margin-top:1rem;"><strong>Ética:</strong> Respeta el principio de necesidad y proporcionalidad. Exige a cada empleado solo los conocimientos pertinentes a sus funciones, no saturándolos con amenazas irrelevantes para su puesto.</p>
+                                <div class="metric-box">
+                                    <span class="metric">AD Sync: Nativo</span>
+                                    <span class="metric">Role-based: Total</span>
+                                    <span class="metric">SCORM: Sí</span>
+                                    <span class="metric">Precio: $$</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <h2><i class="fas fa-pencil-ruler"></i> 4. Diseño de Campaña y Sistema de Score Global</h2>
+                    
+                    <h3><i class="fas fa-clipboard-list"></i> 4.1 Diseño del Phishing Quiz (10 Escenarios)</h3>
+                    <p>La simulación se basa en vectores de ataque reales documentados en el DBIR 2024 y técnicas de MITRE ATT&CK para Ingeniería Social:</p>
+                    
+                    <ul class="custom-list">
+                        <li><strong>Vectores de Entrega:</strong> Falsas alertas de TI, facturas de proveedores, problemas de nómina, notificaciones de paquetería, mensajes de "CEO" (BEC), códigos QR maliciosos (Quishing), SMS fraudulentos (Smishing).</li>
+                        <li><strong>Mecánica Ética:</strong> Tras interactuar (identificar como phishing o legítimo), el usuario recibe retroalimentación inmediata sobre las "Red Flags" específicas: remitente falso, dominios typosquatted, urgencia artificial, enlaces ocultos, pretextos emocionales.</li>
+                        <li><strong>Garantías:</strong> Consentimiento informado explícito antes de iniciar, sin captura de credenciales reales (los formularios son simulaciones educativas), anonimización de resultados para análisis de tendencias.</li>
+                    </ul>
+
+                    <h3><i class="fas fa-chart-bar"></i> 4.2 Sistema de Score Global</h3>
+                    <div class="highlight-box">
+                        <p>Se implementa un panel analítico que registra métricas objetivas y subjetivas:</p>
+                        <ul class="custom-list" style="margin-top:1rem;">
+                            <li><strong>Tasa de Acierto Global:</strong> Porcentaje de escenarios correctamente identificados (peso 60%).</li>
+                            <li><strong>Tiempo de Respuesta:</strong> Tiempo promedio para tomar decisión (peso 20%) —demasiado rápido indica impulsividad, demasiado lento indica parálisis por análisis.</li>
+                            <li><strong>Confianza Calibrada:</strong> Comparación entre certeza declarada y precisión real (peso 20%) —detecta sobreconfianza o inseguridad excesiva.</li>
+                        </ul>
+                        <p style="margin-top:1rem;"><strong>Privacidad y Ética:</strong> Los reportes globales se anonimizan para análisis de tendencias organizacionales, mientras que el "Risk Score" individual se usa solo para asignar capacitación de refuerzo personalizada, <strong>nunca para sanciones laborales</strong>.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <h2><i class="fas fa-balance-scale"></i> 5. Reflexión sobre Gestión del Riesgo Humano</h2>
+                    
+                    <p>A través de la comparativa técnica y el diseño de la simulación, se concluye que las campañas tradicionales basadas en el <strong>"miedo a fallar" (fear-based)</strong> son contraproducentes y generan toxicidad organizacional. Plataformas como Hoxhunt y Cofense demuestran evidencia empírica de que el objetivo de la ciberseguridad moderna no es lograr un "0% de clics" (imposible y costoso), sino alcanzar un alto <strong>"Reporting Rate"</strong> (tasa de reporte).</p>
+
+                    <div class="conclusion-box">
+                        <h3><i class="fas fa-lightbulb"></i> Conclusión: Del "Eslabón Débil" al "Sensor Humano"</h3>
+                        <p>El paradigma dominante del "eslabón más débil" (weakest link) debe ser reemplazado por el de <strong>"cadena más fuerte"</strong>. Un programa ético de concientización transforma la vulnerabilidad humana en resiliencia institucional mediante:</p>
+                        <ul class="custom-list" style="margin-top:1rem;">
+                            <li><strong>Reforzamiento positivo:</strong> Celebrar el reporte de amenazas más allá del error.</li>
+                            <li><strong>Justicia restaurativa:</strong> El error educa, no sanciona.</li>
+                            <li><strong>Transparencia radical:</strong> Los usuarios saben que son evaluados y cómo.</li>
+                            <li><strong>Privacidad por diseño:</strong> Datos agregados para tendencias, individuos solo para mejora personal.</li>
+                        </ul>
+                        <p style="margin-top:1.5rem; font-style:italic;">"La seguridad perfecta es imposible, pero una cultura de seguridad resiliente, basada en la confianza y el empoderamiento, es la mejor defensa contra la ingeniería social."</p>
+                    </div>
+
+                    <div class="critical-analysis">
+                        <h3><i class="fas fa-exclamation-circle"></i> Recomendaciones Éticas para Implementación</h3>
+                        <ol style="margin-left:1.5rem; line-height:2;">
+                            <li><strong>Proporcionalidad:</strong> La sofisticación de la simulación debe equivaler al nivel de riesgo del puesto (no usar APTs complejos contra personal operativo básico).</li>
+                            <li><strong>Consentimiento Informado:</strong> Los empleados deben saber que están en un programa de simulación, cómo se miden y qué datos se recogen.</li>
+                            <li><strong>Justicia Restaurativa:</strong> El fallo debe conducir a 5 minutos de micro-learning inmediato, no a sanciones ni humillación pública.</li>
+                            <li><strong>Derecho al Olvido Digital:</strong> Los scores antiguos (>6 meses) deben degradarse; las personas aprenden y cambian.</li>
+                            <li><strong>No Entrapment:</strong> Nunca usar pretextos que causen daño emocional real (falsos despidos, emergencias familiares, etc.).</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <h2><i class="fas fa-book"></i> 6. Referencias Bibliográficas</h2>
+                    <ol class="references">
+                        <li>National Institute of Standards and Technology. (2018). <em>NIST Special Publication 800-50 Rev. 1: Building an Information Technology Security Awareness and Training Program</em>. U.S. Department of Commerce. https://doi.org/10.6028/NIST.SP.800-50</li>
+                        
+                        <li>International Organization for Standardization. (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em>. ISO.</li>
+                        
+                        <li>Gartner. (2024). <em>Magic Quadrant for Security Awareness and Training Solutions</em>. Gartner Research.</li>
+                        
+                        <li>Verizon. (2024). <em>2024 Data Breach Investigations Report (DBIR)</em>. Verizon Business. https://www.verizon.com/business/resources/reports/dbir/</li>
+                        
+                        <li>Burns, A. J., Roberts, T. L., Posey, C., & Bennett, R. J. (2023). The Efficacy of Fear Appeals in Information Security: A Meta-Analysis. <em>Journal of the Association for Information Systems</em>, 24(3), 789-820.</li>
+                        
+                        <li>Hadlington, L. (2023). The "Human Factor" in Cybersecurity: Exploring the Psychology of Risk and Resilience. <em>Computers & Security</em>, 128, 103-115.</li>
+                        
+                        <li>Reinheimer, B., Krombholz, K., & Von Stockhausen, K. (2020). An investigation of phishing awareness and education over time. <em>Proceedings of the 2020 CHI Conference on Human Factors in Computing Systems</em>, 1-13. ACM.</li>
+                        
+                        <li>SANS Institute. (2024). <em>2024 Security Awareness Report: Managing Human Risk</em>. SANS Analyst Program.</li>
+                        
+                        <li>Taekema, J., et al. (2023). Gamification in Security Awareness: Effectiveness of Reward Systems vs. Punishment. <em>Computers & Security</em>, 134, 103-119.</li>
+                        
+                        <li>European Parliament. (2016). <em>Regulation (EU) 2016/679 of the European Parliament and of the Council (General Data Protection Regulation - GDPR)</em>. Official Journal of the European Union.</li>
+                        
+                        <li>Gilligan, C. (1982). <em>In a Different Voice: Psychological Theory and Women's Development</em>. Harvard University Press.</li>
+                        
+                        <li>KnowBe4. (2024). <em>Phishing by Industry Benchmarking Report</em>. KnowBe4 Research.</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <!-- PDF Download Button -->
+            <div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
+                <a href="../pdf/ActividadPR02.pdf" 
+                   download 
+                   style="display: inline-block; 
+                          padding: 15px 30px; 
+                          border: 2px solid #00ff66; 
+                          color: #00ff66; 
+                          text-decoration: none; 
+                          font-weight: bold; 
+                          font-size: 1.2em; 
+                          text-transform: uppercase; 
+                          background: rgba(0, 255, 102, 0.1); 
+                          box-shadow: 0 0 20px rgba(0, 255, 102, 0.3); 
+                          transition: 0.3s;
+                          letter-spacing: 2px;
+                          border-radius: 8px;">
+                    <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
+                    DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+                </a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN PHISHING QUIZ -->
+        <div id="section-quiz" class="section-content quiz-container">
+            <div class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content">
+                    <div class="quiz-header" style="margin-top:0;">
+                        <h2><i class="fas fa-shield-alt"></i> PHISHING QUIZ</h2>
+                        <p style="color:#888; margin-top:1rem;">¿Puedes detectar cuándo te están engañando? Pon a prueba tu capacidad para identificar intentos de ingeniería social.</p>
+                        <div class="security-badge" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(0,255,102,0.1); border:1px solid #00ff66; padding:0.5rem 1rem; border-radius:20px; margin-top:1rem; color:#00ff66;">
+                            <i class="fas fa-lock"></i> Simulación Educativa Segura - Sin Captura de Datos Reales
+                        </div>
+                    </div>
+
+                    <div id="progress-container" class="hidden">
+                        <div class="progress-text">Escenario <span id="current-scenario">1</span> de 10</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div id="quiz-intro">
+                        <div class="consent-box">
+                            <h3 style="color:var(--primary); margin-bottom:1rem;"><i class="fas fa-user-shield"></i> Protocolo Ético de Simulación</h3>
+                            <p>Este es un ejercicio educativo de seguridad informática diseñado para evaluar tu capacidad de detección de amenazas. Antes de comenzar, debes saber:</p>
+                            <ul style="margin-left:2rem; margin-top:1rem; line-height:2;">
+                                <li><strong>No se recolectan credenciales reales:</strong> Este sistema no solicitará contraseñas, datos bancarios ni información sensible real.</li>
+                                <li><strong>Privacidad garantizada:</strong> Solo se registra tu nombre para el ranking de scores. No se rastrea tu identidad real.</li>
+                                <li><strong>Retroalimentación formativa:</strong> Cada respuesta incluirá explicación didáctica sobre técnicas de ingeniería social.</li>
+                                <li><strong>Finalidad académica:</strong> Los resultados son para autoevaluación y formación únicamente.</li>
+                            </ul>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="quiz-user-name">
+                                <i class="fas fa-user"></i> Nombre o Alias (para el Score Global)
+                            </label>
+                            <input type="text" id="quiz-user-name" placeholder="Ingresa tu nombre para el registro de puntajes" maxlength="30">
+                            <div style="font-size:0.85rem; color:#666; margin-top:0.5rem; font-style:italic;">
+                                <i class="fas fa-info-circle"></i> Este nombre aparecerá en el Score Global si obtienes un buen puntaje.
+                            </div>
+                        </div>
+
+                        <label class="checkbox-container" onclick="toggleQuizConsent()">
+                            <input type="checkbox" id="quiz-consent-check">
+                            <span>
+                                <strong>Confirmo que entiendo la naturaleza educativa de este ejercicio</strong><br>
+                                Acepto participar en esta simulación de concientización sobre phishing e ingeniería social.
+                            </span>
+                        </label>
+
+                        <button class="btn btn-primary" id="quiz-start-btn" onclick="startQuiz()" disabled style="margin-top:2rem;">
+                            <i class="fas fa-play"></i> Iniciar Evaluación
+                        </button>
+                    </div>
+
+                    <div id="quiz-scenario" class="hidden"></div>
+                    
+                    <div id="quiz-results" class="hidden" style="text-align:center; padding:2rem 0;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN SCORE GLOBAL -->
+        <div id="section-scores" class="section-content">
+            <div class="window">
+                <div class="window-bar">
+                    <span class="btn-win red"></span><span class="btn-win yellow"></span><span class="btn-win green"></span>
+                </div>
+                <div class="content" style="text-align:center;">
+                    <h2><i class="fas fa-trophy"></i> Score Global - Ranking de Participantes</h2>
+                    <p style="color:#888; margin:1rem 0;">Tabla de honor con los mejores puntajes del Phishing Quiz. ¿Lograste entrar al top?</p>
+                    
+                    <div id="scores-table-container" style="margin:2rem 0;">
+                        <table class="score-table">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Nombre</th>
+                                    <th>Puntaje</th>
+                                    <th>Fecha</th>
+                                    <th>Nivel</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scores-tbody">
+                                <!-- Scores loaded from localStorage -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="no-scores" style="padding:3rem; background:rgba(0,0,0,0.3); border-radius:8px; border:1px dashed #00ff66; margin:2rem 0;">
+                            <i class="fas fa-chart-line" style="font-size:3rem; color:#00ff66; margin-bottom:1rem;"></i>
+                            <p style="font-size:1.2rem; color:#888;">Aún no hay registros en el Score Global</p>
+                            <p style="color:#666; margin-top:0.5rem;">¡Sé el primero en completar el Phishing Quiz!</p>
+                            <button class="btn btn-primary" onclick="showSection('quiz'); document.querySelector('.nav-btn.active').classList.remove('active'); document.querySelectorAll('.nav-btn')[1].classList.add('active');" style="margin-top:1.5rem;">
+                                <i class="fas fa-play"></i> Ir al Quiz
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="background:rgba(0,255,102,0.05); border:1px solid rgba(0,255,102,0.3); padding:1.5rem; border-radius:8px; margin-top:2rem; text-align:left;">
+                        <h4 style="color:var(--primary); margin-bottom:1rem;"><i class="fas fa-info-circle"></i> Sobre el Sistema de Puntuación</h4>
+                        <ul style="margin-left:1.5rem; color:#aaa; line-height:2;">
+                            <li><strong>100-90 puntos:</strong> Experto en detección de phishing</li>
+                            <li><strong>89-70 puntos:</strong> Buen nivel de concientización</li>
+                            <li><strong>69-50 puntos:</strong> Nivel básico, necesita refuerzo</li>
+                            <li><strong>&lt;50 puntos:</strong> Vulnerable - Capacitación urgente recomendada</li>
+                        </ul>
+                        <p style="margin-top:1rem; color:#666; font-size:0.9rem;">
+                            <i class="fas fa-database"></i> Los datos se almacenan localmente en tu navegador (localStorage).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p><i class="fas fa-shield-alt"></i> PR02 - El Eslabón Más Débil | Seguridad Informática | Magdalena Yesenia Tristan Rivera | 2026</p>
+        <p style="margin-top:1rem; font-size:0.85rem; color:#444;">
+            Documento elaborado con fines académicos | Mtro. Servando López Contreras
+        </p>
+    </footer>
+
+    <script>
+        // Matrix Background Animation
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for(let i = 0; i < columns; i++) drops[i] = 1;
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff66';
+            ctx.font = fontSize + 'px monospace';
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 35);
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Navigation
+        function showSection(section) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('section-' + section).classList.add('active');
+            event.target.classList.add('active');
+            
+            if(section === 'scores') {
+                loadScores();
+            }
+            
+            window.scrollTo(0, 0);
+        }
+        
+        // Quiz Data - 10 Realistic Scenarios
+        const scenarios = [
+            {
+                id: 1,
+                type: 'email',
+                category: 'Spoofing de marca',
+                difficulty: 'Media',
+                isPhishing: true,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Netflix Seguridad</div>
+                            <div style="font-size:0.9rem;color:#666;">seguridad@netflix-account-verify.com</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">14:23</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <div style="text-align:center; margin-bottom:2rem;">
+                                <div style="font-size:3rem; color:#e50914; font-weight:bold;">N</div>
+                            </div>
+                            <h3 style="color:#333">Detectamos actividad inusual en tu cuenta</h3>
+                            <p>Hola,</p>
+                            <p>Hemos detectado un intento de inicio de sesión desde un dispositivo desconocido en Bucarest, Rumania. Por tu seguridad, hemos suspendido temporalmente tu cuenta.</p>
+                            <p>Para evitar la cancelación permanente, verifica tu identidad dentro de las próximas 24 horas:</p>
+                            <div style="text-align:center; margin:2rem 0;">
+                                <div style="display:inline-block; padding:12px 30px; background:#e50914; color:white; text-decoration:none; border-radius:4px; font-weight:600; cursor:pointer;">VERIFICAR CUENTA AHORA</div>
+                            </div>
+                            <p style="font-size:0.9rem; color:#666;">Si no realizas esta acción, tu suscripción será cancelada y tus datos personales podrían estar en riesgo.</p>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Dominio sospechoso: netflix-account-verify.com (no es netflix.com)',
+                    'Amenaza de urgencia: "24 horas" para crear pánico',
+                    'Amenaza de consecuencias graves: "cancelación permanente"',
+                    'No menciona el nombre real del usuario (saludo genérico)'
+                ],
+                educational: 'Técnica: "Brand Spoofing" + "Urgencia Falsa". Los atacantes imitan marcas conocidas usando dominios similares (typosquatting). Siempre verifica el remitente y accede directamente desde la app oficial, nunca desde enlaces de email.'
+            },
+            {
+                id: 2,
+                type: 'email',
+                category: 'CEO Fraud',
+                difficulty: 'Alta',
+                isPhishing: false,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Carlos Méndez</div>
+                            <div style="font-size:0.9rem;color:#666;">carlos.mendez@empresa-real.com</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">09:15</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <p>Hola María,</p>
+                            <p>Gracias por enviar el borrador del presupuesto. Revisé los números y tengo algunas observaciones:</p>
+                            <ul style="margin-left:2rem;">
+                                <li>El rubro de marketing digital parece alto respecto al trimestre pasado. ¿Podemos revisar juntos?</li>
+                                <li>Necesito que traigas el archivo físico firmado mañana en la reunión de las 10am (sala 304).</li>
+                            </ul>
+                            <p>Por cierto, ¿ya confirmaste con el equipo de IT la actualización de los sistemas para el fin de semana?</p>
+                            <p>Saludos,<br>Carlos</p>
+                            <div style="margin-top:2rem; padding-top:1rem; border-top:1px solid #eee; color:#666; font-size:0.9rem;">
+                                <strong>Carlos Méndez</strong><br>
+                                Director de Operaciones<br>
+                                Empresa Real S.A.<br>
+                                Tel: +52 (55) 1234-5678
+                            </div>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Este es un correo legítimo de ejemplo para contrastar',
+                    'No solicita acciones urgentes o inusuales',
+                    'El dominio coincide con la empresa real',
+                    'Contexto específico y personalizado (presupuesto Q2, sala 304)',
+                    'Firma completa con datos de contacto verificables'
+                ],
+                educational: 'Este es un email legítimo. Observa cómo el contexto específico (números de sala, referencias a reuniones previas) y la ausencia de solicitudes extrañas son señales de legitimidad. El "CEO Fraud" normalmente pide transferencias urgentes fuera de protocolo.'
+            },
+            {
+                id: 3,
+                type: 'sms',
+                category: 'Smishing (SMS Phishing)',
+                difficulty: 'Media',
+                isPhishing: true,
+                content: `
+                    <div style="max-width:300px; margin:1.5rem auto; background:#1a1a1a; border-radius:30px; padding:20px 10px; border:3px solid #333;">
+                        <div style="background:#fff; border-radius:20px; overflow:hidden; min-height:400px;">
+                            <div style="background:#f0f0f0; padding:1rem; text-align:center; border-bottom:1px solid #ddd; font-weight:600; color:#333;">
+                                Banco Seguro
+                            </div>
+                            <div style="padding:1rem; background:#f0f0f0; min-height:350px;">
+                                <div style="text-align:center; color:#666; font-size:0.8rem; margin-bottom:1rem;">Hoy 16:45</div>
+                                <div style="background:#e3f2fd; padding:1rem; margin:1rem; border-radius:15px; border-bottom-left-radius:5px; color:#333; font-size:0.95rem;">
+                                    <strong>BANCO SEGURO ALERTA:</strong><br><br>
+                                    Se detectó un intento de acceso a tu cuenta desde Nuevo León, México.<br><br>
+                                    Si no fuiste tú, bloquea tu cuenta AHORA:<br>
+                                    <span style="color:#1a73e8; text-decoration:underline;">https://banco-seguro.bancario-seguro.xyz/bloqueo</span><br><br>
+                                    Responde 1 para ignorar (RIESGO).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Dominio sospechoso: bancario-seguro.xyz (no el dominio oficial del banco)',
+                    'Táctica de miedo: "bloquea AHORA"',
+                    'Incoherencia: dice "BANCO SEGURO" pero la URL dice "bancario-seguro"',
+                    'Urgencia artificial con consecuencias de "RIESGO"'
+                ],
+                educational: 'Técnica: Smishing. Los mensajes de texto son canal privilegiado para ataques porque los usuarios tienden a confiar más en SMS que en email. Nunca hagas clic en enlaces bancarios por SMS; accede directamente a la app oficial.'
+            },
+            {
+                id: 4,
+                type: 'email',
+                category: 'Quishing (QR Phishing)',
+                difficulty: 'Alta',
+                isPhishing: true,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Amazon Entregas</div>
+                            <div style="font-size:0.9rem;color:#666;">no-reply@amazon-delivery-update.net</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">11:30</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <div style="text-align:center;">
+                                <div style="font-size:2rem; color:#ff9900;"><i class="fas fa-box"></i></div>
+                            </div>
+                            <h3>Tu paquete está retenido</h3>
+                            <p>Estimado cliente,</p>
+                            <p>Tu pedido #402-883921 ha sido retenido en aduana por falta de pago de impuestos ($45.00 MXN).</p>
+                            <p>Escanea el código QR para pagar la tarifa de liberación inmediata:</p>
+                            <div style="text-align:center; margin:2rem 0; padding:2rem; background:#f8f8f8; border:2px dashed #ccc; display:inline-block;">
+                                <div style="width:150px; height:150px; background:linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #000 75%), linear-gradient(-45deg, transparent 75%, #000 75%); background-size:20px 20px; background-position:0 0, 0 10px, 10px -10px, -10px 0px;"></div>
+                                <div style="margin-top:0.5rem; font-size:0.8rem; color:#666;">Escanea para pagar</div>
+                            </div>
+                            <p style="color:#c00; font-weight:bold;">⚠️ Si no pagas en 6 horas, el paquete será devuelto al remitente.</p>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Dominio incorrecto: amazon-delivery-update.net (no amazon.com)',
+                    'Quishing: uso de QR para ocultar URL maliciosa',
+                    'Monto sospechosamente bajo para crear "acción fácil"',
+                    'Amenaza de tiempo limitado (6 horas)'
+                ],
+                educational: 'Técnica: Quishing (QR + Phishing). Los códigos QR son peligrosos porque ocultan la URL destino. Desconfía de QRs en emails no solicitados. Los impuestos de importación se pagan directamente en el sitio oficial o con mensajería oficial, nunca por QR genérico.'
+            },
+            {
+                id: 5,
+                type: 'social',
+                category: 'Ingeniería Social en Redes',
+                difficulty: 'Media',
+                isPhishing: true,
+                content: `
+                    <div style="background:#fff; color:#333; border-radius:8px; padding:1.5rem; margin:1.5rem 0; border:1px solid #ddd;">
+                        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+                            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg, #1877f2 0%, #42b72a 100%); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;">FL</div>
+                            <div>
+                                <h4 style="margin:0; color:#222;">Facebook Lottery</h4>
+                                <span style="color:#666; font-size:0.9rem;">Patrocinado • Hace 2 horas</span>
+                            </div>
+                        </div>
+                        <div style="margin:1rem 0; line-height:1.5;">
+                            <p>🎉 <strong>¡FELICIDADES!</strong> 🎉</p>
+                            <p>Fuiste seleccionado al azar entre los usuarios más activos de Facebook México. Has ganado <strong>iPhone 15 Pro Max + $50,000 MXN</strong> en efectivo.</p>
+                            <p>Para reclamar tu premio:</p>
+                            <ol style="margin-left:2rem;">
+                                <li>Dale "Me gusta" a esta página</li>
+                                <li>Comparte esta publicación</li>
+                                <li>Envía tus datos aquí: <span style="color:#1877f2; text-decoration:underline;">bit.ly/fb-ganador-2026</span></li>
+                            </ol>
+                            <p style="color:#c00; font-size:0.9rem;">⚠️ Solo quedan 3 premios disponibles. Válido hasta agotar existencias.</p>
+                        </div>
+                        <div style="width:100%; height:200px; background:linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.5rem; font-weight:bold; margin:1rem 0;">
+                            🎁 ¡GANADOR! 🎁
+                        </div>
+                        <div style="border-top:1px solid #eee; padding-top:1rem; color:#666; font-size:0.9rem;">
+                            <i class="fas fa-thumbs-up"></i> 45.2K • <i class="fas fa-comment"></i> 12.8K • <i class="fas fa-share"></i> 8.9K
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Premio inesperado sin participar en sorteo',
+                    'Uso de enlace acortado (bit.ly) que oculta destino real',
+                    'Solicita acciones de engagement antes del "premio" (engaño viral)',
+                    'Urgencia falsa ("solo 3 premios")',
+                    'Solicitud de datos personales fuera de plataformas oficiales'
+                ],
+                educational: 'Técnica: "Like-Farming" + Baiting. Las páginas falsas ganan legitimidad mediante engagement masivo. Los premios inesperados son señal clásica de fraude. Las loterías reales no solicitan datos por enlaces acortados ni requieren compartir publicaciones.'
+            },
+            {
+                id: 6,
+                type: 'email',
+                category: 'Vishing/Callback Scam',
+                difficulty: 'Alta',
+                isPhishing: true,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#c00; color:white; padding:1rem; text-align:center;">
+                            <i class="fas fa-exclamation-triangle" style="font-size:2rem;"></i>
+                            <h3 style="margin:0.5rem 0;">¡ALERTA DE SEGURIDAD CRÍTICA!</h3>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <p>Hemos detectado actividad de Troyano:Win32/CryptInject en tu sistema Windows.</p>
+                            <p><strong>IP Infectada:</strong> 192.168.X.X<br>
+                            <strong>Archivo comprometido:</strong> System32.dll<br>
+                            <strong>Nivel de riesgo:</strong> CRÍTICO</p>
+                            
+                            <div style="background:#fff3cd; border:1px solid #ffeaa7; padding:1rem; border-radius:4px; margin:1rem 0;">
+                                <strong>NO APAGUES TU COMPUTADORA</strong><br>
+                                El virus cifrará tus archivos si reinicias.
+                            </div>
+                            
+                            <p>Para eliminación inmediata, llama ahora a nuestro centro de seguridad:</p>
+                            <div style="text-align:center; margin:2rem 0;">
+                                <div style="font-size:2rem; color:#c00; font-weight:bold;">01-800-555-VIRUS</div>
+                                <p style="font-size:0.9rem; color:#666;">Código de caso: #MS-88472</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Microsoft nunca solicita llamadas telefónicas por email',
+                    'Técnica de pánico: "No apagues tu computadora"',
+                    'Uso de jerga técnica intimidante (System32.dll, Troyano)',
+                    'Dominio falso: microsoft-security-center.com',
+                    'Callback scam: el número telefónico es la trampa'
+                ],
+                educational: 'Técnica: Callback Scam + Tech Support Scam. El atacante quiere que llames para "verificar" datos de tarjeta o instalar software remoto. Microsoft nunca contacta usuarios por teléfono ni bloquea computadoras remotamente sin consentimiento expreso.'
+            },
+            {
+                id: 7,
+                type: 'email',
+                category: 'Compromiso de Email Empresarial (BEC)',
+                difficulty: 'Alta',
+                isPhishing: false,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Diana Rojas</div>
+                            <div style="font-size:0.9rem;color:#666;">diana.rojas@contaduria-empresa.com</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">17:30</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <p>Hola a todos,</p>
+                            <p>Por favor, les recordamos que el viernes 28 es fecha de corte para actualizar sus datos bancarios en el sistema de nómina.</p>
+                            <p><strong>Proceso oficial:</strong></p>
+                            <ol style="margin-left:2rem;">
+                                <li>Ingresen al portal interno: https://portal.intranet-empresa.com</li>
+                                <li>Sección "Recursos Humanos" > "Datos Bancarios"</li>
+                                <li>Suban su nueva CLABE en formato PDF (estado de cuenta)</li>
+                            </ol>
+                            <p>Para cualquier duda, pueden pasar a RH en el edificio B, piso 3, o llamar a la extensión 4450.</p>
+                            <p><strong>Importante:</strong> No envíen datos bancarios por email. El sistema solo acepta uploads seguros por el portal.</p>
+                            <p>Saludos,<br>Diana Rojas<br>Gerente de Recursos Humanos</p>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Email legítimo de ejemplo',
+                    'Proporciona instrucciones claras sin enlaces directos a formularios externos',
+                    'Referencia a proceso interno verificable (edificio B, extensión 4450)',
+                    'Específicamente advierte contra el envío de datos por email',
+                    'Dominio corporativo consistente'
+                ],
+                educational: 'Email legítimo de Recursos Humanos. Observa las salvaguardas: referencia a portal interno conocido, advertencia explícita contra compartir datos sensibles por email, y canales alternativos de verificación (físicos/telefónicos). El BEC falsificaría este tipo de comunicaciones para robar datos bancarios.'
+            },
+            {
+                id: 8,
+                type: 'email',
+                category: 'Spear Phishing con OSINT',
+                difficulty: 'Alta',
+                isPhishing: true,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Alejandro Torres</div>
+                            <div style="font-size:0.9rem;color:#666;">alejandro.torres@linkedln-updates.com</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">13:15</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <p>Hola,</p>
+                            <p>Te contacto después de ver tu perfil en LinkedIn y tu reciente artículo sobre ciberseguridad en el blog de la empresa.</p>
+                            <p>Estoy organizando el <strong>Congreso CyberSec LATAM 2026</strong> y me gustaría invitarte como panelista. Tu experiencia en el proyecto de migración a la nube que mencionaste en tu post del mes pasado sería valiosa para nuestra sesión de "Cloud Security".</p>
+                            <p>Adjunto encontrarás el itinerario preliminar y el contrato de participación (incluye honorarios de $2,000 USD).</p>
+                            <p>¿Podrías revisar la propuesta y firmarla antes del viernes? Necesitamos cerrar el programa.</p>
+                            <p style="margin-top:2rem;">
+                                <span style="display:inline-block; padding:10px 20px; background:#0077b5; color:white; text-decoration:none; border-radius:4px; margin-right:10px;">Ver Itinerario</span>
+                                <span style="display:inline-block; padding:10px 20px; background:#28a745; color:white; text-decoration:none; border-radius:4px;">Firmar Contrato</span>
+                            </p>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Dominio sospechoso: linkedln-updates.com (usa "ln" en lugar de "in")',
+                    'Información personalizada obtenida de OSINT (artículos públicos del usuario)',
+                    'Incentivo financiero para bajar la guardia ($2,000 USD)',
+                    'Urgencia para firmar documento (posible malware en PDF)',
+                    'No hay historial previo de interacción real con esta persona'
+                ],
+                educational: 'Técnica: Spear Phishing + Pretexting. El atacante investigó al objetivo (LinkedIn, blog) para crear pretexto creíble. El malware suele estar en el "contrato" PDF. Siempre verifica invitaciones de conferencias mediante búsqueda independiente del evento, nunca por enlaces del email.'
+            },
+            {
+                id: 9,
+                type: 'email',
+                category: 'Vishing por Voicemail falso',
+                difficulty: 'Media',
+                isPhishing: true,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Mensaje de Voz - Banco</div>
+                            <div style="font-size:0.9rem;color:#666;">notificaciones@bancario-alertas.net</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">15:20</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <div style="text-align:center; margin:2rem 0;">
+                                <i class="fas fa-voicemail" style="font-size:4rem; color:#c00;"></i>
+                                <h3 style="margin-top:1rem;">Nuevo Mensaje de Voz (0:42)</h3>
+                            </div>
+                            <p>De: <strong>Departamento de Seguridad Bancaria</strong><br>
+                            Teléfono: +52 (55) 5555-0123<br>
+                            Recibido: Hoy, 14:30 hrs</p>
+                            
+                            <div style="background:#f0f0f0; padding:1rem; border-radius:8px; margin:1rem 0; font-style:italic; color:#666;">
+                                "Estimado cliente, detectamos una transacción de $15,000 pesos en tu tarjeta terminación 4421 en tienda departamental. Si no reconoce esta compra, presione 1 para hablar con un ejecutivo, o escuche el mensaje completo..."
+                            </div>
+                            
+                            <div style="text-align:center; margin:2rem 0;">
+                                <div style="display:inline-block; padding:15px 40px; background:#c00; color:white; text-decoration:none; border-radius:50px; font-size:1.1rem;">
+                                    <i class="fas fa-play"></i> Escuchar Mensaje Completo
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Dominio genérico: bancario-alertas.net',
+                    'Los bancos no envían voicemails por email con enlaces de reproducción',
+                    'Uso de número de teléfono falso para callback',
+                    'Monto específico para crear pánico ($15,000)',
+                    'El enlace "Escuchar" probablemente descarga malware o solicita credenciales'
+                ],
+                educational: 'Técnica: Vishing híbrido. Combina voicemail (mensaje de voz) con email para dar credibilidad. El botón "play" suele redirigir a sitios de phishing o descargar malware. Los bancos nunca envían archivos de audio por email; las alertas llegan por SMS corto o notificaciones de app oficial.'
+            },
+            {
+                id: 10,
+                type: 'email',
+                category: 'Phishing de Autenticación 2FA',
+                difficulty: 'Alta',
+                isPhishing: true,
+                content: `
+                    <div class="email-client">
+                        <div style="background:#f0f0f0; padding:1rem; border-bottom:1px solid #ddd;">
+                            <div style="font-weight:600; color:#333;">Google Security</div>
+                            <div style="font-size:0.9rem;color:#666;">security@accounts-google.com</div>
+                            <div style="text-align:right; font-size:0.9rem; color:#666; margin-top:-2rem;">20:10</div>
+                        </div>
+                        <div style="padding:1.5rem; background:#fff; color:#333;">
+                            <div style="text-align:center; margin-bottom:2rem;">
+                                <div style="width:50px; height:50px; margin:0 auto; background:linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335); border-radius:50%;"></div>
+                            </div>
+                            <h3>Verificación de identidad necesaria</h3>
+                            <p>Hola,</p>
+                            <p>Detectamos un intento de inicio de sesión desde un dispositivo desconocido:</p>
+                            <div style="background:#f8f9fa; padding:1rem; border-radius:8px; margin:1rem 0; border-left:4px solid #4285F4;">
+                                <strong>Dispositivo:</strong> iPhone 13 Pro<br>
+                                <strong>Ubicación:</strong> Ciudad de México, MX<br>
+                                <strong>IP:</strong> 189.234.XX.XX<br>
+                                <strong>Hora:</strong> 20:05
+                            </div>
+                            <p>Si fuiste tú, confirma ingresando el código que enviamos a tu celular:</p>
+                            <div style="text-align:center; margin:2rem 0;">
+                                <div style="display:inline-block; border:2px dashed #ddd; padding:1rem 2rem; border-radius:8px;">
+                                    <div style="font-size:0.9rem; color:#666; margin-bottom:0.5rem;">Ingresa el código de 6 dígitos:</div>
+                                    <div style="background:#f0f0f0; padding:0.5rem; border-radius:4px; letter-spacing:0.5rem; font-family:monospace; font-size:1.2rem;">______</div>
+                                </div>
+                            </div>
+                            <p style="font-size:0.9rem; color:#666;">Si no fuiste tú, alguien tiene tu contraseña. <span style="color:#c00;">Cambia tu contraseña inmediatamente</span>.</p>
+                        </div>
+                    </div>
+                `,
+                redFlags: [
+                    'Dominio: accounts-google.com (usa guión, no es google.com)',
+                    'Solicita código 2FA por email (Google nunca hace esto; los códigos van solo a dispositivos)',
+                    'Campo de entrada falso en el email (los emails no tienen campos funcionales seguros)',
+                    'Táctica de "confirma si fuiste tú" para obtener el código y hackear la cuenta',
+                    'El enlace "Cambiar contraseña" probablemente es phishing'
+                ],
+                educational: 'Técnica: Real-time Phishing Proxy (RTPP) + 2FA Theft. El atacante quiere que ingreses el código 2FA para interceptarlo y acceder a tu cuenta en tiempo real. Los códigos 2FA nunca se solicitan por email; siempre llegan por SMS/authenticator a tu dispositivo físico.'
+            }
+        ];
+
+        // Quiz State
+        let currentScenario = 0;
+        let score = 0;
+        let answers = [];
+        let quizUserName = '';
+        let quizConsentGiven = false;
+
+        function toggleQuizConsent() {
+            quizConsentGiven = document.getElementById('quiz-consent-check').checked;
+            document.getElementById('quiz-start-btn').disabled = !quizConsentGiven;
+        }
+
+        function startQuiz() {
+            quizUserName = document.getElementById('quiz-user-name').value || 'Anónimo';
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('progress-container').classList.remove('hidden');
+            loadScenario();
+        }
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenario];
+            const container = document.getElementById('quiz-scenario');
+            
+            document.getElementById('current-scenario').textContent = currentScenario + 1;
+            document.getElementById('progress-bar').style.width = ((currentScenario + 1) / 10) * 100 + '%';
+            
+            container.innerHTML = `
+                <div style="margin-bottom:1.5rem;">
+                    <span style="background:rgba(0,255,102,0.1); color:#00ff66; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.85rem; border:1px solid #00ff66;">
+                        Escenario ${currentScenario + 1} de 10
+                    </span>
+                    <span style="color:#888; font-size:0.9rem; margin-left:1rem;">
+                        <i class="fas fa-tag"></i> ${scenario.category} | Dificultad: ${scenario.difficulty}
+                    </span>
+                </div>
+                
+                <h3 style="margin-bottom:1.5rem; color:#fff;">
+                    <i class="fas fa-question-circle" style="color:#00ff66;"></i> 
+                    ¿Este mensaje es legítimo o un intento de phishing/ingeniería social?
+                </h3>
+                
+                <div style="font-size:0.9rem; color:#666; margin-bottom:1.5rem; padding:0.5rem; background:rgba(0,0,0,0.3); border-radius:4px; border-left:3px solid #4488ff;">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Consejo:</strong> Examina el remitente, URLs, urgencia innecesaria y solicitudes de datos.
+                </div>
+                
+                ${scenario.content}
+                
+                <div style="display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap;">
+                    <button class="btn btn-danger" onclick="checkAnswer(true)" style="flex:1; min-width:200px;">
+                        <i class="fas fa-exclamation-triangle"></i> Es Phishing/Estafa
+                    </button>
+                    <button class="btn btn-safe" onclick="checkAnswer(false)" style="flex:1; min-width:200px;">
+                        <i class="fas fa-check-circle"></i> Es Legítimo
+                    </button>
+                </div>
+                
+                <div id="feedback-area" class="hidden" style="margin-top:2rem;"></div>
+            `;
+            
+            container.classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+        }
+
+        function checkAnswer(userSaidPhishing) {
+            const scenario = scenarios[currentScenario];
+            const isCorrect = userSaidPhishing === scenario.isPhishing;
+            const feedbackArea = document.getElementById('feedback-area');
+            
+            if (isCorrect) score += 10;
+            answers.push({
+                scenario: scenario.id,
+                correct: isCorrect,
+                category: scenario.category
+            });
+            
+            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+            const icon = isCorrect ? 'fa-check-circle' : 'fa-times-circle';
+            const title = isCorrect ? '¡Correcto!' : 'Incorrecto';
+            const message = scenario.isPhishing 
+                ? (isCorrect ? 'Identificaste correctamente este intento de phishing.' : 'Este SÍ era phishing. Analiza las señales de alerta.')
+                : (isCorrect ? 'Correcto, este es un mensaje legítimo.' : 'Este era un mensaje legítimo. No todo es phishing.');
+            
+            let redFlagsHtml = '';
+            if (scenario.redFlags && scenario.redFlags.length > 0) {
+                redFlagsHtml = `
+                    <div class="red-flags">
+                        <h4><i class="fas fa-search"></i> Señales de alerta (Red Flags):</h4>
+                        <ul style="margin-left:1.5rem;">
+                            ${scenario.redFlags.map(flag => `<li>${flag}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            feedbackArea.innerHTML = `
+                <div class="feedback ${feedbackClass}">
+                    <h3><i class="fas ${icon}"></i> ${title}</h3>
+                    <p style="font-size:1.1rem; margin-bottom:1rem;">${message}</p>
+                    <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px; border-left:4px solid #4488ff;">
+                        <strong><i class="fas fa-graduation-cap"></i> Aprendizaje:</strong><br>
+                        ${scenario.educational}
+                    </div>
+                    ${redFlagsHtml}
+                    <button class="btn btn-primary" onclick="nextScenario()" style="margin-top:1.5rem;">
+                        ${currentScenario < 9 ? 'Siguiente Escenario <i class="fas fa-arrow-right"></i>' : 'Ver Resultados <i class="fas fa-chart-bar"></i>'}
+                    </button>
+                </div>
+            `;
+            
+            feedbackArea.classList.remove('hidden');
+            feedbackArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            if (currentScenario < 10) {
+                loadScenario();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-scenario').classList.add('hidden');
+            document.getElementById('progress-container').classList.add('hidden');
+            const resultsDiv = document.getElementById('quiz-results');
+            
+            // Save to localStorage
+            saveScore(quizUserName, score);
+            
+            let message = '';
+            let color = '';
+            let recommendations = [];
+            
+            if (score >= 90) {
+                message = '🛡️ ¡Excelente! Eres altamente resistente a la ingeniería social.';
+                color = '#00ff66';
+                recommendations = [
+                    'Considera capacitarte como "Security Champion" en tu organización',
+                    'Mantente actualizado sobre nuevas técnicas como Deepfake Phishing',
+                    'Comparte tu conocimiento con compañeros menos experimentados'
+                ];
+            } else if (score >= 70) {
+                message = '⚠️ Buen trabajo. Tienes buena base, pero algunos ataques sofisticados podrían engañarte.';
+                color = '#ffaa00';
+                recommendations = [
+                    'Presta especial atención a los dominios de correo (la diferencia entre linkedin.com y linkedln.com)',
+                    'Desconfía siempre de la urgencia inesperada en mensajes',
+                    'Verifica solicitudes de transferencias o datos por canal alternativo (llamada telefónica)',
+                    'Nunca ingreses códigos 2FA en formularios de email'
+                ];
+            } else {
+                message = '🚨 Necesitas refuerzo. Serías vulnerable ante campañas de phishing reales.';
+                color = '#ff4444';
+                recommendations = [
+                    'Toma el curso básico de concientización en seguridad obligatoriamente',
+                    'Implementa la regla del "momento de pausa": nunca actúes inmediatamente ante un email urgente',
+                    'Verifica siempre la URL antes de ingresar credenciales (busca el candado y el dominio correcto)',
+                    'Configura autenticación de dos factores (2FA) en todas tus cuentas críticas',
+                    'Reporta cualquier email sospechoso a tu equipo de seguridad'
+                ];
+            }
+            
+            resultsDiv.innerHTML = `
+                <div class="score-circle" style="border-color:${color}; box-shadow:0 0 40px ${color}40;">
+                    <div class="score-number" style="color:${color};">${score}</div>
+                    <div style="color:#888;">de 100</div>
+                </div>
+                
+                <h3 style="color:${color}; margin:2rem 0;">${message}</h3>
+                
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:1rem; margin:2rem 0; max-width:600px; margin-left:auto; margin-right:auto;">
+                    <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:8px; border:1px solid rgba(0,255,102,0.2);">
+                        <div style="font-size:2rem; color:#00ff66; font-weight:bold;">${answers.filter(a => a.correct).length}</div>
+                        <div style="color:#888; font-size:0.9rem;">Correctas</div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:8px; border:1px solid rgba(0,255,102,0.2);">
+                        <div style="font-size:2rem; color:#ff4444; font-weight:bold;">${10 - answers.filter(a => a.correct).length}</div>
+                        <div style="color:#888; font-size:0.9rem;">Incorrectas</div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:8px; border:1px solid rgba(0,255,102,0.2);">
+                        <div style="font-size:2rem; color:#00ff66; font-weight:bold;">10</div>
+                        <div style="color:#888; font-size:0.9rem;">Técnicas vistas</div>
+                    </div>
+                </div>
+
+                <div style="background:rgba(0,0,0,0.3); padding:1.5rem; border-radius:8px; text-align:left; margin:2rem 0; border:1px solid rgba(0,255,102,0.2);">
+                    <h4 style="color:#00ff66; margin-bottom:1rem;"><i class="fas fa-lightbulb"></i> Recomendaciones Personalizadas:</h4>
+                    <ul style="margin-left:1.5rem; color:#ccc; line-height:2;">
+                        ${recommendations.map(r => `<li>${r}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div style="background:rgba(0,255,102,0.05); border:1px solid rgba(0,255,102,0.3); padding:1.5rem; border-radius:8px; margin:2rem 0;">
+                    <h4 style="color:#00ff66; margin-bottom:0.5rem;"><i class="fas fa-user"></i> Resultado guardado para: ${quizUserName}</h4>
+                    <p style="color:#aaa; font-size:0.9rem;">Tu puntaje ha sido registrado en el Score Global. ¡Revisa el ranking!</p>
+                </div>
+                
+                <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem;">
+                    <button class="btn btn-secondary" onclick="restartQuiz()" style="background:transparent; border:2px solid #00ff66; color:#00ff66;">
+                        <i class="fas fa-redo"></i> Repetir Quiz
+                    </button>
+                    <button class="btn btn-primary" onclick="generateReport()" style="margin-left:1rem;">
+                        <i class="fas fa-file-pdf"></i> Guardar Reporte
+                    </button>
+                    <button class="btn btn-primary" onclick="showSection('scores'); document.querySelector('.nav-btn.active').classList.remove('active'); document.querySelectorAll('.nav-btn')[2].classList.add('active');" style="margin-left:1rem;">
+                        <i class="fas fa-trophy"></i> Ver Score Global
+                    </button>
+                </div>
+            `;
+            
+            resultsDiv.classList.remove('hidden');
+        }
+
+        // PDF Report Generation
+        function generateReport() {
+            const correct = answers.filter(a => a.correct).length;
+            const wrong = 10 - correct;
+            
+            let level = 'Básico';
+            if (score >= 90) level = 'Experto';
+            else if (score >= 70) level = 'Avanzado';
+            else if (score >= 50) level = 'Intermedio';
+            
+            const reportWindow = window.open('', '_blank');
+            reportWindow.document.write(`
+                <html>
+                <head>
+                    <title>Reporte Phishing Quiz - ${quizUserName}</title>
+                    <style>
+                        body { 
+                            font-family: 'Courier New', monospace; 
+                            background: #0a0a0a; 
+                            color: #e0e0e0; 
+                            padding: 40px;
+                            line-height: 1.6;
+                        }
+                        .header { 
+                            text-align: center; 
+                            border-bottom: 3px solid #00ff66; 
+                            padding-bottom: 20px; 
+                            margin-bottom: 30px;
+                        }
+                        h1 { color: #00ff66; text-transform: uppercase; letter-spacing: 3px; }
+                        .score-box { 
+                            background: rgba(0,255,102,0.1); 
+                            border: 2px solid #00ff66; 
+                            padding: 30px; 
+                            text-align: center; 
+                            margin: 30px auto;
+                            border-radius: 50%;
+                            width: 200px;
+                            height: 200px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                        .score-number { font-size: 4rem; color: #00ff66; font-weight: bold; }
+                        .stats { display: flex; justify-content: space-around; margin: 30px 0; }
+                        .stat { text-align: center; }
+                        .stat-value { font-size: 2rem; color: #00ff66; font-weight: bold; }
+                        .recommendations { 
+                            background: rgba(0,0,0,0.5); 
+                            padding: 20px; 
+                            border-left: 4px solid #00ff66;
+                            margin-top: 30px;
+                        }
+                        .footer { 
+                            margin-top: 50px; 
+                            text-align: center; 
+                            color: #666; 
+                            font-size: 0.9rem;
+                            border-top: 1px solid #333;
+                            padding-top: 20px;
+                        }
+                        @media print {
+                            body { background: white; color: black; }
+                            .score-box { border: 2px solid #000; }
+                            h1 { color: #000; }
+                            .stat-value { color: #000; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1><i class="fas fa-shield-alt"></i> Reporte de Evaluación</h1>
+                        <h2>Phishing Quiz - PR02 El Eslabón Más Débil</h2>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <p><strong>Participante:</strong> ${quizUserName}</p>
+                        <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                        <p><strong>Hora:</strong> ${new Date().toLocaleTimeString()}</p>
+                        <p><strong>Nivel Alcanzado:</strong> ${level}</p>
+                    </div>
+                    
+                    <div class="score-box">
+                        <div class="score-number">${score}/100</div>
+                        <div style="font-size: 1.2rem; margin-top: 10px;">Puntuación Obtenida</div>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value">${correct}</div>
+                            <div>Correctas</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${wrong}</div>
+                            <div>Incorrectas</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">10</div>
+                            <div>Escenarios</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendations">
+                        <h3 style="color: #00ff66; margin-top: 0;">Recomendaciones:</h3>
+                        <ul>
+                            ${score >= 70 ? 
+                                '<li>Mantén tu conocimiento actualizado sobre nuevas técnicas de ingeniería social</li><li>Comparte tu experiencia con compañeros para crear cultura de seguridad</li>' : 
+                                '<li>Realiza el curso de concientización en seguridad nuevamente</li><li>Verifica siempre la URL antes de hacer clic</li><li>Nunca ingreses credenciales en enlaces de email</li><li>Reporta emails sospechosos a tu equipo de seguridad</li>'
+                            }
+                        </ul>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>Este documento es un comprobante de participación en el ejercicio educativo.</p>
+                        <p>PR02 - Seguridad Informática | 2026</p>
+                    </div>
+                    
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                            }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            reportWindow.document.close();
+        }
+
+        function restartQuiz() {
+            currentScenario = 0;
+            score = 0;
+            answers = [];
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-intro').classList.remove('hidden');
+            document.getElementById('quiz-consent-check').checked = false;
+            document.getElementById('quiz-start-btn').disabled = true;
+            document.getElementById('quiz-user-name').value = '';
+            quizConsentGiven = false;
+        }
+
+        // Score Global Functions
+        function saveScore(name, points) {
+            let scores = JSON.parse(localStorage.getItem('phishingQuizScores') || '[]');
+            scores.push({
+                name: name,
+                score: points,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString()
+            });
+            scores.sort((a, b) => b.score - a.score);
+            scores = scores.slice(0, 20); // Keep top 20
+            localStorage.setItem('phishingQuizScores', JSON.stringify(scores));
+        }
+
+        function loadScores() {
+            const scores = JSON.parse(localStorage.getItem('phishingQuizScores') || '[]');
+            const tbody = document.getElementById('scores-tbody');
+            const noScores = document.getElementById('no-scores');
+            
+            if (scores.length === 0) {
+                tbody.innerHTML = '';
+                noScores.style.display = 'block';
+                return;
+            }
+            
+            noScores.style.display = 'none';
+            tbody.innerHTML = scores.map((s, index) => {
+                let rankClass = '';
+                let medal = '';
+                if (index === 0) { rankClass = 'rank-1'; medal = '🥇 '; }
+                else if (index === 1) { rankClass = 'rank-2'; medal = '🥈 '; }
+                else if (index === 2) { rankClass = 'rank-3'; medal = '🥉 '; }
+                
+                let level = 'Básico';
+                if (s.score >= 90) level = 'Experto';
+                else if (s.score >= 70) level = 'Avanzado';
+                else if (s.score >= 50) level = 'Intermedio';
+                
+                return `
+                    <tr>
+                        <td class="${rankClass}">${medal}${index + 1}</td>
+                        <td><strong>${s.name}</strong></td>
+                        <td style="color:#00ff66; font-weight:bold; font-size:1.2rem;">${s.score}</td>
+                        <td>${s.date}<br><small style="color:#666;">${s.time}</small></td>
+                        <td>${level}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    </script>
 </body>
 </html>
