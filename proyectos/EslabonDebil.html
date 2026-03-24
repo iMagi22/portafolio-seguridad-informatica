@@ -689,9 +689,13 @@ const scenarios=[
    educational:'Técnica: Real-time Phishing Proxy + 2FA Theft. Los códigos 2FA nunca se solicitan por email; siempre llegan a tu dispositivo físico via SMS/authenticator.'}
 ];
 
+// ─── CONFIGURACIÓN GLOBAL (GitHub Pages) ───
+// Base de datos en la nube para ranking compartido entre todos los usuarios
+const BIN_ID = '69c245ceaa77b81da913927c';
+const API_KEY = '$2a$10$.qT1bVhQE/GJFYFXFin4mOHOmzYlWA72OrDLUGU3gcpOnOdfviSg2';
+
 // ── QUIZ STATE ──
 let currentScenario=0,score=0,answers=[],quizUserName='',quizConsentGiven=false;
-
 function toggleQuizConsent(){
   quizConsentGiven=document.getElementById('quiz-consent-check').checked;
   document.getElementById('quiz-start-btn').disabled=!quizConsentGiven;
@@ -773,11 +777,11 @@ function nextScenario(){
   else showQuizResults();
 }
 
-function showQuizResults(){
+async function showQuizResults(){
   document.getElementById('quiz-scenario').classList.add('hidden');
   document.getElementById('progress-container').classList.add('hidden');
   const rd=document.getElementById('quiz-results');
-  saveScore(quizUserName,score);
+await saveScore(quizUserName,score);
 
   let msg='',color='',recs=[];
   if(score>=90){
@@ -994,33 +998,88 @@ function restartQuiz(){
 }
 
 // ── SCORES ──
-function saveScore(name,points){
-  let s=JSON.parse(localStorage.getItem('phishingQuizScores')||'[]');
-  s.push({name,score:points,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()});
-  s.sort((a,b)=>b.score-a.score);
-  s=s.slice(0,20);
-  localStorage.setItem('phishingQuizScores',JSON.stringify(s));
+async function saveScore(name,points){
+  try{
+    // Obtener de la nube
+    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
+      headers:{'X-Master-Key':API_KEY}
+    });
+    const data=await res.json();
+    let s=data.record||[];
+    
+    // Agregar igual que antes
+    s.push({name,score:points,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()});
+    s.sort((a,b)=>b.score-a.score);
+    s=s.slice(0,20);
+    
+    // Guardar en la nube
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json',
+        'X-Master-Key':API_KEY
+      },
+      body:JSON.stringify(s)
+    });
+  }catch(e){
+    // Si falla, usa localStorage como backup
+    let s=JSON.parse(localStorage.getItem('phishingQuizScores')||'[]');
+    s.push({name,score:points,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()});
+    s.sort((a,b)=>b.score-a.score);
+    s=s.slice(0,20);
+    localStorage.setItem('phishingQuizScores',JSON.stringify(s));
+  }
 }
 
-function loadScores(){
-  const s=JSON.parse(localStorage.getItem('phishingQuizScores')||'[]');
+// ─── CARGAR SCORES GLOBAL ───
+async function loadScores(){
   const tbody=document.getElementById('scores-tbody');
   const noS=document.getElementById('no-scores');
-  if(!s.length){tbody.innerHTML='';noS.style.display='block';return;}
-  noS.style.display='none';
-  tbody.innerHTML=s.map((e,i)=>{
-    const medals=['🥇 ','🥈 ','🥉 '];
-    const medal=medals[i]||'';
-    const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
-    let lvl='Básico';
-    if(e.score>=90)lvl='Experto';
-    else if(e.score>=70)lvl='Avanzado';
-    else if(e.score>=50)lvl='Intermedio';
-    return`<tr><td class="${rc}">${medal}${i+1}</td><td><strong>${e.name}</strong></td>
-      <td style="color:var(--g);font-weight:bold;font-size:1.1rem;">${e.score}</td>
-      <td>${e.date}<br><small style="color:var(--dim);">${e.time}</small></td>
-      <td>${lvl}</td></tr>`;
-  }).join('');
+  
+  try{
+    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
+      headers:{'X-Master-Key':API_KEY}
+    });
+    const data=await res.json();
+    let s=data.record||[];
+    
+    // Ocultar el registro dummy "Admin" con 0 puntos
+    s=s.filter(e=>!(e.name==="Admin" && e.score===0));
+    
+    if(!s.length){tbody.innerHTML='';noS.style.display='block';return;}
+    noS.style.display='none';
+    tbody.innerHTML=s.map((e,i)=>{
+      const medals=['🥇 ','🥈 ','🥉 '];
+      const medal=medals[i]||'';
+      const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+      let lvl='Básico';
+      if(e.score>=90)lvl='Experto';
+      else if(e.score>=70)lvl='Avanzado';
+      else if(e.score>=50)lvl='Intermedio';
+      return`<tr><td class="${rc}">${medal}${i+1}</td><td><strong>${e.name}</strong></td>
+        <td style="color:var(--g);font-weight:bold;font-size:1.1rem;">${e.score}</td>
+        <td>${e.date}<br><small style="color:var(--dim);">${e.time}</small></td>
+        <td>${lvl}</td></tr>`;
+    }).join('');
+  }catch(e){
+    // Si falla, intenta mostrar locales
+    const s=JSON.parse(localStorage.getItem('phishingQuizScores')||'[]');
+    if(!s.length){tbody.innerHTML='';noS.style.display='block';return;}
+    noS.style.display='none';
+    tbody.innerHTML=s.map((e,i)=>{
+      const medals=['🥇 ','🥈 ','🥉 '];
+      const medal=medals[i]||'';
+      const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+      let lvl='Básico';
+      if(e.score>=90)lvl='Experto';
+      else if(e.score>=70)lvl='Avanzado';
+      else if(e.score>=50)lvl='Intermedio';
+      return`<tr><td class="${rc}">${medal}${i+1}</td><td><strong>${e.name}</strong></td>
+        <td style="color:var(--g);font-weight:bold;font-size:1.1rem;">${e.score}</td>
+        <td>${e.date}<br><small style="color:var(--dim);">${e.time}</small></td>
+        <td>${lvl}</td></tr>`;
+    }).join('');
+  }
 }
 </script>
 </body>
