@@ -332,6 +332,103 @@ footer span{color:var(--gd);}
   .nav-container{grid-template-columns:1fr;}
 }
 
+/* ── TIMER STYLES ── */
+.timer-display{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:var(--cbg);
+  border:1px solid var(--bdrb);
+  padding:10px 18px;
+  border-radius:3px;
+  font-family:'Orbitron',sans-serif;
+  font-size:14px;
+  color:var(--g);
+  z-index:100;
+  box-shadow:0 0 14px rgba(0,255,136,.2);
+  letter-spacing:2px;
+}
+.timer-display.warning{
+  border-color:var(--warn);
+  color:var(--warn);
+  box-shadow:0 0 14px rgba(255,170,0,.2);
+}
+.timer-display.danger{
+  border-color:var(--alert);
+  color:var(--alert);
+  box-shadow:0 0 14px rgba(255,95,86,.2);
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+
+/* Timing Analysis Section */
+.timing-analysis{
+  background:rgba(0,255,136,.03);
+  border:1px solid var(--bdr);
+  border-radius:3px;
+  padding:20px;
+  margin:20px 0;
+  text-align:left;
+}
+.timing-analysis h4{
+  color:var(--g);
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;
+  letter-spacing:1.5px;
+  margin-bottom:16px;
+  border-bottom:1px solid var(--bdr);
+  padding-bottom:10px;
+}
+.timing-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid rgba(0,255,136,.1);
+  font-size:11px;
+}
+.timing-item:last-child{border-bottom:none;}
+.timing-scenario{
+  flex:1;
+  color:var(--txt);
+}
+.timing-value{
+  font-family:'Share Tech Mono',monospace;
+  color:var(--g);
+  margin:0 15px;
+  min-width:80px;
+  text-align:center;
+}
+.timing-status{
+  font-size:9px;
+  letter-spacing:1px;
+  padding:3px 8px;
+  border-radius:2px;
+  text-transform:uppercase;
+}
+.timing-status.fast{
+  background:rgba(0,255,136,.1);
+  color:var(--g);
+  border:1px solid var(--g);
+}
+.timing-status.normal{
+  background:rgba(0,207,255,.1);
+  color:var(--info);
+  border:1px solid var(--info);
+}
+.timing-status.slow{
+  background:rgba(255,170,0,.1);
+  color:var(--warn);
+  border:1px solid var(--warn);
+}
+.timing-accuracy{
+  font-size:10px;
+  color:var(--dim);
+  margin-left:10px;
+}
+.timing-accuracy.correct{color:var(--g);}
+.timing-accuracy.incorrect{color:var(--alert);}
+
 </style>
 </head>
 <body>
@@ -696,6 +793,10 @@ const API_KEY = '$2a$10$.qT1bVhQE/GJFYFXFin4mOHOmzYlWA72OrDLUGU3gcpOnOdfviSg2';
 
 // ── QUIZ STATE ──
 let currentScenario=0,score=0,answers=[],quizUserName='',quizConsentGiven=false;
+let scenarioStartTime=0;
+let scenarioTimes=[];
+let totalStartTime=0;
+
 function toggleQuizConsent(){
   quizConsentGiven=document.getElementById('quiz-consent-check').checked;
   document.getElementById('quiz-start-btn').disabled=!quizConsentGiven;
@@ -705,7 +806,48 @@ function startQuiz(){
   quizUserName=document.getElementById('quiz-user-name').value||'Anónimo';
   document.getElementById('quiz-intro').classList.add('hidden');
   document.getElementById('progress-container').classList.remove('hidden');
+  
+  // Iniciar timer global
+  totalStartTime=Date.now();
+  scenarioTimes=[];
+  createTimerDisplay();
+  
   loadScenario();
+}
+
+function createTimerDisplay(){
+  // Crear elemento de timer si no existe
+  let timerDiv=document.getElementById('global-timer');
+  if(!timerDiv){
+    timerDiv=document.createElement('div');
+    timerDiv.id='global-timer';
+    timerDiv.className='timer-display';
+    document.body.appendChild(timerDiv);
+  }
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const timerDiv=document.getElementById('global-timer');
+  if(!timerDiv)return;
+  
+  const elapsed=Math.floor((Date.now()-totalStartTime)/1000);
+  const minutes=Math.floor(elapsed/60).toString().padStart(2,'0');
+  const seconds=(elapsed%60).toString().padStart(2,'0');
+  timerDiv.textContent=`◷ ${minutes}:${seconds}`;
+  
+  // Cambiar color si pasa mucho tiempo (advertencia)
+  if(elapsed>300){ // 5 minutos
+    timerDiv.className='timer-display danger';
+  }else if(elapsed>180){ // 3 minutos
+    timerDiv.className='timer-display warning';
+  }else{
+    timerDiv.className='timer-display';
+  }
+  
+  if(currentScenario<10){
+    requestAnimationFrame(updateTimerDisplay);
+  }
 }
 
 function loadScenario(){
@@ -713,6 +855,10 @@ function loadScenario(){
   const container=document.getElementById('quiz-scenario');
   document.getElementById('current-scenario').textContent=currentScenario+1;
   document.getElementById('progress-bar').style.width=((currentScenario+1)/10*100)+'%';
+  
+  // Registrar tiempo de inicio del escenario
+  scenarioStartTime=Date.now();
+  
   container.innerHTML=`
     <div style="margin-bottom:14px;">
       <span style="background:rgba(0,255,136,.08);color:var(--g);padding:3px 10px;border-radius:2px;font-size:10px;border:1px solid var(--g);letter-spacing:1px;">Escenario ${currentScenario+1} / 10</span>
@@ -742,6 +888,17 @@ function checkAnswer(userSaidPhishing){
   const s=scenarios[currentScenario];
   const isCorrect=userSaidPhishing===s.isPhishing;
   if(isCorrect)score+=10;
+  
+  // Calcular tiempo tomado en este escenario
+  const timeTaken=Math.floor((Date.now()-scenarioStartTime)/1000);
+  scenarioTimes.push({
+    scenario:currentScenario+1,
+    category:s.category,
+    time:timeTaken,
+    correct:isCorrect,
+    difficulty:s.difficulty
+  });
+  
   answers.push({scenario:s.id,correct:isCorrect,category:s.category});
   const fa=document.getElementById('feedback-area');
   const cls=isCorrect?'correct':'incorrect';
@@ -777,7 +934,71 @@ function nextScenario(){
   else showQuizResults();
 }
 
+function getTimingAnalysisHTML(){
+  let html='<div class="timing-analysis">';
+  html+='<h4><span style="font-style:normal;margin-right:4px;">◷</span> Análisis de Tiempos por Escenario</h4>';
+  
+  let totalTime=0;
+  let fastCount=0,slowCount=0;
+  
+  scenarioTimes.forEach(item=>{
+    totalTime+=item.time;
+    let statusClass,statusText;
+    if(item.time<15){
+      statusClass='fast';
+      statusText='Rápido';
+      fastCount++;
+    }else if(item.time>45){
+      statusClass='slow';
+      statusText='Lento';
+      slowCount++;
+    }else{
+      statusClass='normal';
+      statusText='Normal';
+    }
+    
+    const accuracyClass=item.correct?'correct':'incorrect';
+    const accuracyText=item.correct?'✓ Correcto':'✗ Incorrecto';
+    
+    html+=`<div class="timing-item">
+      <div class="timing-scenario">Escenario ${item.scenario}: ${item.category}</div>
+      <div class="timing-value">${item.time}s</div>
+      <span class="timing-status ${statusClass}">${statusText}</span>
+      <span class="timing-accuracy ${accuracyClass}">${accuracyText}</span>
+    </div>`;
+  });
+  
+  const avgTime=Math.floor(totalTime/10);
+  let analysisText='';
+  if(slowCount>=4){
+    analysisText='Detectamos que tardaste mucho tiempo en varias preguntas. Esto puede indicar dudas o falta de confianza en la identificación de señales de alerta. Recomendamos revisar las técnicas de análisis de dominios y remitentes.';
+  }else if(fastCount>=7 && score>=80){
+    analysisText='Excelente velocidad de respuesta manteniendo alta precisión. Demuestras reconocimiento de patrones automático y confianza calibrada.';
+  }else if(fastCount>=7 && score<70){
+    analysisText='Respondiste muy rápido pero con varios errores. Esto sugiere decisiones impulsivas sin análisis detallado. Se recomienda tomar el tiempo necesario para verificar remitentes y URLs.';
+  }else if(avgTime>40){
+    analysisText='Tu tiempo promedio fue elevado. En escenarios reales, el tiempo de reacción es crítico. Practica la identificación rápida de red flags principales: dominio, urgencia y solicitudes de datos.';
+  }else{
+    analysisText='Ritmo de respuesta equilibrado. Mantienes un buen balance entre velocidad y análisis cuidadoso.';
+  }
+  
+  html+=`<div style="margin-top:16px;padding:12px;background:rgba(0,0,0,.3);border-radius:3px;border-left:3px solid var(--g);">
+    <strong style="color:var(--g);font-size:10px;letter-spacing:1px;">DIAGNÓSTICO:</strong>
+    <p style="margin-top:8px;font-size:11px;line-height:1.8;color:var(--txt);">${analysisText}</p>
+    <div style="margin-top:10px;font-size:10px;color:var(--dim);">
+      Tiempo total: ${Math.floor(totalTime/60)}m ${totalTime%60}s | Promedio por escenario: ${avgTime}s | Rápidos: ${fastCount} | Lentos: ${slowCount}
+    </div>
+  </div>`;
+  
+  html+='</div>';
+  return html;
+}
+
 async function showQuizResults(){
+  // Ocultar timer
+  const timerDiv=document.getElementById('global-timer');
+  if(timerDiv)timerDiv.style.display='none';
+  
   document.getElementById('quiz-scenario').classList.add('hidden');
   document.getElementById('progress-container').classList.add('hidden');
   const rd=document.getElementById('quiz-results');
@@ -799,11 +1020,14 @@ await saveScore(quizUserName,score);
   const pct=Math.round((score/100)*100);
   const circumference=2*Math.PI*80;
   const dash=circumference*(pct/100);
+  
+  // Generar análisis de tiempos
+  const timingHTML=getTimingAnalysisHTML();
 
   rd.innerHTML=`
     <!-- Círculo de score animado SVG -->
     <div class="score-circle-wrap" style="width:220px;height:220px;margin:20px auto;">
-      <svg width="220" height="220" viewBox="0 0 220 220" style="position:absolute;top:0;left:0;transform:rotate(-90deg);">
+      <svg class="score-svg" width="220" height="220" viewBox="0 0 220 220" style="position:absolute;top:0;left:0;transform:rotate(-90deg);">
         <defs>
           <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" style="stop-color:${score>=90?'#00ff88':score>=70?'#ffaa00':'#ff5f56'};stop-opacity:1"/>
@@ -841,6 +1065,8 @@ await saveScore(quizUserName,score);
         <div style="color:var(--dim);font-size:10px;letter-spacing:1px;">Escenarios</div>
       </div>
     </div>
+
+    ${timingHTML}
 
     <div style="background:rgba(0,0,0,.3);padding:16px 20px;border-radius:3px;text-align:left;margin:16px auto;border:1px solid var(--bdr);max-width:600px;">
       <h4 style="color:var(--g);margin-bottom:10px;font-size:11px;letter-spacing:1.5px;font-family:'Orbitron',sans-serif;"><span style="font-style:normal;margin-right:4px;">💡</span> Recomendaciones:</h4>
@@ -910,6 +1136,16 @@ function generateReport(){
     .stat{text-align:center;background:#060f0b;border:1px solid #00ff8844;padding:16px 24px;border-radius:3px;}
     .stat-value{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:#00ff88;}
     .stat-lbl{font-size:9px;color:#5aac80;letter-spacing:1px;margin-top:4px;}
+    .timing{background:#060f0b;border:1px solid #00ff8844;padding:18px 22px;margin:20px 0;border-radius:3px;}
+    .timing h3{color:#00ff88;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;margin:0 0 14px;border-bottom:1px solid #00ff8844;padding-bottom:10px;}
+    .timing-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,255,136,.1);font-size:10px;}
+    .timing-item:last-child{border-bottom:none;}
+    .timing-scenario{flex:1;color:#b0ffd6;}
+    .timing-val{color:#00ff88;font-family:'Share Tech Mono',monospace;margin:0 10px;}
+    .timing-status{font-size:8px;padding:2px 6px;border-radius:2px;text-transform:uppercase;}
+    .fast{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88;}
+    .normal{background:rgba(0,207,255,.1);color:#00cfff;border:1px solid #00cfff;}
+    .slow{background:rgba(255,170,0,.1);color:#ffaa00;border:1px solid #ffaa00;}
     .recs{background:#060f0b;padding:18px 22px;border-left:3px solid #00ff88;margin-top:20px;border-radius:0 3px 3px 0;}
     .recs h3{color:#00ff88;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;margin:0 0 12px;}
     .recs li{margin:8px 0;font-size:11.5px;color:#b0ffd6;line-height:1.8;}
@@ -917,9 +1153,10 @@ function generateReport(){
     @media print{
       body{background:white!important;color:black!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
       h1,h2{color:#006633!important;text-shadow:none!important;}
-      .meta,.stat,.recs{background:#f5f5f5!important;border-color:#ccc!important;}
-      .meta p,.recs li,.stat-lbl,.score-lbl,.footer{color:#333!important;}
-      .stat-value,.score-num,.meta strong,.recs h3{color:#006633!important;text-shadow:none!important;}
+      .meta,.stat,.recs,.timing{background:#f5f5f5!important;border-color:#ccc!important;}
+      .meta p,.recs li,.stat-lbl,.score-lbl,.footer,.timing-item{color:#333!important;}
+      .stat-value,.score-num,.meta strong,.recs h3,.timing h3{color:#006633!important;text-shadow:none!important;}
+      .timing-val{color:#006633!important;}
     }
   </style></head><body>
   <div class="header">
@@ -939,6 +1176,7 @@ function generateReport(){
       <circle cx="90" cy="90" r="72" fill="none" stroke="#00ff88" stroke-width="10"
         stroke-linecap="round"
         stroke-dasharray="${circumference}"
+                stroke-dasharray="${circumference}"
         stroke-dashoffset="${circumference - dash}"
         style="filter:drop-shadow(0 0 6px #00ff88);"/>
     </svg>
@@ -952,6 +1190,26 @@ function generateReport(){
     <div class="stat"><div class="stat-value" style="color:#ff5f56;">${10-correct}</div><div class="stat-lbl">Incorrectas</div></div>
     <div class="stat"><div class="stat-value">10</div><div class="stat-lbl">Escenarios</div></div>
   </div>
+  <div class="timing">
+    <h3><span style="font-style:normal;margin-right:4px;">◷</span> Análisis de Tiempos de Respuesta</h3>
+    ${scenarioTimes.map(item=>{
+      let statusClass,statusText;
+      if(item.time<15){statusClass='fast';statusText='Rápido';}
+      else if(item.time>45){statusClass='slow';statusText='Lento';}
+      else{statusClass='normal';statusText='Normal';}
+      const accIcon=item.correct?'✓':'✗';
+      return`<div class="timing-item">
+        <div class="timing-scenario">Esc ${item.scenario}: ${item.category}</div>
+        <div class="timing-val">${item.time}s</div>
+        <span class="timing-status ${statusClass}">${statusText}</span>
+        <span style="margin-left:8px;font-size:9px;">${accIcon}</span>
+      </div>`;
+    }).join('')}
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,255,136,.2);font-size:10px;color:#5aac80;">
+      Total: ${Math.floor(scenarioTimes.reduce((a,b)=>a+b.time,0)/60)}m ${scenarioTimes.reduce((a,b)=>a+b.time,0)%60}s | 
+      Promedio: ${Math.floor(scenarioTimes.reduce((a,b)=>a+b.time,0)/10)}s por escenario
+    </div>
+  </div>
   <div class="recs">
     <h3>Recomendaciones:</h3>
     <ul style="margin-left:16px;padding:0;">
@@ -963,7 +1221,7 @@ function generateReport(){
     <p>PR02 — Seguridad Informática 2026 | Mtro. Servando López Contreras</p>
     <p>Universidad Politécnica de San Luis Potosí</p>
   </div>
-  <script>window.onload=function(){setTimeout(function(){window.print();},800);};<\/script>
+  <script>window.onload=function(){setTimeout(function(){window.print();},800);};</scr`+`ipt>
   </body></html>`;
 
   try{
@@ -971,14 +1229,12 @@ function generateReport(){
     const url=URL.createObjectURL(blob);
     const w=window.open(url,'_blank');
     if(!w){
-      // fallback: download as file
       const a=document.createElement('a');
       a.href=url;a.download='Reporte-PhishingQuiz-'+quizUserName+'.html';
       a.click();
     }
     setTimeout(()=>URL.revokeObjectURL(url),10000);
   }catch(e){
-    // fallback download
     const a=document.createElement('a');
     const blob=new Blob([reportHTML],{type:'text/html'});
     a.href=URL.createObjectURL(blob);
@@ -988,31 +1244,32 @@ function generateReport(){
 }
 
 function restartQuiz(){
-  currentScenario=0;score=0;answers=[];
+  currentScenario=0;score=0;answers=[];scenarioTimes=[];
   document.getElementById('quiz-results').classList.add('hidden');
   document.getElementById('quiz-intro').classList.remove('hidden');
   document.getElementById('quiz-consent-check').checked=false;
   document.getElementById('quiz-start-btn').disabled=true;
   document.getElementById('quiz-user-name').value='';
   quizConsentGiven=false;
+  
+  // Ocultar timer si existe
+  const timerDiv=document.getElementById('global-timer');
+  if(timerDiv)timerDiv.style.display='none';
 }
 
 // ── SCORES ──
 async function saveScore(name,points){
   try{
-    // Obtener de la nube
     const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
       headers:{'X-Master-Key':API_KEY}
     });
     const data=await res.json();
     let s=data.record||[];
     
-    // Agregar igual que antes
     s.push({name,score:points,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()});
     s.sort((a,b)=>b.score-a.score);
     s=s.slice(0,20);
     
-    // Guardar en la nube
     await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
       method:'PUT',
       headers:{
@@ -1022,7 +1279,6 @@ async function saveScore(name,points){
       body:JSON.stringify(s)
     });
   }catch(e){
-    // Si falla, usa localStorage como backup
     let s=JSON.parse(localStorage.getItem('phishingQuizScores')||'[]');
     s.push({name,score:points,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()});
     s.sort((a,b)=>b.score-a.score);
@@ -1043,7 +1299,6 @@ async function loadScores(){
     const data=await res.json();
     let s=data.record||[];
     
-    // Ocultar el registro dummy "Admin" con 0 puntos
     s=s.filter(e=>!(e.name==="Admin" && e.score===0));
     
     if(!s.length){tbody.innerHTML='';noS.style.display='block';return;}
@@ -1062,7 +1317,6 @@ async function loadScores(){
         <td>${lvl}</td></tr>`;
     }).join('');
   }catch(e){
-    // Si falla, intenta mostrar locales
     const s=JSON.parse(localStorage.getItem('phishingQuizScores')||'[]');
     if(!s.length){tbody.innerHTML='';noS.style.display='block';return;}
     noS.style.display='none';
