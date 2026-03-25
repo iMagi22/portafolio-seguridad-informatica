@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyectos — Seguridad Informática</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#00ff88;--gd:#00cc66;--gdim:#5aac80;
+  --bg:#050d0a;--cbg:#060f0b;
+  --bdr:#00ff8830;--bdrb:#00ff88aa;
+  --txt:#b0ffd6;--dim:#5aac80;
+  --alert:#ff5f56;--warn:#ffaa00;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);z-index:1;pointer-events:none;}
+#matrix-left,#matrix-right{position:fixed;top:0;width:120px;height:100%;z-index:0;opacity:.07;}
+#matrix-left{left:0;}#matrix-right{right:0;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:3px;}
+
+/* HEADER */
+header{
+  position:relative;z-index:2;text-align:center;
+  padding:48px 20px 36px;border-bottom:1px solid var(--bdrb);
+  background:linear-gradient(180deg,rgba(0,255,136,.05) 0%,transparent 100%);
+  overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;top:0;left:-100%;
+  width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--g),transparent);
+  animation:scan 3s linear infinite;
+}
+@keyframes scan{0%{left:-100%;}100%{left:100%;}}
+@keyframes flicker{0%,95%,100%{opacity:1;}96%{opacity:.7;}98%{opacity:.5;}99%{opacity:1;}}
+
+header h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(22px,4vw,40px);font-weight:900;
+  color:var(--g);letter-spacing:4px;
+  text-shadow:0 0 10px var(--g),0 0 30px rgba(0,255,136,.4);
+  animation:flicker 8s infinite;margin-bottom:8px;
+}
+.h-sub{font-size:11px;color:var(--dim);letter-spacing:4px;text-transform:uppercase;}
+
+nav{margin-top:20px;}
+nav a{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;
+  color:var(--dim);border:1px solid var(--bdr);padding:8px 18px;
+  border-radius:2px;transition:all .22s;
+}
+nav a:hover{color:var(--g);border-color:var(--g);box-shadow:0 0 10px rgba(0,255,136,.2);}
+
+/* MAIN */
+main{
+  position:relative;z-index:2;
+  max-width:1000px;margin:0 auto;padding:48px 20px 80px;
+}
+
+/* SECTION LABEL */
+.section-label{
+  font-family:'Orbitron',sans-serif;font-size:10px;
+  letter-spacing:4px;color:var(--dim);text-transform:uppercase;
+  margin-bottom:28px;display:flex;align-items:center;gap:12px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--bdrb),transparent);
+}
+
+/* PROJECT CARDS */
+.projects-grid{
+  display:flex;flex-direction:column;gap:22px;
+}
+
+.proj-card{
+  background:var(--cbg);border:1px solid var(--bdr);
+  border-radius:4px;overflow:hidden;position:relative;
+  transition:all .3s;
+}
+.proj-card::after{
+  content:'';position:absolute;top:-1px;right:-1px;
+  width:14px;height:14px;
+  border-top:2px solid var(--g);border-right:2px solid var(--g);
+  border-radius:0 4px 0 0;
+}
+.proj-card:hover:not(.locked){
+  border-color:var(--bdrb);
+  box-shadow:0 0 30px rgba(0,255,136,.12);
+  transform:translateX(4px);
+}
+.proj-card.locked{cursor:not-allowed;opacity:.7;}
+.proj-card.locked::after{border-color:var(--alert);}
+
+/* CARD INNER LAYOUT */
+.proj-inner{
+  display:grid;grid-template-columns:80px 1fr auto;
+  align-items:center;gap:0;
+}
+
+/* NUMBER BLOCK */
+.proj-num{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:28px 0;
+  border-right:1px solid var(--bdr);
+  background:rgba(0,255,136,.02);
+}
+.proj-num .num{
+  font-family:'Orbitron',sans-serif;font-size:32px;
+  font-weight:900;color:rgba(0,255,136,.2);line-height:1;
+}
+.proj-num .parcial-tag{
+  font-size:8px;letter-spacing:2px;color:var(--dim);
+  text-transform:uppercase;margin-top:4px;
+}
+
+/* CARD CONTENT */
+.proj-content{padding:22px 24px;}
+.proj-eyebrow{
+  font-size:9px;letter-spacing:3px;color:var(--dim);
+  text-transform:uppercase;margin-bottom:8px;
+}
+.proj-title{
+  font-family:'Orbitron',sans-serif;font-size:clamp(13px,1.8vw,16px);
+  font-weight:700;color:var(--g);line-height:1.4;
+  text-shadow:0 0 10px rgba(0,255,136,.2);margin-bottom:10px;
+}
+.proj-card.locked .proj-title{color:var(--alert);text-shadow:0 0 10px rgba(255,95,86,.2);}
+.proj-desc{
+  font-size:11.5px;color:var(--dim);line-height:1.8;
+  max-width:560px;
+}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.tag{
+  font-size:9px;letter-spacing:1px;padding:2px 8px;
+  border-radius:2px;border:1px solid var(--bdr);
+  color:var(--gdim);background:rgba(0,255,136,.03);
+}
+.tag.alert{border-color:rgba(255,95,86,.4);color:var(--alert);background:rgba(255,95,86,.04);}
+
+/* CTA */
+.proj-cta{
+  padding:22px 24px;display:flex;
+  align-items:center;justify-content:center;
+  border-left:1px solid var(--bdr);min-width:140px;
+}
+.cta-btn{
+  display:inline-flex;flex-direction:column;align-items:center;
+  gap:6px;text-decoration:none;font-family:'Orbitron',sans-serif;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:#050d0a;background:var(--g);
+  padding:12px 18px;border-radius:2px;font-weight:700;
+  box-shadow:0 0 16px rgba(0,255,136,.3);transition:all .25s;
+  text-align:center;border:none;cursor:pointer;
+}
+.cta-btn:hover{background:#00ffaa;box-shadow:0 0 26px var(--g);transform:translateY(-2px);}
+.cta-btn .arrow{font-size:16px;font-family:'Share Tech Mono',monospace;font-weight:normal;}
+
+/* LOCKED BUTTON */
+.locked-btn{
+  display:inline-flex;flex-direction:column;align-items:center;
+  gap:6px;font-family:'Orbitron',sans-serif;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--alert);background:transparent;
+  padding:12px 18px;border-radius:2px;font-weight:700;
+  border:1px solid rgba(255,95,86,.4);
+  text-align:center;cursor:not-allowed;
+}
+.locked-btn .lock-icon{font-size:18px;font-family:'Share Tech Mono',monospace;}
+
+/* STATUS BAR */
+.proj-status{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  border-top:1px solid var(--bdr);
+  background:rgba(0,0,0,.2);
+  font-size:10px;letter-spacing:1.5px;
+}
+.status-dot{width:7px;height:7px;border-radius:50%;}
+.status-dot.ok{background:var(--g);box-shadow:0 0 5px var(--g);}
+.status-dot.locked{background:var(--alert);box-shadow:0 0 5px var(--alert);}
+.status-dot.pending{background:var(--warn);box-shadow:0 0 5px var(--warn);}
+.status-text.ok{color:var(--g);}
+.status-text.locked{color:var(--alert);}
+.status-text.pending{color:var(--warn);}
+
+/* GLITCH EFFECT on locked */
+@keyframes glitch{
+  0%,95%,100%{transform:none;filter:none;}
+  96%{transform:translate(-2px,0);filter:hue-rotate(90deg);}
+  97%{transform:translate(2px,0);filter:hue-rotate(-90deg);}
+  98%{transform:none;filter:none;}
+}
+.proj-card.locked:hover .proj-title{animation:glitch 0.4s infinite;}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:2;text-align:center;
+  padding:20px;border-top:1px solid var(--bdr);
+  color:var(--dim);font-size:11px;letter-spacing:2px;
+  background:linear-gradient(0deg,rgba(0,255,136,.03) 0%,transparent 100%);
+}
+footer span{color:var(--gd);}
+
+@media(max-width:650px){
+  .proj-inner{grid-template-columns:60px 1fr;grid-template-rows:auto auto;}
+  .proj-cta{border-left:none;border-top:1px solid var(--bdr);grid-column:1/-1;padding:16px;}
+  .proj-num{padding:16px 0;}
+  .proj-num .num{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+  <div class="h-sub">CNO V · Seguridad Informática · UPSLP</div>
+  <h1>PROYECTOS</h1>
+  <div class="h-sub" style="margin-top:4px;">Magdalena Yesenia Tristán Rivera — 174702</div>
+  <nav>
+    <a href="index.html">⌂ Inicio</a>
+  </nav>
+</header>
+
+<main>
+  <div class="section-label">// Repositorio de Proyectos Técnicos</div>
+
+  <div class="projects-grid">
+
+    <!-- PROYECTO 1 — PARCIAL 1 -->
+    <div class="proj-card">
+      <div class="proj-inner">
+        <div class="proj-num">
+          <div class="num">01</div>
+          <div class="parcial-tag">Parcial 1</div>
+        </div>
+        <div class="proj-content">
+          <div class="proj-eyebrow">Proyecto 01 · Parcial 1 · Pentesting Web</div>
+          <div class="proj-title">De la Teoría a la Práctica:<br>Walkthrough</div>
+          <div class="proj-desc">
+            Documentación técnica del recorrido completo desde los fundamentos teóricos de la seguridad informática hasta la aplicación práctica en entornos reales de pentesting. Análisis de vulnerabilidades, metodología y herramientas.
+          </div>
+          <div class="proj-tags">
+            <span class="tag">Pentesting</span>
+            <span class="tag">Walkthrough</span>
+            <span class="tag">Burp Suite</span>
+            <span class="tag">Análisis de Vulnerabilidades</span>
+          </div>
+        </div>
+        <div class="proj-cta">
+          <a href="proyectos/walkthrough.html" class="cta-btn">
+            <span class="arrow">→</span>
+            Ver Proyecto
+          </a>
+        </div>
+      </div>
+      <div class="proj-status">
+        <span class="status-dot ok"></span>
+        <span class="status-text ok">ACCESO CONCEDIDO — Proyecto disponible</span>
+      </div>
+    </div>
+
+    <!-- PROYECTO 2 — PARCIAL 2 -->
+    <div class="proj-card">
+      <div class="proj-inner">
+        <div class="proj-num">
+          <div class="num">02</div>
+          <div class="parcial-tag">Parcial 2</div>
+        </div>
+        <div class="proj-content">
+          <div class="proj-eyebrow">Proyecto 02 · Parcial 2 · Ingeniería Social</div>
+          <div class="proj-title">El Eslabón Más Débil:<br>Campaña Ética de Phishing</div>
+          <div class="proj-desc">
+            Diseño, implementación y evaluación de una simulación educativa de ingeniería social. Análisis comparativo de plataformas profesionales, Phishing Quiz interactivo y sistema de score global con métricas reales.
+          </div>
+          <div class="proj-tags">
+            <span class="tag">Ingeniería Social</span>
+            <span class="tag">Phishing</span>
+            <span class="tag">Simulación Ética</span>
+            <span class="tag">OWASP</span>
+          </div>
+        </div>
+        <div class="proj-cta">
+          <a href="proyectos/EslabonDebil.html" class="cta-btn">
+            <span class="arrow">→</span>
+            Ver Proyecto
+          </a>
+        </div>
+      </div>
+      <div class="proj-status">
+        <span class="status-dot ok"></span>
+        <span class="status-text ok">ACCESO CONCEDIDO — Proyecto disponible</span>
+      </div>
+    </div>
+
+    <!-- PROYECTO 3 — PARCIAL 3 — LOCKED -->
+    <div class="proj-card locked">
+      <div class="proj-inner">
+        <div class="proj-num">
+          <div class="num" style="color:rgba(255,95,86,.2);">03</div>
+          <div class="parcial-tag">Parcial 3</div>
+        </div>
+        <div class="proj-content">
+          <div class="proj-eyebrow" style="color:rgba(255,95,86,.5);">Proyecto 03 · Parcial 3 · Clasificado</div>
+          <div class="proj-title">[ PRÓXIMAMENTE ]<br>Acceso Denegado</div>
+          <div class="proj-desc" style="color:rgba(255,95,86,.4);">
+            Este proyecto aún no ha sido iniciado. El contenido se encuentra en fase de desarrollo y estará disponible al comenzar el Parcial 3. Mantente en espera de nuevas actualizaciones del sistema.
+          </div>
+          <div class="proj-tags">
+            <span class="tag alert">☠ ENCRYPTED</span>
+            <span class="tag alert">SYSTEM_LOCKED</span>
+            <span class="tag alert">Fase no iniciada</span>
+          </div>
+        </div>
+        <div class="proj-cta">
+          <div class="locked-btn">
+            <span class="lock-icon">🔒</span>
+            Bloqueado
+          </div>
+        </div>
+      </div>
+      <div class="proj-status">
+        <span class="status-dot locked"></span>
+        <span class="status-text locked">ACCESO DENEGADO — [ DATA ENCRYPTED ] — Fase final no iniciada</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span>Proyectos — CNO V Seguridad Informática</span><br>
+  Magdalena Yesenia Tristán Rivera · 174702 · Docente: Mtro. Servando López Contreras<br>
+  <span style="color:var(--dim);font-size:10px;margin-top:5px;display:block;">Universidad Politécnica de San Luis Potosí · 2026</span>
+</footer>
+
+<script>
+function createMatrix(id){
+  const c=document.getElementById(id);
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  c.height=innerHeight;c.width=120;
+  const ch='01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*SELECT UNION WHERE';
+  const fs=13,cols=Math.floor(c.width/fs);
+  const dr=Array(cols).fill(1);
+  function draw(){
+    ctx.fillStyle='rgba(5,13,10,0.07)';ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#00ff88';ctx.font=fs+'px monospace';
+    dr.forEach((y,i)=>{
+      ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,y*fs);
+      if(y*fs>c.height&&Math.random()>.975)dr[i]=0;dr[i]++;
+    });
+  }
+  setInterval(draw,45);
+  addEventListener('resize',()=>{c.height=innerHeight;});
+}
+createMatrix('matrix-left');
+createMatrix('matrix-right');
+</script>
+</body>
+</html>
