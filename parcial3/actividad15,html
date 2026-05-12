@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 15 - Infraestructura SMTP & SET</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .info-box { text-align:center; border:1px dashed #00ff66; padding:15px; margin-bottom:0; }
+        .info-box p { margin:4px 0; }
+        .risk-badge { display:inline-block; border:2px solid #00ff66; color:#00ff66; font-weight:bold; padding:6px 20px; letter-spacing:3px; margin-top:10px; animation:blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #00ff66;} 50%{box-shadow:0 0 20px #00ff66,inset 0 0 10px rgba(0,255,102,.15);} }
+        .stat-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:16px 0; }
+        .stat-card { background:rgba(0,255,102,.05); border:1px solid rgba(0,255,102,.3); border-top:2px solid #00ff66; padding:14px 20px; text-align:center; min-width:110px; }
+        .stat-card .sv { font-size:1.8rem; font-weight:900; color:#00ff66; line-height:1; }
+        .stat-card .sv.red { color:#ff2244; }
+        .stat-card .sl { font-size:.65rem; color:rgba(0,255,102,.6); letter-spacing:.1em; margin-top:3px; }
+        .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin-top:14px; }
+        .team-card { border:1px solid rgba(0,255,102,.25); padding:10px 14px; background:rgba(0,255,102,.03); transition:border-color .2s; }
+        .team-card:hover { border-color:rgba(0,255,102,.6); }
+        .team-card.me { border-color:rgba(0,255,102,.55); background:rgba(0,255,102,.06); }
+        .team-card span.name { color:#00ff66; font-weight:bold; }
+        .scope-table { width:100%; border-collapse:collapse; font-size:.88rem; margin-top:10px; }
+        .scope-table th { color:#00ff66; text-align:left; padding:8px 12px; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .scope-table td { padding:8px 12px; border-bottom:1px solid rgba(0,255,102,.08); color:#fff; opacity:.9; }
+        .scope-table tr:hover td { background:rgba(0,255,102,.02); }
+        .scope-table .val { color:#00cfff; }
+        .scope-table .val-ok { color:#00ff66; font-weight:bold; }
+        .phases-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:10px; margin-top:10px; }
+        .phase-card { border:1px solid rgba(0,255,102,.25); border-top:2px solid #00ff66; padding:16px 12px; text-align:center; background:rgba(0,255,102,.02); transition:border-top-color .2s,transform .2s; }
+        .phase-card:hover { border-top-color:#00cfff; transform:translateY(-2px); }
+        .phase-card .pn { font-size:.6rem; color:rgba(0,255,102,.5); letter-spacing:.2em; margin-bottom:6px; }
+        .phase-card .pi { font-size:1.4rem; margin-bottom:6px; }
+        .phase-card .pname { font-weight:bold; color:#fff; margin-bottom:5px; font-size:.9rem; }
+        .phase-card .ptools { font-size:.7rem; color:#00ff66; line-height:1.6; }
+        .map-container { border:1px solid rgba(0,255,102,.25); padding:16px; overflow-x:auto; text-align:center; background:rgba(0,0,0,.3); margin-top:10px; }
+        .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:10px; margin-top:10px; }
+        .svc-card { border:1px solid rgba(0,255,102,.2); padding:13px 15px; display:flex; gap:12px; background:rgba(0,255,102,.02); transition:border-color .2s; }
+        .svc-card:hover { border-color:rgba(0,255,102,.4); }
+        .svc-port { font-weight:900; font-size:1.05rem; min-width:46px; text-align:center; line-height:1.1; }
+        .svc-port small { display:block; font-size:.55rem; letter-spacing:.1em; color:rgba(255,255,255,.4); }
+        .svc-name { font-weight:bold; color:#fff; margin-bottom:2px; font-size:.88rem; }
+        .svc-ver  { font-size:.73rem; color:#00cfff; margin-bottom:4px; }
+        .svc-desc { font-size:.77rem; color:rgba(255,255,255,.65); margin-top:4px; }
+        .badge { display:inline-block; font-size:.62rem; letter-spacing:.07em; padding:1px 7px; border:1px solid; }
+        .badge-crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .badge-alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .badge-med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .badge-ok   { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+        .terminal { background:rgba(0,0,0,.6); border:1px solid rgba(0,255,102,.2); border-left:3px solid #00ff66; padding:14px 16px; font-size:.78rem; color:#00ff66; overflow-x:auto; line-height:1.75; margin:12px 0; white-space:pre; font-family:'Courier New',monospace; }
+        .kill-chain { display:flex; align-items:stretch; overflow-x:auto; gap:0; margin-top:10px; padding-bottom:6px; }
+        .kc-step { flex:1; min-width:140px; border:1px solid rgba(0,255,102,.2); border-right:none; padding:16px 12px; position:relative; background:rgba(0,255,102,.02); transition:background .2s; }
+        .kc-step:last-child { border-right:1px solid rgba(0,255,102,.2); }
+        .kc-step:hover { background:rgba(0,255,102,.04); }
+        .kc-step::after { content:'▶'; position:absolute; right:-11px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.7rem; z-index:2; }
+        .kc-step:last-child::after { display:none; }
+        .kc-step .kn { font-size:.58rem; color:rgba(0,255,102,.5); letter-spacing:.15em; margin-bottom:5px; }
+        .kc-step .ki { font-size:1.2rem; margin-bottom:5px; }
+        .kc-step .kt { font-weight:bold; color:#fff; font-size:.85rem; margin-bottom:4px; }
+        .kc-step .kd { font-size:.67rem; color:#00ff66; line-height:1.5; }
+        .kc-root { min-width:140px; border:1px solid #ff2244; padding:16px 12px; background:rgba(255,34,68,.06); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        .kc-root .ki { font-size:1.6rem; color:#ff2244; }
+        .kc-root .kt { font-weight:900; color:#ff2244; font-size:.95rem; margin-top:5px; }
+        .kc-root .kd { font-size:.67rem; color:#ff2244; margin-top:6px; line-height:1.5; }
+        .mocks-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin:10px 0; }
+        .mock-window { border:1px solid rgba(0,255,102,.25); overflow:hidden; }
+        .mock-bar { background:rgba(0,0,0,.5); padding:5px 10px; font-size:.65rem; color:rgba(0,255,102,.5); border-bottom:1px solid rgba(0,255,102,.15); }
+        .mock-body { padding:16px; background:rgba(0,0,0,.4); }
+        .vuln-dist { display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 18px; }
+        .vd { flex:1; min-width:100px; text-align:center; border:1px solid; padding:10px 14px; }
+        .vd.crit { border-color:#ff2244; background:rgba(255,34,68,.06); } .vd.crit .vn { color:#ff2244; } .vd.crit .vl { color:#ff2244; }
+        .vd.alto  { border-color:#ff6a00; background:rgba(255,106,0,.05); } .vd.alto  .vn { color:#ff6a00; } .vd.alto  .vl { color:#ff6a00; }
+        .vd.med   { border-color:#ffdd00; background:rgba(255,221,0,.04); } .vd.med   .vn { color:#ffdd00; } .vd.med   .vl { color:#ffdd00; }
+        .vd.ok    { border-color:rgba(0,255,102,.3); background:rgba(0,255,102,.03); } .vd.ok  .vn { color:#00ff66; } .vd.ok  .vl { color:#00ff66; }
+        .vd .vn { font-size:1.7rem; font-weight:900; line-height:1; }
+        .vd .vl { font-size:.62rem; letter-spacing:.1em; margin-top:3px; }
+        .vuln-table { width:100%; border-collapse:collapse; font-size:.83rem; margin-top:10px; }
+        .vuln-table th { color:#00ff66; text-align:left; padding:9px 11px; font-size:.7rem; letter-spacing:.1em; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .vuln-table td { padding:9px 11px; border-bottom:1px solid rgba(0,255,102,.07); color:#fff; opacity:.9; vertical-align:top; }
+        .vuln-table tr:hover td { background:rgba(0,255,102,.02); }
+        .vid { font-size:.72rem; color:rgba(255,255,255,.4); }
+        .cia-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:10px; }
+        .cia-card { border:1px solid rgba(0,255,102,.2); padding:18px; background:rgba(0,255,102,.02); }
+        .cia-letter { font-size:2.4rem; font-weight:900; line-height:1; margin-bottom:2px; opacity:.18; }
+        .cia-card.conf  .cia-letter { color:#ff2244; }
+        .cia-card.intg  .cia-letter { color:#ff6a00; }
+        .cia-card.avail .cia-letter { color:#ffdd00; }
+        .cia-title { font-weight:bold; color:#fff; margin-bottom:3px; }
+        .cia-badge { display:inline-block; font-size:.6rem; padding:1px 7px; margin-bottom:8px; border:1px solid; }
+        .cia-card.conf  .cia-badge { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .cia-card.intg  .cia-badge { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .cia-card.avail .cia-badge { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .cia-text { font-size:.82rem; color:rgba(255,255,255,.75); }
+        .rec-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+        .rec-item { border:1px solid rgba(0,255,102,.18); padding:12px 14px; display:flex; gap:12px; background:rgba(0,255,102,.02); transition:border-color .2s; }
+        .rec-item:hover { border-color:rgba(0,255,102,.4); }
+        .rec-id { min-width:62px; }
+        .rec-badge { display:block; font-size:.58rem; padding:2px 5px; text-align:center; margin-bottom:3px; border:1px solid; }
+        .rec-badge.crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .rec-badge.alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .rec-badge.med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .rec-num { font-size:.7rem; color:rgba(255,255,255,.4); }
+        .rec-title { font-weight:bold; color:#fff; font-size:.88rem; margin-bottom:2px; }
+        .rec-desc  { font-size:.8rem; color:rgba(255,255,255,.7); }
+        .rec-desc code { color:#00ff66; }
+        .roadmap-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; margin-top:10px; }
+        .rm-col { border:1px solid rgba(0,255,102,.18); padding:14px; background:rgba(0,255,102,.02); }
+        .rm-phase { font-size:.6rem; letter-spacing:.14em; margin-bottom:8px; display:block; font-weight:bold; }
+        .rm-phase.imm   { color:#ff2244; } .rm-phase.short { color:#ff6a00; }
+        .rm-phase.med   { color:#ffdd00; } .rm-phase.cont  { color:#00ff66; }
+        .rm-item { font-size:.77rem; color:rgba(255,255,255,.75); padding:5px 0; border-bottom:1px solid rgba(0,255,102,.05); }
+        .rm-item:last-child { border-bottom:none; }
+        .rm-item i { color:#00ff66; margin-right:4px; font-size:.68rem; }
+        .cve-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:14px; }
+        .cve-card { border:1px solid rgba(0,255,102,.2); padding:16px; background:rgba(0,255,102,.02); }
+        .cve-card.warn { border-color:rgba(255,221,0,.35); background:rgba(255,221,0,.03); }
+        .refs-list { list-style:none; display:flex; flex-direction:column; gap:7px; margin-top:10px; }
+        .refs-list li { border-left:3px solid rgba(0,255,102,.3); padding:7px 12px; font-size:.8rem; color:rgba(255,255,255,.75); transition:border-color .2s; }
+        .refs-list li:hover { border-left-color:#00ff66; }
+        .refs-list li a { color:#00cfff; text-decoration:none; }
+        .refs-list li a:hover { text-decoration:underline; }
+        .refs-list li i { color:#00ff66; margin-right:6px; }
+        .concl-box { border:1px solid rgba(0,255,102,.2); padding:20px; margin-bottom:12px; background:rgba(0,255,102,.02); }
+        .concl-box.orange { border-color:rgba(255,106,0,.3); border-top:2px solid #ff6a00; background:rgba(255,106,0,.03); }
+        .concl-box.green  { border-top:2px solid #00ff66; }
+        .concl-box h3 { font-size:.82rem; letter-spacing:.12em; margin-bottom:12px; }
+        .concl-box.green  h3 { color:#00ff66; }
+        .concl-box.orange h3 { color:#ff6a00; }
+        .concl-box p { font-size:.85rem; color:rgba(255,255,255,.8); margin-bottom:8px; line-height:1.8; }
+        .concl-box p:last-child { margin-bottom:0; }
+        .concl-box strong { color:#00ff66; }
+        .pdf-btn-wrap { text-align:center; padding:16px 0 4px; }
+        .pdf-btn-wrap a { display:inline-flex; align-items:center; gap:8px; background:#00ff66; color:#050d0a; border:none; padding:11px 28px; font-weight:bold; font-size:.9rem; letter-spacing:.1em; text-decoration:none; transition:background .2s,box-shadow .2s; font-family:'Courier New',monospace; }
+        .pdf-btn-wrap a:hover { background:#00cc55; box-shadow:0 0 18px rgba(0,255,102,.4); }
+        /* Mail preview */
+        .mail-preview { max-width:520px; margin:14px auto; border-radius:8px; overflow:hidden; box-shadow:0 0 24px rgba(0,255,102,.1); font-family:Arial,sans-serif; }
+        .mail-topbar { background:#1e1e1e; padding:7px 12px; display:flex; gap:6px; align-items:center; }
+        .mail-topbar .dot { width:9px; height:9px; border-radius:50%; }
+        .mail-topbar .dt-r{background:#ff5f56;} .mail-topbar .dt-y{background:#ffbd2e;} .mail-topbar .dt-g{background:#27c93f;}
+        .mail-meta { background:#2a2a2a; padding:9px 14px; font-size:.72rem; color:#aaa; }
+        .mail-meta strong { color:#fff; }
+        .mail-hdr { background:#003366; color:#fff; padding:14px 18px; text-align:center; }
+        .mail-hdr h4 { margin:0; font-size:.95rem; color:#fff; }
+        .mail-hdr p  { margin:3px 0 0; font-size:.68rem; color:#aad4f5; }
+        .mail-body-inner { background:#fff; padding:18px; font-size:.82rem; line-height:1.7; color:#222; }
+        .mail-cta { display:block; width:fit-content; margin:12px auto; background:#003366; color:#fff; padding:9px 26px; border-radius:5px; font-size:.82rem; text-decoration:none; text-align:center; }
+        .mail-foot { background:#fff; text-align:center; font-size:.68rem; color:#999; padding:0 18px 12px; }
+        @media(max-width:600px){
+            .kill-chain{flex-direction:column;}
+            .kc-step::after{content:'▼';right:50%;bottom:-11px;top:auto;transform:translateX(50%);}
+            .kc-step{border-right:1px solid rgba(0,255,102,.2);border-bottom:none;}
+            .kc-step:last-child{border-bottom:1px solid rgba(0,255,102,.2);}
+        }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Actividad 15 — Infraestructura SMTP & Ataques de Ingeniería Social con SET</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════ PORTADA ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Parcial:</strong> 2</p>
+        <p><strong>Actividad:</strong> 15 — Implementación de Infraestructura SMTP para Simulación de Ataques de Ingeniería Social con SET</p>
+        <p><strong>Fecha:</strong> 27 de abril de 2026</p>
+        <div class="risk-badge">✉ PHISHING SIMULADO — ENTORNO CONTROLADO</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv">2M+</div><div class="sl">DESCARGAS SET</div></div>
+        <div class="stat-card"><div class="sv">3</div><div class="sl">SALTOS SMTP</div></div>
+        <div class="stat-card"><div class="sv">587</div><div class="sl">PUERTO TLS</div></div>
+        <div class="stat-card"><div class="sv">16</div><div class="sl">DÍGITOS APP PW</div></div>
+        <div class="stat-card"><div class="sv red">✓</div><div class="sl">CORREO ENTREGADO</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:18px;">Equipo 5 — Integrantes:</p>
+    <div class="team-grid">
+        <div class="team-card"><span class="name">Edwin Admael</span> Castillo Gómez — 181700</div>
+        <div class="team-card"><span class="name">Carlos René</span> Castillo Olvera — 182033</div>
+        <div class="team-card"><span class="name">Diego Osvaldo</span> Hernández Fernández — 182217</div>
+        <div class="team-card me"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702</div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 01 OBJETIVO ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-crosshairs"></i> 01 — Objetivo</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        El objetivo de esta práctica fue <strong style="color:#00ff66">simular el funcionamiento técnico de un atacante</strong> en el envío de correos mediante herramientas de ingeniería social, específicamente utilizando el <strong style="color:#00ff66">Social-Engineer Toolkit (SET)</strong> sobre Kali Linux.
+    </p>
+    <br>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Para lograrlo se configuró un servidor <strong style="color:#00ff66">Postfix</strong> como MTA local y se utilizó <strong style="color:#00ff66">Gmail como relay SMTP externo</strong> autenticado mediante SASL y TLS, superando así las restricciones anti-spam que bloquean el envío directo desde IPs residenciales sin reputación.
+    </p>
+    <br>
+    <div class="cve-grid">
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:4px;">HERRAMIENTA PRINCIPAL</div>
+            <div style="font-size:1.1rem;font-weight:900;color:#00ff66;margin-bottom:8px;">Social-Engineer Toolkit</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.65;">Creado por <strong style="color:#00ff66">Dave Kennedy</strong> (TrustedSec). Open-source, basado en Python. Estándar de la comunidad de seguridad para pruebas de ingeniería social. Presentado en Black Hat, DEF CON, DerbyCon y ShmooCon.</div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.12em;margin-bottom:8px;">// INFRAESTRUCTURA</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                ✉ MTA local: <span style="color:#00ff66">Postfix (Kali Linux)</span><br>
+                🔁 Relay externo: <span style="color:#00ff66">smtp.gmail.com:587</span><br>
+                🔐 Auth: <span style="color:#00ff66">SASL + App Password 16 dígitos</span><br>
+                🔒 Cifrado: <span style="color:#00ff66">TLS — smtp_tls_security_level=encrypt</span><br>
+                🎯 Destino: <span style="color:#00cfff">servando.lopez@upslp.edu.mx</span>
+            </div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.12em;margin-bottom:8px;">// VECTOR SIMULADO</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                📧 Tipo: <span style="color:#ffdd00">Spear Phishing</span><br>
+                🎭 Suplantación: <span style="color:#ffdd00">UPSLP Dpto. Sistemas</span><br>
+                ⚠ Gancho: <span style="color:#ff6a00">Urgencia — cuenta suspendida 24h</span><br>
+                🔗 Payload: <span style="color:#00ff66">Link a sitio oficial (no malicioso)</span><br>
+                📬 Resultado: <span style="color:#00ff66">Correo entregado a Outlook ✓</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 02 ALCANCE ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-file-alt"></i> 02 — Descripción del Laboratorio</h2>
+    <table class="scope-table">
+        <tr><th>CAMPO</th><th>VALOR</th></tr>
+        <tr><td>Herramienta principal</td><td class="val">Social-Engineer Toolkit (SET) v8.x — Codename "Maverick"</td></tr>
+        <tr><td>MTA (servidor de correo)</td><td class="val">Postfix — Internet Site, CentOS/Kali Linux</td></tr>
+        <tr><td>Relay SMTP</td><td class="val">smtp.gmail.com:587 (STARTTLS autenticado)</td></tr>
+        <tr><td>Cuenta de envío</td><td class="val">equipo5testingset@gmail.com (cuenta de práctica)</td></tr>
+        <tr><td>Autenticación</td><td class="val">SASL + App Password 16 dígitos (Google Authenticator requerido)</td></tr>
+        <tr><td>Archivo de credenciales</td><td class="val">/etc/postfix/sasl_passwd — compilado en formato CDB</td></tr>
+        <tr><td>Hostname configurado</td><td class="val">mail.equipo5.local (hostnamectl + /etc/hosts)</td></tr>
+        <tr><td>Modo red VM</td><td class="val">NAT — solo conectividad saliente necesaria</td></tr>
+        <tr><td>Destino final</td><td class="val">servando.lopez@upslp.edu.mx (Outlook Institucional)</td></tr>
+        <tr><td>Tipo de ataque simulado</td><td class="val">Spear Phishing — suplantación de Dpto. Sistemas UPSLP</td></tr>
+        <tr><td>Resultado</td><td class="val-ok">CORREO ENTREGADO — CUARENTENA CAPTURADA + LIBERADA ✓</td></tr>
+    </table>
+</section>
+
+<!-- ══════════════════════ 03 ARQUITECTURA ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-project-diagram"></i> 03 — Arquitectura de la Solución</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Se diseñó una <strong style="color:#00ff66">cadena de envío de tres etapas</strong> para superar las restricciones de entrega directa. El envío desde una IP residencial es bloqueado por filtros anti-spam, por lo que Gmail actúa como relay externo con alta reputación.
+    </p>
+    <div class="map-container">
+        <svg viewBox="0 0 820 340" xmlns="http://www.w3.org/2000/svg" style="font-family:'Courier New',monospace;width:100%;max-width:820px;">
+            <rect width="820" height="340" fill="#050d0a"/>
+            <defs>
+                <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00ff6606" stroke-width="1"/></pattern>
+                <filter id="gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <rect width="820" height="340" fill="url(#g)"/>
+
+            <!-- Línea principal de ataque -->
+            <line x1="155" y1="170" x2="278" y2="170" stroke="#00ff66" stroke-width="2" stroke-dasharray="8,4" opacity=".8"/>
+            <polygon points="276,165 291,170 276,175" fill="#00ff66" opacity=".9"/>
+            <line x1="355" y1="170" x2="448" y2="170" stroke="#00ff66" stroke-width="2" stroke-dasharray="8,4" opacity=".8"/>
+            <polygon points="446,165 461,170 446,175" fill="#00ff66" opacity=".9"/>
+            <line x1="535" y1="170" x2="628" y2="170" stroke="#00ff66" stroke-width="2" stroke-dasharray="8,4" opacity=".8"/>
+            <polygon points="626,165 641,170 626,175" fill="#00ff66" opacity=".9"/>
+
+            <!-- Labels de tráfico -->
+            <text x="216" y="157" text-anchor="middle" fill="#00ff6688" font-size="8" letter-spacing="1">SMTP :25</text>
+            <text x="400" y="157" text-anchor="middle" fill="#00ff6688" font-size="8" letter-spacing="1">TLS :587</text>
+            <text x="582" y="157" text-anchor="middle" fill="#00ff6688" font-size="8" letter-spacing="1">SMTP TLS</text>
+
+            <!-- Nodo 1: SET -->
+            <circle cx="100" cy="170" r="52" fill="#0d1a10" stroke="#00ff66" stroke-width="2" filter="url(#gl)"/>
+            <text x="100" y="162" text-anchor="middle" fill="#00ff66" font-size="10" font-weight="bold">SET</text>
+            <text x="100" y="175" text-anchor="middle" fill="#5aac80" font-size="9">Mass Mailer</text>
+            <text x="100" y="188" text-anchor="middle" fill="#5aac80" font-size="8">Attack</text>
+
+            <!-- Nodo 2: Postfix -->
+            <rect x="291" y="130" width="130" height="80" rx="8" fill="#0d1a10" stroke="#00ff66" stroke-width="2" filter="url(#gl)"/>
+            <text x="356" y="162" text-anchor="middle" fill="#00ff66" font-size="10" font-weight="bold">POSTFIX</text>
+            <text x="356" y="176" text-anchor="middle" fill="#5aac80" font-size="9">Kali Linux</text>
+            <text x="356" y="189" text-anchor="middle" fill="#5aac80" font-size="8">Equipo 5</text>
+            <text x="356" y="202" text-anchor="middle" fill="#5aac80" font-size="7">mail.equipo5.local</text>
+
+            <!-- Nodo 3: Gmail Relay -->
+            <rect x="461" y="130" width="140" height="80" rx="8" fill="#0d1a10" stroke="#00ff66" stroke-width="2" filter="url(#gl)"/>
+            <text x="531" y="162" text-anchor="middle" fill="#00ff66" font-size="10" font-weight="bold">GMAIL RELAY</text>
+            <text x="531" y="176" text-anchor="middle" fill="#5aac80" font-size="9">SMTP Autenticado</text>
+            <text x="531" y="189" text-anchor="middle" fill="#5aac80" font-size="8">smtp.gmail.com</text>
+            <text x="531" y="202" text-anchor="middle" fill="#00cfff" font-size="7">SASL + TLS :587</text>
+
+            <!-- Nodo 4: Destino -->
+            <circle cx="700" cy="170" r="52" fill="#0d1a10" stroke="#00ff66" stroke-width="2" filter="url(#gl)"/>
+            <text x="700" y="162" text-anchor="middle" fill="#00ff66" font-size="10" font-weight="bold">OUTLOOK</text>
+            <text x="700" y="175" text-anchor="middle" fill="#5aac80" font-size="9">upslp.edu.mx</text>
+            <text x="700" y="188" text-anchor="middle" fill="#00ff66" font-size="8">✓ ENTREGADO</text>
+
+            <!-- Cuarentena indicador -->
+            <rect x="640" y="50" width="120" height="45" rx="4" fill="#1a0d04" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="700" y="70" text-anchor="middle" fill="#ff6a00" font-size="9" font-weight="bold">CUARENTENA</text>
+            <text x="700" y="83" text-anchor="middle" fill="#ff6a00" font-size="8">Microsoft 365</text>
+            <text x="700" y="95" text-anchor="middle" fill="#ff6a00" font-size="7">security.microsoft.com</text>
+            <line x1="700" y1="118" x2="700" y2="125" stroke="#ff6a00" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+            <!-- Set icon label bajo Nodo 1 -->
+            <text x="100" y="240" text-anchor="middle" fill="#00ff6644" font-size="8">Herramienta</text>
+            <text x="356" y="240" text-anchor="middle" fill="#00ff6644" font-size="8">MTA Local</text>
+            <text x="531" y="240" text-anchor="middle" fill="#00ff6644" font-size="8">Relay Externo</text>
+            <text x="700" y="240" text-anchor="middle" fill="#00ff6644" font-size="8">Víctima</text>
+
+            <!-- Leyenda -->
+            <rect x="10" y="300" width="400" height="32" fill="rgba(0,0,0,.4)" rx="2"/>
+            <line x1="22" y1="316" x2="46" y2="316" stroke="#00ff66" stroke-width="2" stroke-dasharray="5,3"/>
+            <text x="51" y="320" fill="#00ff66" font-size="8">FLUJO DE ENVÍO</text>
+            <rect x="140" y="308" width="10" height="10" fill="#1a0d04" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="155" y="320" fill="#ff6a00" font-size="8">CUARENTENA</text>
+            <circle cx="240" cy="313" r="5" fill="#0d1a10" stroke="#00ff66" stroke-width="1.5"/>
+            <text x="250" y="320" fill="#5aac80" font-size="8">NODO SMTP</text>
+        </svg>
+    </div>
+    <div class="cve-card warn" style="margin-top:12px;padding:12px 16px;">
+        <div style="font-size:.65rem;color:#ffdd00;letter-spacing:.15em;margin-bottom:4px;"><i class="fas fa-exclamation-triangle"></i> &nbsp;¿POR QUÉ NO ENVÍO DIRECTO?</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.7;">
+            Las IPs residenciales carecen de registros <strong style="color:#00ff66">SPF</strong>, <strong style="color:#00ff66">DKIM</strong> y <strong style="color:#00ff66">DMARC</strong> válidos. Los filtros anti-spam institucionales las bloquean automáticamente. El relay vía Gmail presta la reputación de sus servidores para que el correo sea aceptado.
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 04 FASES ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-tasks"></i> 04 — Fases de Configuración</h2>
+    <div class="phases-grid">
+        <div class="phase-card"><div class="pn">FASE 01</div><div class="pi">📧</div><div class="pname">Cuenta Gmail</div><div class="ptools">equipo5testingset@gmail.com<br>2FA activo<br>Google Authenticator<br>App Password 16 dígitos</div></div>
+        <div class="phase-card"><div class="pn">FASE 02</div><div class="pi">🖥️</div><div class="pname">Hostname</div><div class="ptools">hostnamectl set-hostname<br>"Equipo5"<br>sudo nano /etc/hosts<br>mail.equipo5.local</div></div>
+        <div class="phase-card"><div class="pn">FASE 03</div><div class="pi">📦</div><div class="pname">Postfix</div><div class="ptools">apt install postfix -y<br>Modo: Internet Site<br>--fix-missing si error<br>main.cf configurado</div></div>
+        <div class="phase-card"><div class="pn">FASE 04</div><div class="pi">🔐</div><div class="pname">SASL Credentials</div><div class="ptools">nano /etc/postfix/sasl_passwd<br>postmap -F cdb:<br>chmod 600 sasl_passwd*<br>systemctl restart postfix</div></div>
+        <div class="phase-card"><div class="pn">FASE 05</div><div class="pi">🕷️</div><div class="pname">Uso de SET</div><div class="ptools">sudo setoolkit<br>1 → 5 → 1 → 1<br>Plantilla #7 Status Report<br>HTML personalizado</div></div>
+        <div class="phase-card"><div class="pn">FASE 06</div><div class="pi">✉</div><div class="pname">Verificación</div><div class="ptools">journalctl -u postfix -f<br>Google Admin Toolbox<br>Header analyzer<br>5 saltos confirmados</div></div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 05 CONFIGURACIÓN POSTFIX ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-cogs"></i> 05 — Configuración de Postfix</h2>
+
+    <h3 style="color:#00ff66;font-size:.82rem;letter-spacing:2px;margin:12px 0 6px;">
+        <i class="fas fa-server"></i>&nbsp; /etc/hosts — Hostname del servidor
+    </h3>
+    <div class="terminal">sudo hostnamectl set-hostname "Equipo5"
+sudo nano /etc/hosts
+
+127.0.0.1     localhost
+127.0.1.1     mail.equipo5.local  mail
+::1           localhost ip6-localhost ip6-loopback</div>
+
+    <h3 style="color:#00ff66;font-size:.82rem;letter-spacing:2px;margin:16px 0 6px;">
+        <i class="fas fa-file-code"></i>&nbsp; /etc/postfix/main.cf — Configuración principal
+    </h3>
+    <div class="terminal">myhostname = Equipo5
+mydomain   = equipo5.local
+myorigin   = $mydomain
+inet_interfaces = all
+inet_protocols  = ipv4
+mydestination   = $myhostname, localhost.$mydomain, localhost, $mydomain
+home_mailbox    = Maildir/
+
+# ── Relay SMTP vía Gmail ──────────────────────────────────────────
+relayhost                  = [smtp.gmail.com]:587
+smtp_sasl_auth_enable      = yes
+smtp_sasl_password_maps    = cdb:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_use_tls               = yes
+smtp_tls_security_level    = encrypt</div>
+
+    <h3 style="color:#00ff66;font-size:.82rem;letter-spacing:2px;margin:16px 0 6px;">
+        <i class="fas fa-key"></i>&nbsp; /etc/postfix/sasl_passwd — Credenciales SASL
+    </h3>
+    <div class="terminal">sudo nano /etc/postfix/sasl_passwd
+
+# Contenido del archivo (16 dígitos separados cada 4):
+[smtp.gmail.com]:587  equipo5testingset@gmail.com:xxxx xxxx xxxx xxxx
+
+# IMPORTANTE: Kali usa Postfix con soporte CDB, NO Berkeley DB (hash)
+# Compilar obligatoriamente con:
+sudo postmap -F cdb:/etc/postfix/sasl_passwd
+sudo chmod 600 /etc/postfix/sasl_passwd*
+sudo systemctl restart postfix</div>
+
+    <div class="services-grid" style="margin-top:14px;">
+        <div class="svc-card"><div class="svc-port" style="color:#00ff66">587<small>TCP</small></div><div><div class="svc-name">STARTTLS — Gmail Relay</div><div class="svc-ver">smtp.gmail.com · SASL autenticado</div><span class="badge badge-ok">REQUERIDO</span><div class="svc-desc">Puerto TLS para relay autenticado. Gmail requiere App Password y 2FA activo.</div></div></div>
+        <div class="svc-card"><div class="svc-port" style="color:#ffdd00">25<small>TCP</small></div><div><div class="svc-name">SMTP Local — Postfix</div><div class="svc-ver">localhost:25 — MTA interno</div><span class="badge badge-med">LOCAL</span><div class="svc-desc">SET entrega el correo a Postfix local. Postfix lo retransmite a Gmail via TLS:587.</div></div></div>
+        <div class="svc-card"><div class="svc-port" style="color:#00cfff">NAT<small>VM</small></div><div><div class="svc-name">Red VM — Modo NAT</div><div class="svc-ver">Kali Linux en VirtualBox</div><span class="badge badge-ok">SUFICIENTE</span><div class="svc-desc">Solo se requiere conectividad saliente hacia smtp.gmail.com. Bridged solo si agentes externos se conectan a la VM.</div></div></div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 06 KILL CHAIN SET ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-spider"></i> 06 — Cadena de Ataque con SET (Mass Mailer)</h2>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — INICIO</div><div class="ki">💻</div><div class="kt">sudo setoolkit</div><div class="kd">Lanzar SET<br>Pantalla bienvenida<br>v8.x Maverick<br>Menú principal</div></div>
+        <div class="kc-step"><div class="kn">02 — MÓDULO</div><div class="ki">🕷️</div><div class="kt">Opción 1 → 5</div><div class="kd">Social-Eng Attacks<br>→ Mass Mailer<br>Attack module<br>seleccionado</div></div>
+        <div class="kc-step"><div class="kn">03 — MODO</div><div class="ki">🎯</div><div class="kt">Single Email</div><div class="kd">Opción 1: un objetivo<br>Pre-Defined Template<br>Plantilla 7:<br>Status Report</div></div>
+        <div class="kc-step"><div class="kn">04 — DISEÑO</div><div class="ki">🎭</div><div class="kt">HTML Phishing</div><div class="kd">Plantilla UPSLP<br>Tipo: HTML<br>Urgencia 24h<br>CTA: Actualizar PW</div></div>
+        <div class="kc-step"><div class="kn">05 — RELAY</div><div class="ki">📤</div><div class="kt">Own Server</div><div class="kd">127.0.0.1:25<br>From: UPSLP<br>Flag: Alta prioridad<br>No adjuntos</div></div>
+        <div class="kc-root"><div class="ki">✉</div><div class="kt">ENTREGADO</div><div class="kd">Correo recibido<br>Outlook UPSLP<br>Cuarentena<br>→ Liberado</div></div>
+    </div>
+
+    <div class="terminal">set> 1        # Social-Engineering Attacks
+set> 5        # Mass Mailer Attack
+set:mailer> 1 # E-Mail Attack Single Email Address
+set:phishing> 1  # Pre-Defined Template
+set:phishing> 7  # Status Report
+
+set:phishing> Send email to: servando.lopez@upslp.edu.mx
+set:phishing> 2  # Use your own server or open relay
+
+set:phishing> From address: equipo5testingset@gmail.com
+set:phishing> The FROM NAME the user will see: UPSLP
+set:phishing> Username for open-relay [blank]:
+set:phishing> Password for open-relay [blank]:
+set:phishing> SMTP email server address: 127.0.0.1
+set:phishing> Port number for the SMTP server [25]: 25
+set:phishing> Flag this message/s as high priority? [yes|no]: y
+set:phishing> Subject of the email: UPSLP
+set:phishing> Send the message as html or plain? [p]: h
+# ... pegado del template HTML ...
+[*] SET has finished sending the emails</div>
+
+    <table class="vuln-table" style="margin-top:14px;">
+        <tr><th>PARÁMETRO SET</th><th>VALOR CONFIGURADO</th><th>RAZÓN</th></tr>
+        <tr><td>From address</td><td style="color:#00cfff;">equipo5testingset@gmail.com</td><td style="font-size:.78rem;">Cuenta autenticada en SASL/Postfix</td></tr>
+        <tr><td>FROM NAME</td><td style="color:#00cfff;">UPSLP</td><td style="font-size:.78rem;">Nombre visible al destinatario — suplantación</td></tr>
+        <tr><td>Username / Password relay</td><td style="color:#00cfff;"><em>en blanco</em></td><td style="font-size:.78rem;">Postfix maneja SASL internamente</td></tr>
+        <tr><td>SMTP server</td><td style="color:#00cfff;">127.0.0.1</td><td style="font-size:.78rem;">Postfix escucha localmente en :25</td></tr>
+        <tr><td>Port</td><td style="color:#00cfff;">25</td><td style="font-size:.78rem;">Puerto SMTP local predeterminado</td></tr>
+        <tr><td>High priority</td><td style="color:#ff6a00;">y (sí)</td><td style="font-size:.78rem;">Genera urgencia psicológica en la víctima</td></tr>
+        <tr><td>Attach file / Inline</td><td style="color:#00ff66;">n (no)</td><td style="font-size:.78rem;">Evita bloqueos por filtros de adjuntos</td></tr>
+    </table>
+</section>
+
+<!-- ══════════════════════ 07 CORREO RECIBIDO ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-inbox"></i> 07 — Correo Recibido — Vista Phishing Final</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;margin-bottom:14px;">
+        Para el envío final se creó un template HTML personalizado que suplanta al <strong style="color:#00ff66">Departamento de Sistemas y TI de la UPSLP</strong>. El mensaje activa urgencia artificial: el usuario debe actualizar su contraseña en 24 horas o su cuenta será suspendida.
+    </p>
+    <div class="mocks-grid">
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff5f56">●</span> <span style="color:#ffbd2e">●</span> <span style="color:#27c93f">●</span> &nbsp; Outlook — Bandeja de entrada</div>
+            <div class="mock-body">
+                <div style="font-size:.72rem;color:rgba(0,255,102,.5);margin-bottom:8px;">De: UPSLP &lt;equipo5testingset@gmail.com&gt; | Importancia: Alta</div>
+                <div style="background:#fff;border-radius:4px;overflow:hidden;font-family:Arial,sans-serif;">
+                    <div style="background:#003366;color:#fff;padding:12px 16px;text-align:center;">
+                        <div style="font-size:.95rem;font-weight:bold;">Universidad Politécnica de SLP</div>
+                        <div style="font-size:.7rem;color:#aad4f5;margin-top:2px;">Departamento de Sistemas y TI</div>
+                    </div>
+                    <div style="padding:16px;font-size:.82rem;color:#222;line-height:1.7;">
+                        <p style="color:#222;opacity:1;">Estimado usuario,</p>
+                        <p style="color:#222;opacity:1;">Hemos detectado actividad inusual en tu cuenta institucional. Por seguridad, es necesario que <strong>actualices tu contraseña</strong> en las próximas 24 horas.</p>
+                        <p style="color:#222;opacity:1;">Si no realizas este proceso, tu cuenta será <strong>suspendida temporalmente</strong>.</p>
+                        <div style="text-align:center;margin:12px 0;">
+                            <span style="display:inline-block;background:#003366;color:#fff;padding:9px 26px;border-radius:5px;font-size:.82rem;">Actualizar contraseña</span>
+                        </div>
+                        <p style="font-size:.68rem;color:#999;text-align:center;">Este es un mensaje automático del sistema institucional. No responda a este correo.</p>
+                    </div>
+                </div>
+                <div style="font-size:.65rem;color:#ff2244;margin-top:8px;border:1px solid rgba(255,34,68,.3);padding:3px 10px;display:inline-block;">⚠ IMPORTANCIA ALTA — PHISHING SIMULADO</div>
+            </div>
+        </div>
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff5f56">●</span> <span style="color:#ffbd2e">●</span> <span style="color:#27c93f">●</span> &nbsp; security.microsoft.com/quarantine</div>
+            <div class="mock-body">
+                <div style="font-size:.72rem;color:rgba(0,255,102,.5);margin-bottom:8px;">[+] Cuarentena — Microsoft 365</div>
+                <table style="width:100%;font-size:.73rem;border-collapse:collapse;">
+                    <tr style="color:#00ff66;border-bottom:1px solid rgba(0,255,102,.2);"><td style="padding:3px 6px;">Asunto</td><td style="padding:3px 6px;">Remitente</td><td style="padding:3px 6px;">Motivo</td></tr>
+                    <tr style="background:rgba(255,106,0,.05);"><td style="padding:3px 6px;color:#ffdd00;">AMAZON</td><td style="padding:3px 6px;color:rgba(255,255,255,.6);">equipo5testingset...</td><td style="color:#ff6a00;">Correo no deseado</td></tr>
+                    <tr style="background:rgba(255,34,68,.05);"><td style="padding:3px 6px;color:#ff2244;font-weight:bold;">Computer Issue</td><td style="padding:3px 6px;color:rgba(255,255,255,.6);">equipo5testingset...</td><td style="color:#ff2244;font-weight:bold;">⚠ Suplantar identidad</td></tr>
+                </table>
+                <div style="font-size:.7rem;color:#00ff66;margin-top:10px;padding-top:8px;border-top:1px solid rgba(0,255,102,.15);">
+                    ✓ Liberado desde: security.microsoft.com/quarantine<br>
+                    <span style="color:rgba(255,255,255,.5);">Solo en contexto académico controlado.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="terminal">$ sudo journalctl -u postfix -f
+
+Apr 27 18:12:07 mail.equipo5.local postfix/smtpd: connect from localhost
+Apr 27 18:12:07 mail.equipo5.local postfix/smtp: SASL authentication OK
+Apr 27 18:12:13 mail.equipo5.local postfix/smtp: to=&lt;servando.lopez@upslp.edu.mx&gt;, relay=smtp.gmail.com[142.250.x.x]:587
+Apr 27 18:12:19 mail.equipo5.local postfix/smtp: status=sent (250 2.0.0 OK)
+
+# "SET has finished sending the emails" + confirmación de logs = ENTREGA EXITOSA</div>
+</section>
+
+<!-- ══════════════════════ 08 TRAZADO DE CABECERAS ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-route"></i> 08 — Análisis de Cabeceras — Google Admin Toolbox</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Se utilizó <strong style="color:#00ff66">Google Admin Toolbox Message Header Analyzer</strong> (<code style="color:#00cfff">toolbox.googleapps.com/apps/messageheader</code>) pegando los headers del correo recibido (Mostrar original en Outlook). Se confirmó que el mensaje recorrió la infraestructura configurada.
+    </p>
+    <div class="map-container">
+        <svg viewBox="0 0 780 260" xmlns="http://www.w3.org/2000/svg" style="font-family:'Courier New',monospace;width:100%;max-width:780px;">
+            <rect width="780" height="260" fill="#050d0a"/>
+            <defs><pattern id="g2" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00ff6606" stroke-width="1"/></pattern></defs>
+            <rect width="780" height="260" fill="url(#g2)"/>
+            <!-- Línea vertical de tiempo -->
+            <line x1="52" y1="22" x2="52" y2="248" stroke="#00ff6622" stroke-width="2"/>
+            <!-- Hop 0 -->
+            <circle cx="52" cy="42" r="14" fill="#00ff66"/>
+            <text x="52" y="47" text-anchor="middle" fill="#050d0a" font-size="9" font-weight="bold">0</text>
+            <text x="78" y="38" fill="#fff" font-size="9" font-weight="bold">localhost</text>
+            <text x="78" y="51" fill="#00ff6677" font-size="8">→  mail.equipo5.local  [ESMTP]</text>
+            <text x="530" y="38" fill="#00cfff" font-size="8">27/4/2026 18:12:07 GMT-6</text>
+            <!-- Hop 1 -->
+            <circle cx="52" cy="96" r="14" fill="#00ff66"/>
+            <text x="52" y="101" text-anchor="middle" fill="#050d0a" font-size="9" font-weight="bold">1</text>
+            <text x="78" y="92" fill="#fff" font-size="9" font-weight="bold">mail.equipo5.local  <tspan fill="#ffbd2e">+6 seg</tspan></text>
+            <text x="78" y="105" fill="#00ff6677" font-size="8">→  smtp.gmail.com</text>
+            <text x="530" y="92" fill="#00cfff" font-size="8">18:12:13 GMT-6</text>
+            <!-- Hop 2 -->
+            <circle cx="52" cy="150" r="14" fill="#00ff66"/>
+            <text x="52" y="155" text-anchor="middle" fill="#050d0a" font-size="9" font-weight="bold">2</text>
+            <text x="78" y="146" fill="#fff" font-size="9" font-weight="bold">smtp.gmail.com  <tspan fill="#ffbd2e">+1 seg</tspan></text>
+            <text x="78" y="159" fill="#00ff6677" font-size="8">→  2002:a05:6871:50cb:b0:42c:dea:d370  [SMTP]</text>
+            <text x="530" y="146" fill="#00cfff" font-size="8">18:12:14 GMT-6</text>
+            <!-- Hop 3 -->
+            <circle cx="52" cy="196" r="14" fill="#00ff66"/>
+            <text x="52" y="201" text-anchor="middle" fill="#050d0a" font-size="9" font-weight="bold">3</text>
+            <text x="78" y="192" fill="#fff" font-size="9" font-weight="bold">[Google] mail-oa1-x33.google.com  <tspan fill="#ffbd2e">+1 seg</tspan></text>
+            <text x="78" y="205" fill="#00ff6677" font-size="8">→  SA2PEPF00001508.namprd04.prod.outlook.com  [SMTP]</text>
+            <text x="530" y="192" fill="#00cfff" font-size="8">18:12:15 GMT-6</text>
+            <!-- Hop 4-5 -->
+            <circle cx="52" cy="240" r="14" fill="#00ff66"/>
+            <text x="52" y="245" text-anchor="middle" fill="#050d0a" font-size="9" font-weight="bold">4</text>
+            <text x="78" y="236" fill="#fff" font-size="9" font-weight="bold">SA2PEPF → SA5PR13MB7610.namprd.outlook.com  <tspan fill="#ffbd2e">+4 seg</tspan></text>
+            <text x="78" y="249" fill="#00ff6677" font-size="8">18:12:19 GMT-6  <tspan fill="#00ff66" font-weight="bold">✓ ENTREGADO</tspan></text>
+        </svg>
+    </div>
+    <div class="cve-card" style="margin-top:12px;">
+        <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:4px;"><i class="fas fa-check-circle"></i> &nbsp;VERIFICADO — 5 SALTOS EN ~12 SEGUNDOS</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.7;">
+            Hop 0 confirma que el mensaje salió desde <strong style="color:#00ff66">mail.equipo5.local</strong> (Postfix local), pasó por los servidores de Gmail y fue aceptado por la infraestructura de <strong style="color:#00ff66">Microsoft 365</strong> en outlet.office365.com en 4 saltos.
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 09 PROBLEMAS Y SOLUCIONES ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-bug"></i> 09 — Problemas Encontrados y Soluciones</h2>
+    <div class="vuln-dist">
+        <div class="vd crit"><div class="vn">2</div><div class="vl">CRÍTICOS</div></div>
+        <div class="vd alto"><div class="vn">2</div><div class="vl">ALTOS</div></div>
+        <div class="vd med"><div class="vn">3</div><div class="vl">MEDIOS</div></div>
+        <div class="vd ok"><div class="vn">7</div><div class="vl">RESUELTOS</div></div>
+    </div>
+    <table class="vuln-table">
+        <tr><th>ID</th><th>PROBLEMA</th><th>CAUSA</th><th>SOLUCIÓN</th></tr>
+        <tr><td class="vid">P-01</td><td>Envío directo rechazado por Outlook</td><td style="font-size:.78rem;">IP sin reputación, falta SPF/DKIM, dominio local</td><td><span class="badge badge-crit">CRÍTICO</span> Implementar relay vía Gmail</td></tr>
+        <tr><td class="vid">P-02</td><td>App Password no disponible en Google</td><td style="font-size:.78rem;">2FA solo con códigos de respaldo; requiere método adicional</td><td><span class="badge badge-crit">CRÍTICO</span> Agregar Google Authenticator</td></tr>
+        <tr><td class="vid">P-03</td><td>sasl_passwd.db no encontrado</td><td style="font-size:.78rem;">Postfix requiere archivo compilado, no solo texto plano</td><td><span class="badge badge-alto">ALTO</span> <code>sudo postmap -F cdb:/etc/postfix/sasl_passwd</code></td></tr>
+        <tr><td class="vid">P-04</td><td>Formato incorrecto sasl_passwd_maps</td><td style="font-size:.78rem;">Kali usa Postfix con CDB, no Berkeley DB (hash)</td><td><span class="badge badge-alto">ALTO</span> Cambiar <code>hash:</code> por <code>cdb:</code></td></tr>
+        <tr><td class="vid">P-05</td><td>Comando <code>mail</code> no disponible</td><td style="font-size:.78rem;">mailutils no instalado por defecto en Kali</td><td><span class="badge badge-med">MEDIO</span> <code>sudo apt install mailutils -y</code></td></tr>
+        <tr><td class="vid">P-06</td><td>Hostname incorrecto en headers</td><td style="font-size:.78rem;">Sistema usaba "kali" por defecto</td><td><span class="badge badge-med">MEDIO</span> <code>hostnamectl set-hostname Equipo5</code> + /etc/hosts</td></tr>
+        <tr><td class="vid">P-07</td><td>SMTP Auth deshabilitado en Outlook</td><td style="font-size:.78rem;">Microsoft deshabilita SmtpClientAuthentication por defecto</td><td><span class="badge badge-med">MEDIO</span> Cambiar relay a Gmail como alternativa</td></tr>
+    </table>
+</section>
+
+<!-- ══════════════════════ 10 ALTERNATIVA SMTP2GO ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-globe"></i> 10 — Alternativa Avanzada: Dominio Propio + SMTP2GO</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Las siguientes diapositivas del PDF documentan un enfoque alternativo con mayor credibilidad ante filtros institucionales, usando <strong style="color:#00ff66">typosquatting</strong> de dominio y un relay SMTP profesional.
+    </p>
+    <div class="cve-grid">
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:4px;">ADQUISICIÓN DE DOMINIO</div>
+            <div style="font-size:1rem;font-weight:900;color:#00ff66;margin-bottom:8px;">upslp-edu.xyz</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.65;">
+                Dominio typosquatting registrado en <strong>Namecheap</strong>. Imita visualmente a la UPSLP con terminación .xyz común en proyectos tecnológicos. Panel Advanced DNS para control total de registros.
+            </div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.12em;margin-bottom:8px;">// REGISTROS DNS CONFIGURADOS</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                📌 <span style="color:#00ff66">A Record</span> → IP del servidor<br>
+                🔐 <span style="color:#00ff66">DKIM</span> → brevo1._domainkey, brevo2._domainkey<br>
+                🔁 <span style="color:#00ff66">Return-Path</span> → em1046107 → return.smtp2go.net<br>
+                📊 <span style="color:#00ff66">Track</span> → link → track.smtp2go.net<br>
+                ✅ Estado: <span style="color:#00ff66">Verified + Enabled</span>
+            </div>
+        </div>
+        <div class="cve-card warn">
+            <div style="font-size:.65rem;color:#ffdd00;letter-spacing:.12em;margin-bottom:8px;">// MASTER LOG SMTP2GO</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                <span style="color:#00ff66">✓ Delivered</span> → 182217@upslp.edu.mx<br>
+                <span style="color:#00ff66">✓ Delivered</span> → 182217@upslp.edu.mx<br>
+                <span style="color:#ffdd00">⚠ Hard Bounce</span> → root@upslp-edu.xyz<br>
+                <span style="color:#ff2244">✗ Rejected</span> → Gmail (política anti-spam)<br>
+                <br>
+                <span style="font-size:.7rem;color:rgba(255,255,255,.5);">Alta tasa de entrega vs Gmail relay básico</span>
+            </div>
+        </div>
+    </div>
+    <table class="vuln-table" style="margin-top:12px;">
+        <tr><th>ASPECTO</th><th>GMAIL RELAY (PRÁCTICA PRINCIPAL)</th><th>SMTP2GO + DOMINIO PROPIO</th></tr>
+        <tr><td>Costo</td><td>Gratuito</td><td>Dominio ~$1/año + free tier</td></tr>
+        <tr><td>DKIM propio</td><td style="color:#ff6a00;">No</td><td style="color:#00ff66;">Sí (brevo1/brevo2._domainkey)</td></tr>
+        <tr><td>Typosquatting</td><td style="color:#ff6a00;">No aplica</td><td style="color:#00ff66;">upslp-edu.xyz</td></tr>
+        <tr><td>Seguimiento de clics</td><td style="color:#ff6a00;">No</td><td style="color:#00ff66;">Sí, vía track.smtp2go.net</td></tr>
+        <tr><td>Logs en tiempo real</td><td>journalctl local</td><td style="color:#00ff66;">Dashboard: Delivered / Bounced / Rejected</td></tr>
+        <tr><td>Tasa de entrega</td><td style="color:#ffdd00;">Parcial (cuarentena frecuente)</td><td style="color:#00ff66;">Alta — DNS completos verificados</td></tr>
+    </table>
+    <div class="cve-card" style="margin-top:12px;border-color:rgba(255,34,68,.35);background:rgba(255,34,68,.04);">
+        <div style="font-size:.65rem;color:#ff2244;letter-spacing:.15em;margin-bottom:4px;"><i class="fas fa-gavel"></i> &nbsp;ADVERTENCIA LEGAL Y ÉTICA</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.7;">
+            El typosquatting y la suplantación de identidad fuera de un entorno controlado y autorizado constituyen <strong>delitos en México</strong> bajo la <strong style="color:#ff2244">LFPDPPP</strong> y el <strong style="color:#ff2244">Código Penal Federal (Arts. 211bis)</strong>. Esta actividad fue realizada exclusivamente en contexto académico bajo supervisión del docente.
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 11 ANÁLISIS CIA ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-shield-alt"></i> 11 — Análisis de Impacto (Modelo CIA)</h2>
+    <div class="cia-grid">
+        <div class="cia-card conf">
+            <div class="cia-letter">C</div>
+            <div class="cia-title">Confidencialidad</div>
+            <span class="cia-badge">IMPACTO: ALTO</span>
+            <div class="cia-text">Un correo de phishing convincente puede inducir al usuario a revelar credenciales institucionales. La suplantación del Dpto. de Sistemas activa confianza ciega en el receptor, aumentando la probabilidad de entrega de datos sensibles.</div>
+        </div>
+        <div class="cia-card intg">
+            <div class="cia-letter">I</div>
+            <div class="cia-title">Integridad</div>
+            <span class="cia-badge">IMPACTO: ALTO</span>
+            <div class="cia-text">Si el usuario hace clic en el enlace malicioso y entrega credenciales, un atacante real podría modificar datos institucionales, alterar registros académicos o comprometer cuentas con acceso a sistemas internos.</div>
+        </div>
+        <div class="cia-card avail">
+            <div class="cia-letter">A</div>
+            <div class="cia-title">Disponibilidad</div>
+            <span class="cia-badge">IMPACTO: MEDIO</span>
+            <div class="cia-text">Un ataque de phishing masivo podría bloquear cuentas tras múltiples intentos fallidos o ser escalado para distribuir ransomware. En este caso, el impacto en disponibilidad fue nulo al ser un entorno controlado.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 12 RECOMENDACIONES ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-tools"></i> 12 — Recomendaciones Técnicas</h2>
+    <div class="rec-list">
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge crit">CRÍTICO</span><span class="rec-num">REC-01</span></div><div><div class="rec-title">Implementar SPF, DKIM y DMARC en todos los dominios institucionales</div><div class="rec-desc">Sin estos registros, cualquier atacante puede suplantar @upslp.edu.mx desde un servidor externo. Configurar <code>v=spf1 include:... -all</code> y política DMARC <code>p=reject</code>.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge crit">CRÍTICO</span><span class="rec-num">REC-02</span></div><div><div class="rec-title">Capacitación en reconocimiento de phishing para usuarios</div><div class="rec-desc">Urgencia artificial, remitentes externos con nombres internos, URLs inesperadas. Simulacros periódicos de phishing para medir resiliencia y conciencia del personal institucional.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge alto">ALTO</span><span class="rec-num">REC-03</span></div><div><div class="rec-title">Monitorear dominios typosquatting institucionales</div><div class="rec-desc">Herramientas como <code>dnstwist</code> o servicios de Brand Protection para detectar dominios que imiten a upslp.edu.mx. Actuar legalmente contra registros maliciosos.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge alto">ALTO</span><span class="rec-num">REC-04</span></div><div><div class="rec-title">Configurar filtros avanzados de cuarentena en Microsoft 365</div><div class="rec-desc">El correo fue detectado como suplantación de identidad y enviado a cuarentena — señal de que los filtros funcionan. Revisión periódica de políticas <code>Anti-Phishing</code> y <code>Safe Links</code> en Microsoft Defender.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge alto">ALTO</span><span class="rec-num">REC-05</span></div><div><div class="rec-title">Aplicar Zero Trust en comunicaciones institucionales</div><div class="rec-desc">Nunca confiar en un correo solo por el nombre del remitente visible. Verificar siempre la dirección real de envío. Autenticación multifactor en todos los sistemas internos.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge med">MEDIO</span><span class="rec-num">REC-06</span></div><div><div class="rec-title">Revisar políticas de cuarentena periódicamente</div><div class="rec-desc">Un correo de phishing capturado en cuarentena es inútil si el administrador lo libera sin revisarlo. Política de NO liberar correos de remitentes externos que suplantan identidad institucional.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge med">MEDIO</span><span class="rec-num">REC-07</span></div><div><div class="rec-title">SIEM y alertas de email security centralizado</div><div class="rec-desc">Centralizar logs de Microsoft 365, Defender y Exchange Online. Alertas automáticas por patrones de phishing, incrementos de correos de cuarentena y logins inusuales post-entrega de correo sospechoso.</div></div></div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 13 ROADMAP ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-road"></i> 13 — Roadmap de Mitigación</h2>
+    <div class="roadmap-grid">
+        <div class="rm-col" style="border-top:2px solid #ff2244"><span class="rm-phase imm">INMEDIATO — 72 HRS</span><div class="rm-item"><i class="fas fa-times-circle"></i>Activar DMARC p=reject</div><div class="rm-item"><i class="fas fa-times-circle"></i>Verificar SPF y DKIM activos</div><div class="rm-item"><i class="fas fa-times-circle"></i>Auditar políticas de cuarentena</div></div>
+        <div class="rm-col" style="border-top:2px solid #ff6a00"><span class="rm-phase short">CORTO PLAZO — MES 1</span><div class="rm-item"><i class="fas fa-lock"></i>Capacitación anti-phishing</div><div class="rm-item"><i class="fas fa-lock"></i>MFA en todos los sistemas</div><div class="rm-item"><i class="fas fa-lock"></i>Safe Links + Safe Attachments</div></div>
+        <div class="rm-col" style="border-top:2px solid #ffdd00"><span class="rm-phase med">MEDIO PLAZO — MES 2-3</span><div class="rm-item"><i class="fas fa-shield-alt"></i>Monitoreo typosquatting</div><div class="rm-item"><i class="fas fa-shield-alt"></i>Simulacros de phishing</div><div class="rm-item"><i class="fas fa-shield-alt"></i>Brand Protection service</div></div>
+        <div class="rm-col" style="border-top:2px solid #00ff66"><span class="rm-phase cont">CONTINUO</span><div class="rm-item"><i class="fas fa-eye"></i>SIEM + alertas email</div><div class="rm-item"><i class="fas fa-eye"></i>Revisión mensual de cuarentena</div><div class="rm-item"><i class="fas fa-eye"></i>Red Team anual</div></div>
+    </div>
+</section>
+
+<!-- ══════════════════════ 14 CONCLUSIÓN ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> 14 — Conclusión y Reflexión Técnica</h2>
+    <div class="concl-box green">
+        <h3>// CONCLUSIÓN EJECUTIVA</h3>
+        <p>La práctica demostró que el envío de correos de phishing funcional requiere una infraestructura técnica con múltiples capas: un <strong>MTA local (Postfix)</strong>, credenciales SASL compiladas en formato CDB, un relay externo con reputación positiva, y un cuerpo HTML diseñado para eludir filtros de contenido.</p>
+        <p>El mensaje <strong>"SET has finished sending the emails"</strong> no garantiza entrega exitosa — la verificación real requiere revisar los logs de Postfix y el análisis de cabeceras con Google Admin Toolbox. En este caso, la cadena completa fue confirmada: <strong>SET → Postfix → Gmail → Microsoft 365 → Cuarentena → Liberado</strong>.</p>
+        <p>La diferencia entre el método Gmail relay y el dominio propio con SMTP2GO evidencia que la <strong>infraestructura de reputación DNS (SPF/DKIM/DMARC)</strong> es el factor más crítico para evadir o ser detectado por filtros institucionales.</p>
+    </div>
+    <div class="concl-box orange">
+        <h3>// REFLEXIÓN TÉCNICA — APRENDIZAJES</h3>
+        <p>Esta práctica evidenció que la ingeniería social no requiere vulnerabilidades de software, sino el aprovechamiento de la <strong>confianza humana</strong>. El éxito del ataque simulado dependió más de la credibilidad visual del correo y la reputación del relay que de cualquier fallo técnico en el servidor objetivo.</p>
+        <p>El modelo <strong>CIA</strong> dejó de ser abstracto: un correo de phishing creíble puede comprometer las tres dimensiones en cadena — desde la obtención de credenciales hasta el acceso a sistemas críticos. La autenticación multifactor y la formación en seguridad son la primera línea de defensa real.</p>
+        <p><strong>Dirty COW fue a los kernels lo que el phishing es a los humanos</strong>: un vector sencillo, público y efectivo que explota algo difícil de parchear. La diferencia es que el kernel se actualiza; la conciencia humana requiere educación continua.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════ 15 REFERENCIAS + PDF ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> 15 — Referencias Técnicas</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-external-link-alt"></i>TrustedSec — Social-Engineer Toolkit (SET) · <a href="https://www.trustedsec.com/tools/the-social-engineer-toolkit-set/" target="_blank">trustedsec.com/tools/the-social-engineer-toolkit-set</a></li>
+        <li><i class="fas fa-external-link-alt"></i>GitHub — trustedsec/social-engineer-toolkit · <a href="https://github.com/trustedsec/social-engineer-toolkit" target="_blank">github.com/trustedsec/social-engineer-toolkit</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Postfix Documentation — SASL Authentication · <a href="http://www.postfix.org/SASL_README.html" target="_blank">postfix.org/SASL_README.html</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Google Support — Sign in with App Passwords · <a href="https://support.google.com/accounts/answer/185833" target="_blank">support.google.com/accounts/answer/185833</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Google Admin Toolbox — Message Header Analyzer · <a href="https://toolbox.googleapps.com/apps/messageheader" target="_blank">toolbox.googleapps.com/apps/messageheader</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Microsoft — Manage quarantined messages and files · <a href="https://security.microsoft.com/quarantine" target="_blank">security.microsoft.com/quarantine</a></li>
+        <li><i class="fas fa-external-link-alt"></i>SMTP2GO — Transactional Email Relay Service · <a href="https://www.smtp2go.com" target="_blank">smtp2go.com</a></li>
+        <li><i class="fas fa-external-link-alt"></i>OWASP — Phishing Prevention Cheat Sheet · <a href="https://cheatsheetseries.owasp.org/cheatsheets/Phishing_Prevention_Cheat_Sheet.html" target="_blank">cheatsheetseries.owasp.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Namecheap — Domain Registration and DNS Management · <a href="https://www.namecheap.com" target="_blank">namecheap.com</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Microsoft Defender — Anti-Phishing Policies in EOP · <a href="https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/anti-phishing-policies-about" target="_blank">learn.microsoft.com</a></li>
+    </ul>
+    <div class="pdf-btn-wrap" style="margin-top:28px;">
+        <a href="actividad15.pdf" download>
+            <i class="fas fa-download"></i> DESCARGAR PRESENTACIÓN PDF
+        </a>
+    </div>
+</section>
+
+</main>
+</body>
+</html>
