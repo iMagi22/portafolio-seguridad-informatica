@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 16 - Dilemas Éticos en Ciberseguridad</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .info-box { text-align:center; border:1px dashed #00ff66; padding:15px; margin-bottom:0; }
+        .info-box p { margin:4px 0; }
+        .risk-badge { display:inline-block; border:2px solid #00ff66; color:#00ff66; font-weight:bold; padding:6px 20px; letter-spacing:3px; margin-top:10px; animation:blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #00ff66;} 50%{box-shadow:0 0 20px #00ff66,inset 0 0 10px rgba(0,255,102,.15);} }
+        .stat-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:16px 0; }
+        .stat-card { background:rgba(0,255,102,.05); border:1px solid rgba(0,255,102,.3); border-top:2px solid #00ff66; padding:14px 20px; text-align:center; min-width:110px; }
+        .stat-card .sv { font-size:1.8rem; font-weight:900; color:#00ff66; line-height:1; }
+        .stat-card .sv.red { color:#ff2244; }
+        .stat-card .sv.yellow { color:#ffdd00; }
+        .stat-card .sl { font-size:.65rem; color:rgba(0,255,102,.6); letter-spacing:.1em; margin-top:3px; }
+        .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin-top:14px; }
+        .team-card { border:1px solid rgba(0,255,102,.25); padding:10px 14px; background:rgba(0,255,102,.03); transition:border-color .2s; }
+        .team-card:hover { border-color:rgba(0,255,102,.6); }
+        .team-card.me { border-color:rgba(0,255,102,.55); background:rgba(0,255,102,.06); }
+        .team-card span.name { color:#00ff66; font-weight:bold; }
+        .scope-table { width:100%; border-collapse:collapse; font-size:.88rem; margin-top:10px; }
+        .scope-table th { color:#00ff66; text-align:left; padding:8px 12px; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .scope-table td { padding:8px 12px; border-bottom:1px solid rgba(0,255,102,.08); color:#fff; opacity:.9; }
+        .scope-table tr:hover td { background:rgba(0,255,102,.02); }
+        .scope-table .val { color:#00cfff; }
+        .badge { display:inline-block; font-size:.62rem; letter-spacing:.07em; padding:1px 7px; border:1px solid; }
+        .badge-crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .badge-alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .badge-med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .badge-ok   { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+        .terminal { background:rgba(0,0,0,.6); border:1px solid rgba(0,255,102,.2); border-left:3px solid #00ff66; padding:14px 16px; font-size:.78rem; color:#00ff66; overflow-x:auto; line-height:1.75; margin:12px 0; white-space:pre; font-family:'Courier New',monospace; }
+        /* Kill chain */
+        .kill-chain { display:flex; align-items:stretch; overflow-x:auto; gap:0; margin-top:10px; padding-bottom:6px; }
+        .kc-step { flex:1; min-width:130px; border:1px solid rgba(0,255,102,.2); border-right:none; padding:14px 10px; position:relative; background:rgba(0,255,102,.02); transition:background .2s; }
+        .kc-step:last-child { border-right:1px solid rgba(0,255,102,.2); }
+        .kc-step:hover { background:rgba(0,255,102,.04); }
+        .kc-step::after { content:'▶'; position:absolute; right:-11px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.7rem; z-index:2; }
+        .kc-step:last-child::after { display:none; }
+        .kc-step .kn { font-size:.58rem; color:rgba(0,255,102,.5); letter-spacing:.15em; margin-bottom:5px; }
+        .kc-step .ki { font-size:1.2rem; margin-bottom:5px; }
+        .kc-step .kt { font-weight:bold; color:#fff; font-size:.82rem; margin-bottom:4px; }
+        .kc-step .kd { font-size:.67rem; color:#00ff66; line-height:1.5; }
+        .kc-root { min-width:130px; border:1px solid #ff2244; padding:14px 10px; background:rgba(255,34,68,.06); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        .kc-root.green { border-color:#00ff66; background:rgba(0,255,102,.04); }
+        .kc-root .ki { font-size:1.5rem; color:#ff2244; }
+        .kc-root.green .ki { color:#00ff66; }
+        .kc-root .kt { font-weight:900; color:#ff2244; font-size:.9rem; margin-top:5px; }
+        .kc-root.green .kt { color:#00ff66; }
+        .kc-root .kd { font-size:.67rem; color:#ff2244; margin-top:6px; line-height:1.5; }
+        .kc-root.green .kd { color:#00ff66; }
+        /* Mocks */
+        .mocks-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin:10px 0; }
+        .mock-window { border:1px solid rgba(0,255,102,.25); overflow:hidden; }
+        .mock-bar { background:rgba(0,0,0,.5); padding:5px 10px; font-size:.65rem; color:rgba(0,255,102,.5); border-bottom:1px solid rgba(0,255,102,.15); }
+        .mock-body { padding:16px; background:rgba(0,0,0,.4); }
+        /* Vuln dist */
+        .vuln-dist { display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 18px; }
+        .vd { flex:1; min-width:100px; text-align:center; border:1px solid; padding:10px 14px; }
+        .vd.crit { border-color:#ff2244; background:rgba(255,34,68,.06); } .vd.crit .vn { color:#ff2244; } .vd.crit .vl { color:#ff2244; }
+        .vd.alto  { border-color:#ff6a00; background:rgba(255,106,0,.05); } .vd.alto  .vn { color:#ff6a00; } .vd.alto  .vl { color:#ff6a00; }
+        .vd.med   { border-color:#ffdd00; background:rgba(255,221,0,.04); } .vd.med   .vn { color:#ffdd00; } .vd.med   .vl { color:#ffdd00; }
+        .vd.ok    { border-color:rgba(0,255,102,.3); background:rgba(0,255,102,.03); } .vd.ok  .vn { color:#00ff66; } .vd.ok  .vl { color:#00ff66; }
+        .vd .vn { font-size:1.7rem; font-weight:900; line-height:1; }
+        .vd .vl { font-size:.62rem; letter-spacing:.1em; margin-top:3px; }
+        /* Vuln table */
+        .vuln-table { width:100%; border-collapse:collapse; font-size:.83rem; margin-top:10px; }
+        .vuln-table th { color:#00ff66; text-align:left; padding:9px 11px; font-size:.7rem; letter-spacing:.1em; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .vuln-table td { padding:9px 11px; border-bottom:1px solid rgba(0,255,102,.07); color:#fff; opacity:.9; vertical-align:top; }
+        .vuln-table tr:hover td { background:rgba(0,255,102,.02); }
+        .vid { font-size:.72rem; color:rgba(255,255,255,.4); }
+        /* CIA */
+        .cia-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:10px; }
+        .cia-card { border:1px solid rgba(0,255,102,.2); padding:18px; background:rgba(0,255,102,.02); }
+        .cia-letter { font-size:2.4rem; font-weight:900; line-height:1; margin-bottom:2px; opacity:.18; }
+        .cia-card.util .cia-letter { color:#00cfff; }
+        .cia-card.dere .cia-letter { color:#ff6a00; }
+        .cia-card.bien .cia-letter { color:#ffdd00; }
+        .cia-title { font-weight:bold; color:#fff; margin-bottom:3px; }
+        .cia-badge { display:inline-block; font-size:.6rem; padding:1px 7px; margin-bottom:8px; border:1px solid; }
+        .cia-card.util .cia-badge { color:#00cfff; border-color:#00cfff; background:rgba(0,207,255,.08); }
+        .cia-card.dere .cia-badge { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .cia-card.bien .cia-badge { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .cia-text { font-size:.82rem; color:rgba(255,255,255,.75); }
+        /* Rec */
+        .rec-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+        .rec-item { border:1px solid rgba(0,255,102,.18); padding:12px 14px; display:flex; gap:12px; background:rgba(0,255,102,.02); transition:border-color .2s; }
+        .rec-item:hover { border-color:rgba(0,255,102,.4); }
+        .rec-id { min-width:62px; }
+        .rec-badge { display:block; font-size:.58rem; padding:2px 5px; text-align:center; margin-bottom:3px; border:1px solid; }
+        .rec-badge.crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .rec-badge.alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .rec-badge.med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .rec-badge.ok   { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+        .rec-num { font-size:.7rem; color:rgba(255,255,255,.4); }
+        .rec-title { font-weight:bold; color:#fff; font-size:.88rem; margin-bottom:2px; }
+        .rec-desc  { font-size:.8rem; color:rgba(255,255,255,.7); }
+        .rec-desc code { color:#00ff66; }
+        /* Roadmap */
+        .roadmap-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; margin-top:10px; }
+        .rm-col { border:1px solid rgba(0,255,102,.18); padding:14px; background:rgba(0,255,102,.02); }
+        .rm-phase { font-size:.6rem; letter-spacing:.14em; margin-bottom:8px; display:block; font-weight:bold; }
+        .rm-phase.s1 { color:#ff2244; } .rm-phase.s2 { color:#ff6a00; } .rm-phase.s3 { color:#ffdd00; } .rm-phase.sc { color:#00ff66; }
+        .rm-item { font-size:.77rem; color:rgba(255,255,255,.75); padding:5px 0; border-bottom:1px solid rgba(0,255,102,.05); }
+        .rm-item:last-child { border-bottom:none; }
+        .rm-item i { color:#00ff66; margin-right:4px; font-size:.68rem; }
+        /* CVE grid */
+        .cve-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:14px; }
+        .cve-card { border:1px solid rgba(0,255,102,.2); padding:16px; background:rgba(0,255,102,.02); }
+        .cve-card.red { border-color:rgba(255,34,68,.4); background:rgba(255,34,68,.04); }
+        .cve-card.orange { border-color:rgba(255,106,0,.4); background:rgba(255,106,0,.04); }
+        .cve-card.yellow { border-color:rgba(255,221,0,.4); background:rgba(255,221,0,.04); }
+        /* Refs */
+        .refs-list { list-style:none; display:flex; flex-direction:column; gap:7px; margin-top:10px; }
+        .refs-list li { border-left:3px solid rgba(0,255,102,.3); padding:7px 12px; font-size:.8rem; color:rgba(255,255,255,.75); transition:border-color .2s; }
+        .refs-list li:hover { border-left-color:#00ff66; }
+        .refs-list li a { color:#00cfff; text-decoration:none; }
+        .refs-list li a:hover { text-decoration:underline; }
+        .refs-list li i { color:#00ff66; margin-right:6px; }
+        /* Concl */
+        .concl-box { border:1px solid rgba(0,255,102,.2); padding:20px; margin-bottom:12px; background:rgba(0,255,102,.02); }
+        .concl-box.orange { border-color:rgba(255,106,0,.3); border-top:2px solid #ff6a00; background:rgba(255,106,0,.03); }
+        .concl-box.green  { border-top:2px solid #00ff66; }
+        .concl-box h3 { font-size:.82rem; letter-spacing:.12em; margin-bottom:12px; }
+        .concl-box.green  h3 { color:#00ff66; }
+        .concl-box.orange h3 { color:#ff6a00; }
+        .concl-box p { font-size:.85rem; color:rgba(255,255,255,.8); margin-bottom:8px; line-height:1.8; }
+        .concl-box p:last-child { margin-bottom:0; }
+        .concl-box strong { color:#00ff66; }
+        /* PDF */
+        .pdf-btn-wrap { text-align:center; padding:16px 0 4px; }
+        .pdf-btn-wrap a { display:inline-flex; align-items:center; gap:8px; background:#00ff66; color:#050d0a; border:none; padding:11px 28px; font-weight:bold; font-size:.9rem; letter-spacing:.1em; text-decoration:none; transition:background .2s,box-shadow .2s; font-family:'Courier New',monospace; }
+        .pdf-btn-wrap a:hover { background:#00cc55; box-shadow:0 0 18px rgba(0,255,102,.4); }
+        /* Escenario header */
+        .esc-header { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+        .esc-num { width:44px; height:44px; border:2px solid #00ff66; display:flex; align-items:center; justify-content:center; font-family:'Courier New',monospace; font-size:1.1rem; font-weight:900; color:#00ff66; flex-shrink:0; }
+        .esc-num.red { border-color:#ff2244; color:#ff2244; }
+        .esc-num.orange { border-color:#ff6a00; color:#ff6a00; }
+        .esc-title { font-size:1rem; font-weight:bold; color:#fff; }
+        .esc-sub { font-size:.72rem; color:rgba(0,255,102,.6); margin-top:3px; }
+        .esc-sub.red { color:rgba(255,34,68,.7); }
+        .esc-sub.orange { color:rgba(255,106,0,.7); }
+        .q-label { font-size:.65rem; letter-spacing:.18em; color:#00ff66; margin:14px 0 4px; display:block; }
+        .q-label.red { color:#ff2244; }
+        .q-label.orange { color:#ff6a00; }
+        .q-answer { font-size:.86rem; color:rgba(255,255,255,.85); line-height:1.85; }
+        @media(max-width:600px){
+            .kill-chain{flex-direction:column;}
+            .kc-step::after{content:'▼';right:50%;bottom:-11px;top:auto;transform:translateX(50%);}
+            .kc-step{border-right:1px solid rgba(0,255,102,.2);border-bottom:none;}
+            .kc-step:last-child{border-bottom:1px solid rgba(0,255,102,.2);}
+        }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Actividad 16 — Dilemas Éticos en Ciberseguridad</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════ PORTADA ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Parcial:</strong> 2</p>
+        <p><strong>Actividad:</strong> 16 — Dilemas Éticos en Ciberseguridad</p>
+        <p><strong>Fecha:</strong> Mayo 2026</p>
+        <div class="risk-badge">⚖ ÉTICA &amp; CIBERSEGURIDAD — ANÁLISIS PROFESIONAL</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv">3</div><div class="sl">ESCENARIOS</div></div>
+        <div class="stat-card"><div class="sv">10</div><div class="sl">MANDAMIENTOS</div></div>
+        <div class="stat-card"><div class="sv yellow">5</div><div class="sl">PREG. x ESC.</div></div>
+        <div class="stat-card"><div class="sv">10</div><div class="sl">PTS. TOTAL</div></div>
+        <div class="stat-card"><div class="sv red">3</div><div class="sl">MARCOS ÉTICOS</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:18px;">Equipo 5 — Integrantes:</p>
+    <div class="team-grid">
+        <div class="team-card"><span class="name">Edwin Admael</span> Castillo Gómez — 181700</div>
+        <div class="team-card"><span class="name">Carlos René</span> Castillo Olvera — 182033</div>
+        <div class="team-card"><span class="name">Diego Osvaldo</span> Hernández Fernández — 182217</div>
+        <div class="team-card me"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702</div>
+    </div>
+</section>
+
+<!-- ══════════════════════ OBJETIVO ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-crosshairs"></i> 01 — Objetivo</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Evaluar la capacidad del estudiante para <strong style="color:#00ff66">analizar, justificar y tomar decisiones éticas</strong> en escenarios reales de ciberseguridad, considerando marcos éticos, legales y organizacionales.
+    </p>
+    <br>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Cada escenario requiere: identificar el dilema ético, definir la acción profesional, justificar desde 3 enfoques éticos, relacionar con los Mandamientos de la Ética Informática y clasificar el tipo de delito cibernético.
+    </p>
+    <div class="cve-grid" style="margin-top:16px;">
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:8px;">// MARCOS ÉTICOS APLICADOS</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                <span style="color:#00cfff;">A)</span> <strong>Ética Utilitarista</strong> — Mayor bien para el mayor número<br>
+                <span style="color:#ff6a00;">B)</span> <strong>Enfoque de Derechos</strong> — Derechos fundamentales del individuo<br>
+                <span style="color:#ffdd00;">C)</span> <strong>Enfoque del Bien Común</strong> — Interés colectivo de la sociedad
+            </div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:8px;">// RÚBRICA DE EVALUACIÓN</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                📌 Identificación del dilema — <span style="color:#00ff66;">02 pts.</span><br>
+                📌 Aplicación de marcos éticos — <span style="color:#00ff66;">02 pts.</span><br>
+                📌 Relación con mandamientos — <span style="color:#00ff66;">02 pts.</span><br>
+                📌 Clasificación del delito — <span style="color:#00ff66;">02 pts.</span><br>
+                📌 Justificación profesional — <span style="color:#00ff66;">02 pts.</span>
+            </div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:8px;">// TIPOS DE DELITO</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                🔴 <strong>Delito Informático</strong> — Medio y objeto son informáticos<br>
+                🟡 <strong>Delito Asistido por Computadora</strong> — PC como instrumento auxiliar<br>
+                ⚪ <strong>Delito Incidental</strong> — La PC no es esencial para el delito
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════ ESCENARIO 01 ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="esc-header">
+        <div class="esc-num">01</div>
+        <div>
+            <div class="esc-title">Acceso No Autorizado Interno</div>
+            <div class="esc-sub">Monitoreo de correos sin autorización formal</div>
+        </div>
+    </div>
+
+    <!-- Contexto visual -->
+    <div class="mocks-grid">
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#27c93f">●</span> &nbsp; escenario-01.txt — CONTEXTO</div>
+            <div class="mock-body" style="font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.8;">
+                <span style="color:#00ff66;">$</span> Trabajas en ciberseguridad de una empresa.<br>
+                <span style="color:#00ff66;">$</span> Un compañero accedió a correos privados<br>
+                <span style="color:#00ff66;">$</span> del director general <span style="color:#ff2244;font-weight:bold;">sin autorización</span>.<br>
+                <span style="color:#00ff66;">$</span> Argumento: "detectar fugas de información".<br><br>
+                <span style="color:#ffdd00;">⚠ DILEMA:</span> Seguridad vs. Privacidad
+            </div>
+        </div>
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#27c93f">●</span> &nbsp; clasificacion-delito.log</div>
+            <div class="mock-body">
+                <div style="font-size:.72rem;color:rgba(0,255,102,.5);margin-bottom:8px;">[+] Tipo de Delito Identificado</div>
+                <div style="color:#ff2244;font-size:1rem;font-weight:bold;margin-bottom:6px;">DELITO INFORMÁTICO</div>
+                <div style="font-size:.75rem;color:rgba(255,255,255,.7);line-height:1.6;">
+                    Art. 211bis2 CPF<br>
+                    Acceso ilícito a sistemas informáticos<br>
+                    Penas: 6 meses a 2 años de prisión<br><br>
+                    <span style="color:#ffdd00;">Razón:</span> El medio <em>y</em> el objeto son informáticos.<br>
+                    No es "asistido" — la PC es el medio directo.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kill chain del dilema -->
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:16px 0 8px;">// CADENA DE ANÁLISIS ÉTICO</p>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — DETECTAR</div><div class="ki">🔍</div><div class="kt">Revisión de logs</div><div class="kd">Se detecta acceso<br>no autorizado a<br>correos del director</div></div>
+        <div class="kc-step"><div class="kn">02 — DILEMA</div><div class="ki">⚖️</div><div class="kt">Seguridad vs.<br>Privacidad</div><div class="kd">Fin no justifica<br>medios sin<br>autorización formal</div></div>
+        <div class="kc-step"><div class="kn">03 — ACCIÓN</div><div class="ki">📋</div><div class="kt">Documentar y<br>escalar</div><div class="kd">Evidencia forense<br>→ Compliance<br>→ Legal y RRHH</div></div>
+        <div class="kc-step"><div class="kn">04 — NOTIFICAR</div><div class="ki">📨</div><div class="kt">Al director<br>afectado</div><div class="kd">Derecho a saber<br>que sus correos<br>fueron accedidos</div></div>
+        <div class="kc-step"><div class="kn">05 — PROPONER</div><div class="ki">🛡️</div><div class="kt">Canal formal<br>de auditoría</div><div class="kd">Política clara<br>con autorización<br>de dirección</div></div>
+        <div class="kc-root green"><div class="ki">✓</div><div class="kt">DECISIÓN ÉTICA</div><div class="kd">Reportar<br>a Compliance<br>sin actuar solo</div></div>
+    </div>
+
+    <!-- Q1: Dilema -->
+    <span class="q-label">// PREGUNTA 1 — ¿CUÁL ES EL DILEMA ÉTICO?</span>
+    <p class="q-answer">El dilema radica en la tensión entre la <strong style="color:#00ff66">seguridad organizacional</strong> y el <strong style="color:#00ff66">derecho fundamental a la privacidad</strong>. El compañero actuó sin autorización formal — violando procedimientos establecidos — aunque con aparente justificación de seguridad. La pregunta central es: ¿puede un profesional vulnerar la privacidad de otros de manera unilateral, sin respaldo legal ni supervisión? La respuesta ética y legal es <strong style="color:#ff2244">no</strong>: el fin no justifica los medios cuando existen canales formales disponibles.</p>
+
+    <!-- Q2: Acción -->
+    <span class="q-label">// PREGUNTA 2 — ¿QUÉ HARÍAS COMO ESPECIALISTA?</span>
+    <div class="rec-list">
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 1</span><span class="rec-num">Inmediato</span></div><div><div class="rec-title">Documentar el incidente con evidencia forense</div><div class="rec-desc">Logs, timestamps y hashes siguiendo protocolo de cadena de custodia.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 2</span><span class="rec-num">Escalar</span></div><div><div class="rec-title">Notificar a Compliance, Legal y RRHH por escrito</div><div class="rec-desc">Sin tomar acción unilateral — el proceso debe ser formal y documentado.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 3</span><span class="rec-num">Informar</span></div><div><div class="rec-title">Notificar al director general afectado</div><div class="rec-desc">Tiene derecho a saber que sus comunicaciones fueron accedidas sin autorización.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 4</span><span class="rec-num">Proteger</span></div><div><div class="rec-title">No divulgar el contenido de los correos revisados</div><div class="rec-desc">Preservar la confidencialidad del contenido accedido ilegítimamente.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 5</span><span class="rec-num">Prevenir</span></div><div><div class="rec-title">Proponer un canal formal de auditoría interna</div><div class="rec-desc">Con autorización expresa de dirección para investigaciones futuras de seguridad.</div></div></div>
+    </div>
+
+    <!-- Q3: Marcos éticos -->
+    <span class="q-label">// PREGUNTA 3 — JUSTIFICACIÓN DESDE LOS 3 MARCOS ÉTICOS</span>
+    <div class="cia-grid">
+        <div class="cia-card util">
+            <div class="cia-letter">U</div>
+            <div class="cia-title">A) Ética Utilitarista</div>
+            <span class="cia-badge">MAYOR BIEN COLECTIVO</span>
+            <div class="cia-text">El daño potencial (erosión de confianza, precedente peligroso, riesgo legal) supera el beneficio especulativo de detectar una fuga no confirmada. Si todos los empleados pudieran monitorear a sus colegas sin autorización, el daño colectivo sería mayor que cualquier beneficio individual.</div>
+        </div>
+        <div class="cia-card dere">
+            <div class="cia-letter">D</div>
+            <div class="cia-title">B) Enfoque de Derechos</div>
+            <span class="cia-badge">DERECHOS FUNDAMENTALES</span>
+            <div class="cia-text">El director tiene derecho fundamental a la privacidad de sus comunicaciones, reconocido en el <strong>Art. 16 Constitucional</strong> y la <strong>LFPDPPP</strong>. Este derecho no cede ante la sospecha no fundamentada de un compañero, independientemente de su cargo.</div>
+        </div>
+        <div class="cia-card bien">
+            <div class="cia-letter">B</div>
+            <div class="cia-title">C) Bien Común</div>
+            <span class="cia-badge">INTERÉS COLECTIVO</span>
+            <div class="cia-text">Una organización donde los empleados se espían mutuamente erosiona la confianza institucional, reduce la productividad y vulnera el ambiente laboral. El bien común exige procedimientos claros, transparentes y supervisados por autoridad competente.</div>
+        </div>
+    </div>
+
+    <!-- Q4: Mandamientos -->
+    <span class="q-label">// PREGUNTA 4 — MANDAMIENTOS DE ÉTICA INFORMÁTICA</span>
+    <table class="vuln-table">
+        <tr><th>#</th><th>MANDAMIENTO</th><th>ESTADO</th></tr>
+        <tr><td class="vid">01</td><td>No usar computadoras para dañar a otros (daño a la privacidad y reputación del director)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">03</td><td>No husmear los archivos de computadora de otras personas sin autorización</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">07</td><td>No usar los recursos computacionales de otra persona sin autorización</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">09</td><td>Pensar en las consecuencias sociales del uso de la tecnología</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">10</td><td>Usar siempre computadoras de manera que asegure consideración y respeto hacia los demás</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+    </table>
+
+    <!-- Q5: Clasificación -->
+    <span class="q-label">// PREGUNTA 5 — CLASIFICACIÓN DEL TIPO DE DELITO</span>
+    <div class="terminal">TIPO: DELITO INFORMÁTICO
+ART:  211bis2 CPF — Acceso ilícito a sistemas informáticos
+PENA: 6 meses a 2 años de prisión
+
+RAZÓN: El medio y el objeto del delito son informáticos.
+       La computadora NO es instrumento auxiliar —
+       es el medio DIRECTO e INDISPENSABLE del acto ilícito.
+       ∴ No es "asistido" ni "incidental" → DELITO INFORMÁTICO</div>
+</section>
+
+<!-- ══════════════════════ ESCENARIO 02 ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="esc-header">
+        <div class="esc-num red">02</div>
+        <div>
+            <div class="esc-title">Vulnerabilidad Crítica No Reportada</div>
+            <div class="esc-sub red">Hallazgo en sistema financiero antes de firma contractual</div>
+        </div>
+    </div>
+
+    <div class="mocks-grid">
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#27c93f">●</span> &nbsp; escenario-02.txt — CONTEXTO</div>
+            <div class="mock-body" style="font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.8;">
+                <span style="color:#00ff66;">$</span> Durante un pentest encuentras una<br>
+                <span style="color:#00ff66;">$</span> <span style="color:#ff2244;font-weight:bold;">vulnerabilidad crítica</span> en sistema financiero.<br>
+                <span style="color:#00ff66;">$</span> Permite extraer dinero del sistema.<br>
+                <span style="color:#00ff66;">$</span> El cliente aún <span style="color:#ff2244;">no ha firmado</span> el contrato.<br>
+                <span style="color:#00ff66;">$</span> Podrías explotarla sin ser detectado.<br><br>
+                <span style="color:#ffdd00;">⚠ DILEMA:</span> Beneficio propio vs. Responsabilidad
+            </div>
+        </div>
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#27c93f">●</span> &nbsp; clasificacion-delito.log</div>
+            <div class="mock-body">
+                <div style="font-size:.72rem;color:rgba(0,255,102,.5);margin-bottom:8px;">[+] Tipo de Delito Identificado (si se explota)</div>
+                <div style="color:#ff2244;font-size:1rem;font-weight:bold;margin-bottom:6px;">DELITO INFORMÁTICO + FRAUDE</div>
+                <div style="font-size:.75rem;color:rgba(255,255,255,.7);line-height:1.6;">
+                    Arts. 211bis + 386 + 400bis CPF<br>
+                    Fraude informático agravado<br>
+                    Posible lavado de dinero<br><br>
+                    <span style="color:#00ff66;">Estado actual:</span> Descubrimiento sin<br>explotación = Hacker Ético ✓<br>
+                    <span style="color:#00cfff;">Marco:</span> Responsible Disclosure
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:16px 0 8px;">// CADENA DE ANÁLISIS ÉTICO</p>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — HALLAZGO</div><div class="ki">💥</div><div class="kt">Vulnerabilidad<br>crítica encontrada</div><div class="kd">Permite extraer<br>fondos del<br>sistema bancario</div></div>
+        <div class="kc-step"><div class="kn">02 — DILEMA</div><div class="ki">⚖️</div><div class="kt">¿Explotar o<br>reportar?</div><div class="kd">Sin contrato<br>¿hay obligación<br>moral? SÍ</div></div>
+        <div class="kc-step"><div class="kn">03 — DECISIÓN</div><div class="ki">🚫</div><div class="kt">NO explotar<br>bajo ninguna<br>circunstancia</div><div class="kd">Ética profesional<br>independiente del<br>estado contractual</div></div>
+        <div class="kc-step"><div class="kn">04 — NOTIFICAR</div><div class="ki">📨</div><div class="kt">Alertar al<br>cliente de<br>riesgo crítico</div><div class="kd">Sin detalles<br>técnicos completos<br>hasta contrato</div></div>
+        <div class="kc-step"><div class="kn">05 — ESCALAR</div><div class="ki">🏛️</div><div class="kt">CERT México<br>o CNBV si<br>cliente rechaza</div><div class="kd">Proteger a<br>terceros no<br>involucrados</div></div>
+        <div class="kc-root green"><div class="ki">✓</div><div class="kt">RESPONSIBLE<br>DISCLOSURE</div><div class="kd">Reportar<br>de buena fe<br>sin explotar</div></div>
+    </div>
+
+    <span class="q-label red">// PREGUNTA 1 — ¿CUÁL ES EL DILEMA ÉTICO?</span>
+    <p class="q-answer">El dilema confronta el <strong style="color:#ff2244">interés personal</strong> (beneficio económico sin detección) contra la <strong style="color:#00ff66">responsabilidad profesional y ética</strong>. Existe además una segunda tensión: la ambigüedad contractual. Sin contrato firmado, el especialista podría argumentar que no tiene obligación formal. Sin embargo, esto no elimina la obligación ética de no causar daño a terceros — los usuarios del sistema financiero. La pregunta es: ¿la ausencia de contrato cancela la responsabilidad moral? La respuesta es <strong style="color:#ff2244">no</strong>.</p>
+
+    <span class="q-label red">// PREGUNTA 2 — ¿QUÉ HARÍAS COMO ESPECIALISTA?</span>
+    <div class="rec-list">
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge crit">CRÍTICO</span><span class="rec-num">Inmediato</span></div><div><div class="rec-title">No explotar la vulnerabilidad bajo ninguna circunstancia</div><div class="rec-desc">Independientemente del estado contractual — la ética profesional es absoluta.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge alto">URGENTE</span><span class="rec-num">Mismo día</span></div><div><div class="rec-title">Notificar al cliente sobre la existencia de vulnerabilidad crítica</div><div class="rec-desc">Sin revelar detalles técnicos completos hasta firma del contrato.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 3</span><span class="rec-num">Documentar</span></div><div><div class="rec-title">Documentar el hallazgo con fecha y hora</div><div class="rec-desc">Evidencia de Responsible Disclosure — protección legal del investigador.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">PASO 4</span><span class="rec-num">Gestionar</span></div><div><div class="rec-title">Gestionar firma urgente del contrato</div><div class="rec-desc">Para proceder con el reporte técnico completo y proceso de remediación.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge med">ALT.</span><span class="rec-num">Si rechaza</span></div><div><div class="rec-title">Notificar a CERT México o CNBV si riesgo es inminente</div><div class="rec-desc">Proteger a terceros (usuarios del sistema financiero) que no son parte del contrato.</div></div></div>
+    </div>
+
+    <span class="q-label red">// PREGUNTA 3 — JUSTIFICACIÓN DESDE LOS 3 MARCOS ÉTICOS</span>
+    <div class="cia-grid">
+        <div class="cia-card util">
+            <div class="cia-letter">U</div>
+            <div class="cia-title">A) Ética Utilitarista</div>
+            <span class="cia-badge">MAYOR BIEN COLECTIVO</span>
+            <div class="cia-text">El daño potencial a miles de usuarios del sistema financiero (pérdida de ahorros, afectación económica masiva) supera infinitamente cualquier beneficio individual. La máxima utilidad se obtiene reportando y remediando responsablemente.</div>
+        </div>
+        <div class="cia-card dere">
+            <div class="cia-letter">D</div>
+            <div class="cia-title">B) Enfoque de Derechos</div>
+            <span class="cia-badge">PROTECCIÓN PATRIMONIAL</span>
+            <div class="cia-text">Los usuarios del sistema tienen derecho a que sus fondos estén protegidos. El especialista tiene la obligación profesional de no explotar vulnerabilidades que afectan a terceros inocentes que no son parte de la relación contractual.</div>
+        </div>
+        <div class="cia-card bien">
+            <div class="cia-letter">B</div>
+            <div class="cia-title">C) Bien Común</div>
+            <span class="cia-badge">ESTABILIDAD FINANCIERA</span>
+            <div class="cia-text">La estabilidad del sistema financiero es un bien común esencial. Explotar una vulnerabilidad bancaria afecta la confianza en el sistema económico, perjudicando a la sociedad en su conjunto más allá del cliente directo.</div>
+        </div>
+    </div>
+
+    <span class="q-label red">// PREGUNTA 4 — MANDAMIENTOS DE ÉTICA INFORMÁTICA (si se explota)</span>
+    <table class="vuln-table">
+        <tr><th>#</th><th>MANDAMIENTO</th><th>ESTADO</th></tr>
+        <tr><td class="vid">01</td><td>No usar computadoras para dañar a otros (extraer dinero = daño directo a usuarios)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">04</td><td>No usar computadoras para robar (extracción no autorizada de fondos financieros)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">02</td><td>No interferir en el trabajo computacional de otras personas (sistema bancario activo)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">09</td><td>Pensar en las consecuencias sociales del sistema que se usa (impacto masivo en usuarios)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">10</td><td>Usar computadoras con consideración y respeto — reportar la vulnerabilidad es respetarlo</td><td><span class="badge badge-ok">RESPETADO</span></td></tr>
+    </table>
+
+    <span class="q-label red">// PREGUNTA 5 — CLASIFICACIÓN DEL TIPO DE DELITO</span>
+    <div class="terminal">TIPO: DELITO INFORMÁTICO + FRAUDE (si se explota)
+ARTS: 211bis + 386 CPF + potencialmente Art. 400bis (lavado)
+
+ESTADO ACTUAL (descubrimiento sin explotación):
+  ✓ Investigador actúa dentro de ética del hacker ético
+  ✓ Marco legal Responsible Disclosure lo protege
+  ✗ Explotar = delito informático agravado en concurso con fraude</div>
+</section>
+
+<!-- ══════════════════════ ESCENARIO 03 ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="esc-header">
+        <div class="esc-num orange">03</div>
+        <div>
+            <div class="esc-title">Uso de Herramientas OSINT</div>
+            <div class="esc-sub orange">Recolección de datos para presión psicológica</div>
+        </div>
+    </div>
+
+    <div class="mocks-grid">
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#27c93f">●</span> &nbsp; escenario-03.txt — CONTEXTO</div>
+            <div class="mock-body" style="font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.8;">
+                <span style="color:#00ff66;">$</span> Investigando a sospechoso de fraude.<br>
+                <span style="color:#00ff66;">$</span> Encuentras info personal vía OSINT:<br>
+                <span style="color:#ff6a00;">  → dirección, familia, hábitos</span><br>
+                <span style="color:#00ff66;">$</span> Tu superior te pide usar esa info<br>
+                <span style="color:#ff2244;">  → para presionarlo psicológicamente.</span><br><br>
+                <span style="color:#ffdd00;">⚠ DILEMA:</span> Obediencia vs. Integridad
+            </div>
+        </div>
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff2244">●</span> <span style="color:#ffdd00">●</span> <span style="color:#27c93f">●</span> &nbsp; clasificacion-delito.log</div>
+            <div class="mock-body">
+                <div style="font-size:.72rem;color:rgba(0,255,102,.5);margin-bottom:8px;">[+] Tipo de Delito Identificado</div>
+                <div style="color:#ff6a00;font-size:1rem;font-weight:bold;margin-bottom:6px;">DELITO ASISTIDO POR COMPUTADORA</div>
+                <div style="font-size:.75rem;color:rgba(255,255,255,.7);line-height:1.6;">
+                    Arts. 288 + 210 + 214 CPF + LFPDPPP<br>
+                    Coacción / lesiones psicológicas<br>
+                    Art. 3bis LFT — hostigamiento laboral<br><br>
+                    <span style="color:#ffdd00;">Razón:</span> La PC es instrumento auxiliar.<br>El delito principal es la coacción.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:16px 0 8px;">// CADENA DE ANÁLISIS ÉTICO</p>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — OSINT</div><div class="ki">🔎</div><div class="kt">Info personal<br>en fuentes<br>abiertas</div><div class="kd">Legal en contexto<br>de investigación<br>de fraude</div></div>
+        <div class="kc-step"><div class="kn">02 — ORDEN</div><div class="ki">⚠️</div><div class="kt">Superior pide<br>usar info para<br>coerción psic.</div><div class="kd">Transforma acto<br>legítimo en<br>ilegal e inmoral</div></div>
+        <div class="kc-step"><div class="kn">03 — DILEMA</div><div class="ki">⚖️</div><div class="kt">Obedecer vs.<br>Integridad<br>profesional</div><div class="kd">Ejecutor también<br>es responsable<br>legalmente</div></div>
+        <div class="kc-step"><div class="kn">04 — NEGARSE</div><div class="ki">🚫</div><div class="kt">Formal y<br>documentado<br>con razones</div><div class="kd">Protección legal<br>ante posibles<br>represalias</div></div>
+        <div class="kc-step"><div class="kn">05 — ESCALAR</div><div class="ki">🏛️</div><div class="kt">Compliance o<br>Legal o INAI<br>si persiste</div><div class="kd">Denuncia por<br>manejo ilícito<br>de datos</div></div>
+        <div class="kc-root green"><div class="ki">✓</div><div class="kt">NEGARSE Y<br>DOCUMENTAR</div><div class="kd">Integridad<br>sobre<br>obediencia</div></div>
+    </div>
+
+    <span class="q-label orange">// PREGUNTA 1 — ¿CUÁL ES EL DILEMA ÉTICO?</span>
+    <p class="q-answer">El dilema confronta la <strong style="color:#ff6a00">obediencia jerárquica</strong> contra la <strong style="color:#00ff66">integridad ética y legal</strong>. Aunque recolectar información vía OSINT puede ser legal en contexto de investigación de fraude, usar esa información para coerción psicológica es <strong style="color:#ff2244">ilegal e inaceptable</strong>. La orden del superior transforma una actividad legítima en acoso. Adicionalmente: el profesional que ejecuta la orden también es responsable legalmente — no solo quien la ordena.</p>
+
+    <span class="q-label orange">// PREGUNTA 2 — ¿QUÉ HARÍAS COMO ESPECIALISTA?</span>
+    <div class="rec-list">
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge crit">NO</span><span class="rec-num">Inmediato</span></div><div><div class="rec-title">Negarse formalmente y de manera documentada</div><div class="rec-desc">Expresar razones éticas y legales específicas — no solo "no quiero".</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge alto">GUARDAR</span><span class="rec-num">Evidencia</span></div><div><div class="rec-title">Documentar la instrucción recibida</div><div class="rec-desc">Correo, mensaje o testigos — protección legal ante posibles represalias laborales.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">ESCALAR</span><span class="rec-num">Interno</span></div><div><div class="rec-title">Escalar a Compliance, Legal o Dirección General</div><div class="rec-desc">Si no existe departamento legal, acudir directamente a la Dirección General.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge med">EXTERNO</span><span class="rec-num">Si persiste</span></div><div><div class="rec-title">Considerar denuncia ante el INAI</div><div class="rec-desc">Por manejo ilícito de datos personales con fines de coacción — LFPDPPP.</div></div></div>
+        <div class="rec-item"><div class="rec-id"><span class="rec-badge ok">LIMITAR</span><span class="rec-num">Siempre</span></div><div><div class="rec-title">Limitar OSINT al contexto de investigación legal formal</div><div class="rec-desc">Nunca para presión psicológica, intimidación o coacción a ninguna persona.</div></div></div>
+    </div>
+
+    <span class="q-label orange">// PREGUNTA 3 — JUSTIFICACIÓN DESDE LOS 3 MARCOS ÉTICOS</span>
+    <div class="cia-grid">
+        <div class="cia-card util">
+            <div class="cia-letter">U</div>
+            <div class="cia-title">A) Ética Utilitarista</div>
+            <span class="cia-badge">ANÁLISIS COSTO-BENEFICIO</span>
+            <div class="cia-text">La presión psicológica causa daño real e inmediato al sujeto y expone a la organización a responsabilidades legales graves (demandas, sanciones INAI, desprestigio). El daño supera cualquier beneficio de "acelerar" la investigación.</div>
+        </div>
+        <div class="cia-card dere">
+            <div class="cia-letter">D</div>
+            <div class="cia-title">B) Enfoque de Derechos</div>
+            <span class="cia-badge">PRESUNCIÓN DE INOCENCIA</span>
+            <div class="cia-text">Toda persona, incluso sospechosa de fraude, tiene derecho a la presunción de inocencia (<strong>Art. 20 CPEUM</strong>), al debido proceso y a no ser sometida a coerción psicológica. La investigación debe seguir canales legales.</div>
+        </div>
+        <div class="cia-card bien">
+            <div class="cia-letter">B</div>
+            <div class="cia-title">C) Bien Común</div>
+            <span class="cia-badge">CONFIANZA PÚBLICA</span>
+            <div class="cia-text">Una sociedad donde profesionales de seguridad pueden acosar ciudadanos con datos OSINT representa un peligro para todos. El uso ético de OSINT pierde legitimidad si se emplea para intimidación, dañando la confianza pública en la ciberseguridad.</div>
+        </div>
+    </div>
+
+    <span class="q-label orange">// PREGUNTA 4 — MANDAMIENTOS DE ÉTICA INFORMÁTICA</span>
+    <table class="vuln-table">
+        <tr><th>#</th><th>MANDAMIENTO</th><th>ESTADO</th></tr>
+        <tr><td class="vid">01</td><td>No usar computadoras para dañar a otros (la presión psicológica es un daño real)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">03</td><td>No husmear archivos de otras personas sin justificación legal formal</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">05</td><td>No usar computadoras para dar falso testimonio (manipular narrativa con datos personales)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">08</td><td>No apropiarse de la producción intelectual de otro (datos personales como arma)</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">09</td><td>Pensar en las consecuencias sociales del uso de la información para intimidar</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+        <tr><td class="vid">10</td><td>Usar computadoras con respeto y consideración hacia los demás</td><td><span class="badge badge-crit">VIOLADO</span></td></tr>
+    </table>
+
+    <span class="q-label orange">// PREGUNTA 5 — CLASIFICACIÓN DEL TIPO DE DELITO</span>
+    <div class="terminal">TIPO: DELITO ASISTIDO POR COMPUTADORA
+ARTS: 288 CPF (coacción) + 210/214 CPF + LFPDPPP + Art. 3bis LFT
+
+RAZÓN: El delito principal es la COACCIÓN/ACOSO.
+       La computadora y el OSINT son el medio INSTRUMENTAL,
+       no el objeto del delito.
+       ∴ No es "delito informático" → DELITO ASISTIDO
+
+RESPONSABILIDAD: Recae en quien ordena Y en quien ejecuta.</div>
+</section>
+
+<!-- ══════════════════════ TABLA COMPARATIVA ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-table"></i> Tabla Comparativa — Resumen de los 3 Escenarios</h2>
+    <table class="vuln-table">
+        <tr>
+            <th>CRITERIO</th>
+            <th>ESC. 01 — Acceso No Autorizado</th>
+            <th>ESC. 02 — Vuln. No Reportada</th>
+            <th>ESC. 03 — OSINT Coerción</th>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Dilema central</td>
+            <td>Seguridad vs. Privacidad</td>
+            <td>Beneficio propio vs. Responsabilidad</td>
+            <td>Obediencia vs. Integridad</td>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Decisión ética</td>
+            <td>Reportar a Compliance y Legal</td>
+            <td>No explotar; Responsible Disclosure</td>
+            <td>Negarse y escalar a Legal / INAI</td>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Utilitarismo</td>
+            <td>Daño colectivo &gt; Beneficio especulativo</td>
+            <td>Daño masivo &gt; Beneficio individual</td>
+            <td>Riesgo legal &gt; Presunta ventaja</td>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Derechos</td>
+            <td>Art. 16 CPEUM — Privacidad</td>
+            <td>Derecho al patrimonio seguro</td>
+            <td>Art. 20 CPEUM — Debido proceso</td>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Bien Común</td>
+            <td>Confianza organizacional</td>
+            <td>Estabilidad financiera social</td>
+            <td>Uso ético de la ciberseguridad</td>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Tipo de Delito</td>
+            <td><span class="badge badge-crit">DELITO INFORMÁTICO</span><br><small>Art. 211bis2 CPF</small></td>
+            <td><span class="badge badge-crit">D. INFORMÁTICO + FRAUDE</span><br><small>Arts. 211bis, 386, 400bis CPF</small></td>
+            <td><span class="badge badge-alto">ASISTIDO POR PC</span><br><small>Arts. 288, 210 CPF + LFPDPPP</small></td>
+        </tr>
+        <tr>
+            <td style="color:#00ff66;font-weight:bold;">Mandamiento clave</td>
+            <td>No husmear archivos ajenos (#3)</td>
+            <td>No usar PC para robar (#4)</td>
+            <td>No usar PC para dañar (#1)</td>
+        </tr>
+    </table>
+</section>
+
+<!-- ══════════════════════ 10 MANDAMIENTOS ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-list-ol"></i> Los 10 Mandamientos de la Ética Informática</h2>
+    <p style="color:rgba(255,255,255,.7);font-size:.82rem;margin-bottom:12px;">Computer Ethics Institute — Marco de referencia ético para profesionales de la informática</p>
+    <table class="vuln-table">
+        <tr><th style="width:5%">#</th><th>MANDAMIENTO</th><th style="width:18%">RELACIÓN</th></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">01</td><td>No usarás una computadora para dañar a otras personas.</td><td><span class="badge badge-crit">ESC. 01, 02, 03</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">02</td><td>No interferirás con el trabajo computacional de otras personas.</td><td><span class="badge badge-crit">ESC. 02</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">03</td><td>No husmearás en los archivos de computadora de otras personas.</td><td><span class="badge badge-crit">ESC. 01, 03</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">04</td><td>No usarás una computadora para robar.</td><td><span class="badge badge-crit">ESC. 02</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">05</td><td>No usarás una computadora para dar falso testimonio.</td><td><span class="badge badge-alto">ESC. 03</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">06</td><td>No copiarás ni utilizarás software propietario sin haberlo pagado.</td><td><span class="badge badge-ok">—</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">07</td><td>No usarás los recursos computacionales de otra persona sin autorización.</td><td><span class="badge badge-crit">ESC. 01</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">08</td><td>No te apropiarás de la producción intelectual de otra persona.</td><td><span class="badge badge-alto">ESC. 03</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">09</td><td>Pensarás en las consecuencias sociales del programa que diseñas o usas.</td><td><span class="badge badge-crit">ESC. 01, 02, 03</span></td></tr>
+        <tr><td style="color:#00ff66;font-weight:bold;">10</td><td>Siempre usarás una computadora con consideración y respeto hacia tus semejantes.</td><td><span class="badge badge-crit">ESC. 01, 02, 03</span></td></tr>
+    </table>
+</section>
+
+<!-- ══════════════════════ CONCLUSIÓN ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> Conclusión y Reflexión Técnica</h2>
+    <div class="concl-box green">
+        <h3>// CONCLUSIÓN EJECUTIVA</h3>
+        <p>Los tres escenarios analizados demuestran que <strong>la ética en ciberseguridad no es opcional</strong> ni depende del estado contractual, de las instrucciones del superior o de la posibilidad de no ser detectado. El profesional de seguridad actúa en posiciones de alto privilegio técnico y, por tanto, de alta responsabilidad moral.</p>
+        <p>En cada caso, la respuesta correcta requirió <strong>documentar, escalar por canales formales y no actuar unilateralmente</strong>. La ciberseguridad ética implica que el poder técnico está siempre subordinado al marco legal y a los principios de respeto a la privacidad, integridad y dignidad de las personas.</p>
+        <p>Los tres tipos de delito identificados (informático, informático agravado, asistido por computadora) muestran que <strong>el mismo acto técnico tiene consecuencias penales radicalmente distintas</strong> según el objeto y la naturaleza del delito.</p>
+    </div>
+    <div class="concl-box orange">
+        <h3>// REFLEXIÓN TÉCNICA — APRENDIZAJES</h3>
+        <p>Esta actividad clarificó en la práctica lo estudiado en <strong>CNO V</strong>: la ética informática no es un conjunto de reglas abstractas, sino un sistema de valores operativos que deben guiar cada decisión técnica.</p>
+        <p>Los <strong>10 Mandamientos de la Ética Informática</strong> no son restricciones — son el estándar mínimo que distingue al profesional de seguridad del atacante. Ambos pueden tener las mismas capacidades técnicas; lo que los diferencia es el marco ético que guía su uso.</p>
+        <p>El <strong>modelo CIA aplicado a la ética</strong> (Utilitarismo, Derechos, Bien Común) es una herramienta analítica poderosa: cuando los tres enfoques apuntan en la misma dirección, la decisión ética es clara. Cuando divergen, revela la verdadera complejidad del dilema.</p>
+        <p>Lección fundamental: <strong>la responsabilidad no se transfiere al dar una orden</strong>. Quien ejecuta un acto ilícito es tan responsable como quien lo ordena — Art. 13 CPF, autoría y participación.</p>
+    </div>
+    <!-- Roadmap -->
+    <h3 style="margin-top:16px;"><i class="fas fa-road"></i> Principios de Actuación Profesional</h3>
+    <div class="roadmap-grid">
+        <div class="rm-col" style="border-top:2px solid #ff2244"><span class="rm-phase s1">ANTE DILEMA ÉTICO</span><div class="rm-item"><i class="fas fa-pause-circle"></i>Detenerse y analizar</div><div class="rm-item"><i class="fas fa-search"></i>Identificar stakeholders</div><div class="rm-item"><i class="fas fa-balance-scale"></i>Aplicar 3 marcos éticos</div></div>
+        <div class="rm-col" style="border-top:2px solid #ff6a00"><span class="rm-phase s2">ANTE ORDEN ILÍCITA</span><div class="rm-item"><i class="fas fa-times-circle"></i>Negarse formalmente</div><div class="rm-item"><i class="fas fa-file-alt"></i>Documentar la instrucción</div><div class="rm-item"><i class="fas fa-arrow-up"></i>Escalar a Compliance</div></div>
+        <div class="rm-col" style="border-top:2px solid #ffdd00"><span class="rm-phase s3">ANTE HALLAZGO CRÍTICO</span><div class="rm-item"><i class="fas fa-ban"></i>No explotar jamás</div><div class="rm-item"><i class="fas fa-bell"></i>Responsible Disclosure</div><div class="rm-item"><i class="fas fa-shield-alt"></i>Proteger a terceros</div></div>
+        <div class="rm-col" style="border-top:2px solid #00ff66"><span class="rm-phase sc">SIEMPRE</span><div class="rm-item"><i class="fas fa-book"></i>Conocer el marco legal</div><div class="rm-item"><i class="fas fa-user-shield"></i>Actuar con integridad</div><div class="rm-item"><i class="fas fa-eye"></i>Pensar en el impacto social</div></div>
+    </div>
+</section>
+
+<!-- ══════════════════════ REFERENCIAS ══════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> Referencias Técnicas y Legales</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-gavel"></i>Código Penal Federal (CPF) — Arts. 211bis, 211bis2, 386, 400bis, 288, 210, 214 · <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CPF.pdf" target="_blank">diputados.gob.mx — CPF</a></li>
+        <li><i class="fas fa-gavel"></i>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) · <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf" target="_blank">diputados.gob.mx — LFPDPPP</a></li>
+        <li><i class="fas fa-gavel"></i>Constitución Política de los Estados Unidos Mexicanos — Art. 16 (Privacidad) y Art. 20 (Presunción de inocencia) · <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf" target="_blank">diputados.gob.mx — CPEUM</a></li>
+        <li><i class="fas fa-gavel"></i>Ley Federal del Trabajo — Art. 3bis (Hostigamiento laboral) · <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf" target="_blank">diputados.gob.mx — LFT</a></li>
+        <li><i class="fas fa-file-alt"></i>Computer Ethics Institute — The Ten Commandments of Computer Ethics (1992) · <a href="https://cpsr.org/prevsite/program/ethics/CEI.html" target="_blank">cpsr.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>EC-Council — Code of Ethics for Ethical Hacking · <a href="https://www.eccouncil.org/code-of-ethics/" target="_blank">eccouncil.org/code-of-ethics</a></li>
+        <li><i class="fas fa-external-link-alt"></i>CERT Coordination Center — Responsible Disclosure Policy · <a href="https://www.kb.cert.org/vuls/discovery/" target="_blank">kb.cert.org/vuls/discovery</a></li>
+        <li><i class="fas fa-external-link-alt"></i>ENISA — Insider Threat Landscape Report 2023 · <a href="https://www.enisa.europa.eu/publications" target="_blank">enisa.europa.eu/publications</a></li>
+        <li><i class="fas fa-external-link-alt"></i>CISA — Insider Threat Mitigation Guide · <a href="https://www.cisa.gov/sites/default/files/publications/CISA_Insider_Threat_Mitigation_Guide.pdf" target="_blank">cisa.gov</a></li>
+        <li><i class="fas fa-external-link-alt"></i>OWASP — Ethical Hacking Guidelines and Responsible Disclosure · <a href="https://owasp.org" target="_blank">owasp.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>INAI — Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales · <a href="https://home.inai.org.mx" target="_blank">home.inai.org.mx</a></li>
+        <li><i class="fas fa-file-alt"></i>Spinello, R. A. (2017). <em>Cyberethics: Morality and Law in Cyberspace</em>. Jones &amp; Bartlett Learning.</li>
+    </ul>
+    <div class="pdf-btn-wrap" style="margin-top:28px;">
+        <a href="../pdf/actividad16.pdf" download>
+            <i class="fas fa-download"></i> DESCARGAR PRESENTACIÓN PDF
+        </a>
+    </div>
+</section>
+
+</main>
+</body>
+</html>
