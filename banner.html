@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD04 — Banner Promocional | Ciberseguridad</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ── Estilos del portafolio (mismos que actividad9) ────────────────── */
+        .info-box { text-align:center; border:1px dashed #00ff66; padding:15px; margin-bottom:0; }
+        .info-box p { margin:4px 0; }
+        .risk-badge { display:inline-block; border:2px solid #00ff66; color:#00ff66; font-weight:bold; padding:6px 20px; letter-spacing:3px; margin-top:10px; animation:blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #00ff66;} 50%{box-shadow:0 0 20px #00ff66,inset 0 0 10px rgba(0,255,102,.15);} }
+        .stat-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:16px 0; }
+        .stat-card { background:rgba(0,255,102,.05); border:1px solid rgba(0,255,102,.3); border-top:2px solid #00ff66; padding:14px 20px; text-align:center; min-width:110px; }
+        .stat-card .sv { font-size:1.8rem; font-weight:900; color:#00ff66; line-height:1; }
+        .stat-card .sv.red { color:#ff2244; }
+        .stat-card .sv.yellow { color:#ffdd00; }
+        .stat-card .sl { font-size:.65rem; color:rgba(0,255,102,.6); letter-spacing:.1em; margin-top:3px; }
+        .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin-top:14px; }
+        .team-card { border:1px solid rgba(0,255,102,.25); padding:10px 14px; background:rgba(0,255,102,.03); }
+        .team-card.me { border-color:rgba(0,255,102,.55); background:rgba(0,255,102,.06); }
+        .team-card span.name { color:#00ff66; font-weight:bold; }
+        .terminal { background:rgba(0,0,0,.6); border:1px solid rgba(0,255,102,.2); border-left:3px solid #00ff66; padding:14px 16px; font-size:.78rem; color:#00ff66; overflow-x:auto; line-height:1.75; margin:12px 0; white-space:pre; font-family:'Courier New',monospace; }
+        .kill-chain { display:flex; align-items:stretch; overflow-x:auto; gap:0; margin-top:10px; padding-bottom:6px; }
+        .kc-step { flex:1; min-width:130px; border:1px solid rgba(0,255,102,.2); border-right:none; padding:14px 10px; position:relative; background:rgba(0,255,102,.02); transition:background .2s; }
+        .kc-step:last-child { border-right:1px solid rgba(0,255,102,.2); }
+        .kc-step:hover { background:rgba(0,255,102,.04); }
+        .kc-step::after { content:'▶'; position:absolute; right:-11px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.7rem; z-index:2; }
+        .kc-step:last-child::after { display:none; }
+        .kc-step .kn { font-size:.58rem; color:rgba(0,255,102,.5); letter-spacing:.15em; margin-bottom:5px; }
+        .kc-step .ki { font-size:1.2rem; margin-bottom:5px; }
+        .kc-step .kt { font-weight:bold; color:#fff; font-size:.82rem; margin-bottom:4px; }
+        .kc-step .kd { font-size:.67rem; color:#00ff66; line-height:1.5; }
+        .kc-root { min-width:130px; border:1px solid #00ff66; padding:14px 10px; background:rgba(0,255,102,.05); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        .kc-root .ki { font-size:1.5rem; color:#00ff66; }
+        .kc-root .kt { font-weight:900; color:#00ff66; font-size:.9rem; margin-top:5px; }
+        .kc-root .kd { font-size:.67rem; color:#00ff66; margin-top:6px; line-height:1.5; }
+        .vuln-table { width:100%; border-collapse:collapse; font-size:.83rem; margin-top:10px; }
+        .vuln-table th { color:#00ff66; text-align:left; padding:9px 11px; font-size:.7rem; letter-spacing:.1em; border-bottom:1px solid rgba(0,255,102,.3); background:rgba(0,255,102,.06); }
+        .vuln-table td { padding:9px 11px; border-bottom:1px solid rgba(0,255,102,.07); color:#fff; opacity:.9; vertical-align:top; }
+        .vuln-table tr:hover td { background:rgba(0,255,102,.02); }
+        .vid { font-size:.72rem; color:rgba(255,255,255,.4); }
+        .badge { display:inline-block; font-size:.62rem; letter-spacing:.07em; padding:1px 7px; border:1px solid; }
+        .badge-crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .badge-ok   { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+        .badge-alt  { color:#00cfff; border-color:#00cfff; background:rgba(0,207,255,.07); }
+        .badge-med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .cve-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:14px; }
+        .cve-card { border:1px solid rgba(0,255,102,.2); padding:16px; background:rgba(0,255,102,.02); }
+        .cve-card.red { border-color:rgba(255,34,68,.35); background:rgba(255,34,68,.04); }
+        .cve-card.yellow { border-color:rgba(255,221,0,.35); background:rgba(255,221,0,.03); }
+        .rec-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+        .rec-item { border:1px solid rgba(0,255,102,.18); padding:12px 14px; display:flex; gap:12px; background:rgba(0,255,102,.02); transition:border-color .2s; }
+        .rec-item:hover { border-color:rgba(0,255,102,.4); }
+        .rec-id { min-width:62px; }
+        .rec-badge { display:block; font-size:.58rem; padding:2px 5px; text-align:center; margin-bottom:3px; border:1px solid; }
+        .rec-badge.ok   { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+        .rec-badge.alt  { color:#00cfff; border-color:#00cfff; background:rgba(0,207,255,.07); }
+        .rec-badge.med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .rec-num { font-size:.7rem; color:rgba(255,255,255,.4); }
+        .rec-title { font-weight:bold; color:#fff; font-size:.88rem; margin-bottom:2px; }
+        .rec-desc  { font-size:.8rem; color:rgba(255,255,255,.7); }
+        .rec-desc code { color:#00ff66; }
+        .refs-list { list-style:none; display:flex; flex-direction:column; gap:7px; margin-top:10px; }
+        .refs-list li { border-left:3px solid rgba(0,255,102,.3); padding:7px 12px; font-size:.8rem; color:rgba(255,255,255,.75); transition:border-color .2s; }
+        .refs-list li:hover { border-left-color:#00ff66; }
+        .refs-list li a { color:#00cfff; text-decoration:none; }
+        .refs-list li i { color:#00ff66; margin-right:6px; }
+        .concl-box { border:1px solid rgba(0,255,102,.2); padding:20px; margin-bottom:12px; background:rgba(0,255,102,.02); }
+        .concl-box.orange { border-color:rgba(255,106,0,.3); border-top:2px solid #ff6a00; background:rgba(255,106,0,.03); }
+        .concl-box.green  { border-top:2px solid #00ff66; }
+        .concl-box h3 { font-size:.82rem; letter-spacing:.12em; margin-bottom:12px; }
+        .concl-box.green  h3 { color:#00ff66; }
+        .concl-box.orange h3 { color:#ff6a00; }
+        .concl-box p { font-size:.85rem; color:rgba(255,255,255,.8); margin-bottom:8px; line-height:1.8; }
+        .concl-box p:last-child { margin-bottom:0; }
+        .concl-box strong { color:#00ff66; }
+        .pdf-btn-wrap { text-align:center; padding:16px 0 4px; }
+        .pdf-btn-wrap a { display:inline-flex; align-items:center; gap:8px; background:#00ff66; color:#050d0a; border:none; padding:11px 28px; font-weight:bold; font-size:.9rem; letter-spacing:.1em; text-decoration:none; transition:background .2s,box-shadow .2s; font-family:'Courier New',monospace; }
+        .pdf-btn-wrap a:hover { background:#00cc55; box-shadow:0 0 18px rgba(0,255,102,.4); }
+
+        /* ── Banner preview ──────────────────────────────────────────────── */
+        .banner-stage {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .banner-preview-col {
+            flex-shrink: 0;
+        }
+        .banner-outer {
+            width: 486px;       /* 1080 * 0.45 */
+            height: 608px;      /* 1350 * 0.45 */
+            overflow: hidden;
+            border: 2px solid rgba(0,255,102,.4);
+            border-radius: 4px;
+            box-shadow: 0 0 28px rgba(0,255,102,.12), 0 0 60px rgba(0,255,102,.05);
+            margin: 0 auto;
+            background: #050d0a;
+            position: relative;
+        }
+        .banner-outer iframe {
+            width: 1080px;
+            height: 1350px;
+            transform: scale(0.45);
+            transform-origin: top left;
+            border: none;
+            pointer-events: none;
+        }
+        .banner-label {
+            font-size:.62rem; color:rgba(0,255,102,.5); letter-spacing:.2em;
+            text-align:center; margin-top:8px; font-family:'Courier New',monospace;
+        }
+        .banner-info-col {
+            flex: 1;
+            min-width: 220px;
+        }
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .btn-green {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: #00ff66; color: #050d0a; font-weight: bold;
+            font-size: .78rem; letter-spacing: .08em; padding: 9px 18px;
+            text-decoration: none; border: none; cursor: pointer;
+            font-family: 'Courier New', monospace; transition: background .2s, box-shadow .2s;
+        }
+        .btn-green:hover { background: #00cc55; box-shadow: 0 0 14px rgba(0,255,102,.4); }
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: transparent; color: #00ff66; font-weight: bold;
+            font-size: .78rem; letter-spacing: .08em; padding: 8px 18px;
+            border: 1px solid #00ff66; cursor: pointer;
+            font-family: 'Courier New', monospace; text-decoration: none;
+            transition: all .2s;
+        }
+        .btn-outline:hover { background: rgba(0,255,102,.08); box-shadow: 0 0 10px rgba(0,255,102,.2); }
+        .spec-item {
+            display: flex; gap: 10px; padding: 8px 0;
+            border-bottom: 1px solid rgba(0,255,102,.07);
+            font-size: .82rem;
+        }
+        .spec-item:last-child { border-bottom: none; }
+        .spec-label { color: rgba(0,255,102,.7); min-width: 100px; font-size: .72rem; letter-spacing: .1em; flex-shrink:0; }
+        .spec-val { color: rgba(255,255,255,.85); }
+        @media(max-width:600px){
+            .kill-chain{flex-direction:column;}
+            .kc-step::after{content:'▼';right:50%;bottom:-11px;top:auto;transform:translateX(50%);}
+            .kc-step{border-right:1px solid rgba(0,255,102,.2);border-bottom:none;}
+            .kc-step:last-child{border-bottom:1px solid rgba(0,255,102,.2);}
+            .banner-outer{width:320px;height:400px;}
+            .banner-outer iframe{transform:scale(0.296);width:1080px;height:1350px;}
+        }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>PD04 — Banner Promocional de Ciberseguridad</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════
+     PORTADA
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Parcial:</strong> 2</p>
+        <p><strong>Producto:</strong> PD04 — Banner Promocional "¿Sabías que...? Ciberseguridad"</p>
+        <p><strong>Formato:</strong> 1080 × 1350 px &nbsp;|&nbsp; HTML/CSS · Exportable a PNG</p>
+        <div class="risk-badge">◈ COMUNICACIÓN TÉCNICA — CONCIENCIA EN CIBERSEGURIDAD</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv">1080</div><div class="sl">px ANCHO</div></div>
+        <div class="stat-card"><div class="sv">1350</div><div class="sl">px ALTO</div></div>
+        <div class="stat-card"><div class="sv red">68%</div><div class="sl">LATAM HACKEADAS</div></div>
+        <div class="stat-card"><div class="sv yellow">91%</div><div class="sl">ATAQUES VÍA PHISHING</div></div>
+        <div class="stat-card"><div class="sv">4</div><div class="sl">HABILIDADES TÉCNICAS</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:18px;">Integrante:</p>
+    <div class="team-grid">
+        <div class="team-card me" style="grid-column:span 2"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702 &nbsp;·&nbsp; iMagi22</div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     OBJETIVO
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-crosshairs"></i> 01 — Objetivo del Producto</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        Diseñar y producir un <strong style="color:#00ff66">banner promocional digital</strong> que comunique de forma efectiva los conocimientos adquiridos en CNO V: Seguridad Informática, dirigido tanto a audiencias técnicas como al público general, con el fin de generar conciencia sobre las amenazas reales de ciberseguridad y promover un perfil profesional en este campo.
+    </p>
+    <div class="cve-grid" style="margin-top:14px;">
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:8px;">// AUDIENCIA OBJETIVO</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                👥 <strong>Público general</strong> — conciencia básica de amenazas<br>
+                🏢 <strong>Empresas LATAM</strong> — contexto de riesgo real<br>
+                🎓 <strong>Reclutadores</strong> — perfil técnico demostrable<br>
+                🔐 <strong>Comunidad de seguridad</strong> — credibilidad técnica
+            </div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:8px;">// COMPETENCIAS APLICADAS</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                🔴 SQL Injection — PortSwigger 18 labs<br>
+                🎣 Campaña de Phishing Ética simulada<br>
+                💻 Pentesting End-to-End completo<br>
+                🛡️ OWASP Top 10 — A03 documentado
+            </div>
+        </div>
+        <div class="cve-card">
+            <div style="font-size:.65rem;color:#00ff66;letter-spacing:.15em;margin-bottom:8px;">// MÉTRICAS DEL BANNER</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.8;">
+                📊 5 estadísticas de fuentes verificadas<br>
+                📱 Formato redes sociales (1:1.25)<br>
+                🔗 QR dinámico al portafolio GitHub<br>
+                🎨 Paleta hacker: #0a0f0a · #00ff41
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     VISTA PREVIA DEL BANNER
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-image"></i> 02 — Vista Previa del Banner</h2>
+    <div class="banner-stage">
+
+        <!-- Preview iframe (escala 45%) -->
+        <div class="banner-preview-col">
+            <div class="banner-outer">
+                <iframe id="banner-frame" title="Banner Promocional"></iframe>
+            </div>
+            <p class="banner-label">ESCALA 45% — 1080 × 1350 px original</p>
+            <div class="btn-row" style="justify-content:center; margin-top:12px;">
+                <a class="btn-outline" href="pd04_banner.html" target="_blank">
+                    <i class="fas fa-expand-alt"></i> VER COMPLETO
+                </a>
+                <a class="btn-green" href="pd04_banner.html" download="banner-magdalena-tristan.html">
+                    <i class="fas fa-download"></i> DESCARGAR HTML
+                </a>
+            </div>
+            <div style="font-size:.72rem;color:rgba(0,255,102,.45);text-align:center;margin-top:8px;line-height:1.6;">
+                Para PNG: Abre en nueva pestaña → Ctrl+Shift+S<br>o usa GoFullPage / html2canvas
+            </div>
+        </div>
+
+        <!-- Especificaciones -->
+        <div class="banner-info-col">
+            <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.2em;margin-bottom:12px;">// ESPECIFICACIONES TÉCNICAS</p>
+            <div class="spec-item"><span class="spec-label">DIMENSIONES</span><span class="spec-val">1080 × 1350 px</span></div>
+            <div class="spec-item"><span class="spec-label">FORMATO</span><span class="spec-val">HTML5 + CSS3 (export PNG)</span></div>
+            <div class="spec-item"><span class="spec-label">TIPOGRAFÍAS</span><span class="spec-val">Orbitron · Share Tech Mono · Rajdhani</span></div>
+            <div class="spec-item"><span class="spec-label">PALETA</span><span class="spec-val">#0a0f0a · #00ff41 · #ff4444</span></div>
+            <div class="spec-item"><span class="spec-label">DATOS</span><span class="spec-val">Estadísticas reales 2024 verificadas</span></div>
+            <div class="spec-item"><span class="spec-label">QR DESTINO</span><span class="spec-val">imagi22.github.io/portafolio-seguridad</span></div>
+            <div class="spec-item"><span class="spec-label">FOTO</span><span class="spec-val">Base64 incrustada — sin dependencias</span></div>
+            <div class="spec-item"><span class="spec-label">COMPATIBILIDAD</span><span class="spec-val">Chrome · Firefox · Edge · Safari</span></div>
+
+            <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.2em;margin-top:16px;margin-bottom:10px;">// SECCIONES DEL BANNER</p>
+            <div class="spec-item"><span class="spec-label">HEADER</span><span class="spec-val">Foto + nombre + universidad + perfil técnico</span></div>
+            <div class="spec-item"><span class="spec-label">STATS BOX</span><span class="spec-val">5 métricas de amenazas reales 2024</span></div>
+            <div class="spec-item"><span class="spec-label">ESCENARIO</span><span class="spec-val">Caso real — empleado + phishing → brecha</span></div>
+            <div class="spec-item"><span class="spec-label">PROPUESTA</span><span class="spec-val">Value proposition como especialista</span></div>
+            <div class="spec-item"><span class="spec-label">HABILIDADES</span><span class="spec-val">4 tarjetas de experiencia técnica</span></div>
+            <div class="spec-item"><span class="spec-label">PORTFOLIO</span><span class="spec-val">QR Code + URL del portafolio digital</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     PROCESO DE DISEÑO — KILL CHAIN
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-project-diagram"></i> 03 — Proceso de Diseño — Estrategia de Comunicación</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;font-size:.92rem;">
+        El banner fue diseñado aplicando principios de <strong style="color:#00ff66">comunicación técnica efectiva</strong>: transformar conocimiento especializado en mensajes impactantes para audiencias no técnicas, usando las mismas técnicas psicológicas que estudia la ingeniería social — pero de forma ética y educativa.
+    </p>
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:14px 0 8px;">// CADENA DE DISEÑO</p>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — INVESTIGACIÓN</div><div class="ki">🔍</div><div class="kt">Fuentes de datos</div><div class="kd">ENISA, IBM X-Force<br>Proofpoint, CISA<br>Estadísticas 2024<br>verificadas</div></div>
+        <div class="kc-step"><div class="kn">02 — AUDIENCIA</div><div class="ki">👥</div><div class="kt">Target definido</div><div class="kd">Empresas LATAM<br>Reclutadores tech<br>Público general<br>Comunidad cyber</div></div>
+        <div class="kc-step"><div class="kn">03 — IMPACTO</div><div class="ki">⚡</div><div class="kt">Estadísticas<br>de choque</div><div class="kd">68% hackeadas<br>91% phishing<br>$10T cibercrimen<br>3.4B correos/día</div></div>
+        <div class="kc-step"><div class="kn">04 — ESCENARIO</div><div class="ki">🎭</div><div class="kt">Caso real<br>concreto</div><div class="kd">34% entrega<br>credenciales<br>en menos de<br>3 minutos</div></div>
+        <div class="kc-step"><div class="kn">05 — CREDENCIALES</div><div class="ki">🏆</div><div class="kt">Habilidades<br>técnicas</div><div class="kd">SQL Injection<br>Phishing ético<br>Pentesting<br>OWASP Top 10</div></div>
+        <div class="kc-root"><div class="ki">📲</div><div class="kt">CTA — QR<br>PORTAFOLIO</div><div class="kd">Enlace directo<br>a proyectos<br>técnicos reales<br>verificables</div></div>
+    </div>
+
+    <div class="terminal">$ grep -r "principios_ingenieria_social --etico" banner_design.log
+
+[+] URGENCIA        → Estadísticas alarmantes capturan atención inmediata
+[+] CREDIBILIDAD    → Fuentes verificadas (ENISA, IBM, Proofpoint)
+[+] ESCENARIO REAL  → 34% de empleados cae en phishing en <3 min
+[+] SOLUCIÓN        → Especialista en formación puede mitigar estas amenazas
+[+] LLAMADA ACCIÓN  → QR directo al portafolio con evidencia técnica
+[+] ESTÉTICA        → Paleta hacker comunica dominio del entorno técnico</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     ANÁLISIS DEL CONTENIDO TÉCNICO
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-chart-bar"></i> 04 — Análisis del Contenido Técnico del Banner</h2>
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:12px;font-size:.92rem;">
+        Cada estadística del banner fue seleccionada por su relevancia técnica y su capacidad de impacto comunicativo. No son cifras aleatorias — corresponden a conceptos estudiados directamente en CNO V.
+    </p>
+    <table class="vuln-table">
+        <tr>
+            <th style="width:5%">#</th>
+            <th>ESTADÍSTICA EN EL BANNER</th>
+            <th style="width:18%">CONCEPTO CNO V</th>
+            <th style="width:14%">FUENTE</th>
+            <th style="width:12%">RELEVANCIA</th>
+        </tr>
+        <tr>
+            <td class="vid">01</td>
+            <td><strong>68%</strong> de empresas LATAM fueron hackeadas en 2024</td>
+            <td>Gestión de riesgos · CVSS</td>
+            <td><span class="badge badge-alt">ENISA 2024</span></td>
+            <td><span class="badge badge-crit">CRÍTICA</span></td>
+        </tr>
+        <tr>
+            <td class="vid">02</td>
+            <td><strong>91%</strong> de ataques empieza con un correo de phishing</td>
+            <td>Ingeniería social · SET</td>
+            <td><span class="badge badge-alt">Proofpoint</span></td>
+            <td><span class="badge badge-crit">CRÍTICA</span></td>
+        </tr>
+        <tr>
+            <td class="vid">03</td>
+            <td><strong>1 de cada 5</strong> personas cae en vishing (llamadas fraudulentas)</td>
+            <td>Ingeniería social · Dilemas éticos</td>
+            <td><span class="badge badge-alt">IBM X-Force</span></td>
+            <td><span class="badge badge-med">ALTA</span></td>
+        </tr>
+        <tr>
+            <td class="vid">04</td>
+            <td><strong>3.4 billones</strong> de correos de suplantación se envían diariamente</td>
+            <td>SMTP relay · Phishing · SET</td>
+            <td><span class="badge badge-alt">Statista 2024</span></td>
+            <td><span class="badge badge-med">ALTA</span></td>
+        </tr>
+        <tr>
+            <td class="vid">05</td>
+            <td><strong>$10 trillones</strong> en pérdidas por cibercrimen globalmente en 2025</td>
+            <td>Impacto CIA · Gestión de riesgo</td>
+            <td><span class="badge badge-alt">Cybersecurity Ventures</span></td>
+            <td><span class="badge badge-crit">CRÍTICA</span></td>
+        </tr>
+        <tr>
+            <td class="vid">06</td>
+            <td>Escenario: <strong>34%</strong> de empleados entrega credenciales en &lt;3 min</td>
+            <td>Phishing ético · Actividad 15 (SET)</td>
+            <td><span class="badge badge-alt">KnowBe4 2024</span></td>
+            <td><span class="badge badge-crit">CRÍTICA</span></td>
+        </tr>
+    </table>
+
+    <div style="margin-top:16px;">
+        <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin-bottom:10px;">// HABILIDADES TÉCNICAS MOSTRADAS EN EL BANNER</p>
+        <div class="rec-list">
+            <div class="rec-item">
+                <div class="rec-id"><span class="rec-badge ok">LAB</span><span class="rec-num">18 labs</span></div>
+                <div><div class="rec-title">SQL Injection — PortSwigger Academy</div><div class="rec-desc">UNION attacks, Blind SQLi, Time-based, WAF bypass. Cubierto en Actividad 8 y portafolio completo.</div></div>
+            </div>
+            <div class="rec-item">
+                <div class="rec-id"><span class="rec-badge ok">SIM</span><span class="rec-num">Act. 15</span></div>
+                <div><div class="rec-title">Campaña de Phishing Ética — SET + Postfix</div><div class="rec-desc">Diseño, simulación y análisis con Social-Engineer Toolkit. Infraestructura SMTP con Gmail relay.</div></div>
+            </div>
+            <div class="rec-item">
+                <div class="rec-id"><span class="rec-badge ok">E2E</span><span class="rec-num">Act. 9</span></div>
+                <div><div class="rec-title">Pentesting End-to-End — My File Server 1</div><div class="rec-desc">Reconocimiento, enumeración, explotación FTP, escalada de privilegios con Dirty COW (CVE-2016-5195).</div></div>
+            </div>
+            <div class="rec-item">
+                <div class="rec-id"><span class="rec-badge ok">OWASP</span><span class="rec-num">A03</span></div>
+                <div><div class="rec-title">OWASP Top 10 — A03 Injection</div><div class="rec-desc">Todas las variantes de injection documentadas con análisis de impacto y mitigación aplicada.</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     REFLEXIÓN TÉCNICA
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> 05 — Reflexión Técnica</h2>
+    <div class="concl-box green">
+        <h3>// REFLEXIÓN — CIBERSEGURIDAD APLICADA A LA COMUNICACIÓN</h3>
+        <p>El desarrollo del banner no fue solo un ejercicio gráfico — fue un ejercicio de <strong>síntesis técnica</strong>. Para crear el contenido fue necesario comprender profundamente los conceptos del curso: sin haber practicado phishing ético con SET, la estadística del 91% no tendría peso propio; sin haber realizado el lab de Dirty COW, la narrativa del pentesting quedaría vacía.</p>
+        <p>La selección de estadísticas requirió aplicar el mismo <strong>pensamiento analítico del analista de seguridad</strong>: identificar qué datos son más relevantes, qué fuentes son confiables (ENISA vs. fuentes sin credibilidad), y cómo traducir amenazas técnicas complejas en mensajes que el público no especializado pueda procesar en 3 segundos.</p>
+        <p>El aspecto más revelador del ejercicio fue descubrir que la <strong>ingeniería social y el diseño de comunicación comparten principios</strong>: urgencia, credibilidad, escenarios concretos, llamada a la acción. La diferencia entre un ataque de phishing y una campaña de concienciación es únicamente la <strong>intención ética</strong> — algo que este curso dejó muy claro a través de la Actividad 16 (Dilemas Éticos).</p>
+    </div>
+    <div class="concl-box orange">
+        <h3>// APRENDIZAJES — ¿QUÉ ME LLEVÓ EL CURSO?</h3>
+        <p>CNO V me demostró que la ciberseguridad no termina en las herramientas técnicas. Saber usar Nmap, SET o Postfix es solo la mitad del trabajo — la otra mitad es <strong>comunicar el riesgo de forma que motive el cambio</strong>. Las organizaciones no se defienden porque no entienden el peligro; el especialista en seguridad debe saber traducir.</p>
+        <p>El portafolio completo detrás del QR del banner es la evidencia de ese aprendizaje dual: <strong>dominio técnico demostrable</strong> (labs, exploits, vectores CVSS, infraestructuras SMTP) combinado con <strong>capacidad de documentación y comunicación profesional</strong> que distingue a un especialista de alguien que solo "sabe hackear".</p>
+        <p>La ciberseguridad es un campo donde la <strong>postura defensiva de una organización mejora proporcionalmente a la conciencia de sus personas</strong>, no solo a sus herramientas. Crear este banner fue un primer ejercicio real de cómo contribuir a esa cultura de seguridad desde el rol de especialista en formación.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     REFERENCIAS + DESCARGA
+══════════════════════════════════════════════════════ -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> 06 — Fuentes de las Estadísticas del Banner</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-chart-line"></i>ENISA Threat Landscape 2024 — <em>Estado de amenazas en LATAM y Europa</em> · <a href="https://www.enisa.europa.eu/publications" target="_blank">enisa.europa.eu/publications</a></li>
+        <li><i class="fas fa-chart-line"></i>Proofpoint — <em>State of the Phish Report 2024</em> — 91% de ataques inician con phishing · <a href="https://www.proofpoint.com/us/resources/threat-reports/state-of-phish" target="_blank">proofpoint.com</a></li>
+        <li><i class="fas fa-chart-line"></i>IBM X-Force Threat Intelligence Index 2024 — Vishing y social engineering stats · <a href="https://www.ibm.com/reports/threat-intelligence" target="_blank">ibm.com/reports/threat-intelligence</a></li>
+        <li><i class="fas fa-chart-line"></i>Cybersecurity Ventures — <em>Cybercrime Magazine</em> — Proyección $10T en pérdidas 2025 · <a href="https://cybersecurityventures.com" target="_blank">cybersecurityventures.com</a></li>
+        <li><i class="fas fa-chart-line"></i>KnowBe4 — <em>Phishing by Industry Benchmarking Report 2024</em> — 34% Click-Through Rate inicial · <a href="https://www.knowbe4.com/resources/phishing-industry-benchmarking-report" target="_blank">knowbe4.com</a></li>
+        <li><i class="fas fa-chart-line"></i>Statista — <em>Daily spam email volume worldwide 2024</em> — 3.4 billion spoofed emails/day · <a href="https://www.statista.com/statistics/270424/number-of-e-mails-per-day-worldwide/" target="_blank">statista.com</a></li>
+        <li><i class="fas fa-code"></i>Google Fonts — Orbitron, Share Tech Mono, Rajdhani (tipografías del banner) · <a href="https://fonts.google.com" target="_blank">fonts.google.com</a></li>
+        <li><i class="fas fa-link"></i>Portafolio digital referenciado en el QR · <a href="https://imagi22.github.io/portafolio-seguridad-informatica" target="_blank">imagi22.github.io/portafolio-seguridad-informatica</a></li>
+    </ul>
+
+    <div class="pdf-btn-wrap" style="margin-top:28px;">
+        <a href="pd04_banner.html" download="banner-magdalena-tristan.html">
+            <i class="fas fa-download"></i> DESCARGAR BANNER.HTML
+        </a>
+    </div>
+</section>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════ -->
+<script>
+/* ── Cargar banner en el iframe ────────────────────────────────── */
+(function loadBanner() {
+    const frame = document.getElementById('banner-frame');
+    if (!frame) return;
+
+    /* Intenta cargar el archivo hermano pd04_banner.html */
+    frame.onerror = function() {
+        frame.srcdoc = '<div style="background:#050d0a;color:#00ff41;font-family:Courier New,monospace;display:flex;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;font-size:14px;line-height:1.8"><div><div style="font-size:2rem;margin-bottom:12px">⚠</div><strong>Archivo no encontrado</strong><br>Guarda el banner como<br><code>pd04_banner.html</code><br>en la misma carpeta<br><br><em style="font-size:11px;opacity:.7">parcial2/pd04_banner.html</em></div></div>';
+    };
+    frame.src = 'pd04_banner.html';
+})();
+
+/* ── Matrix canvas ─────────────────────────────────────────────── */
+(function() {
+    function matrix(id) {
+        const c = document.getElementById(id);
+        if (!c) return;
+        const ctx = c.getContext('2d');
+        c.width = 120;
+        c.height = window.innerHeight;
+        const chars = '01CYBERSECURITYHACKPHISHINGOSINTCVSS@#$%';
+        const cols = Math.floor(c.width / 13);
+        const drops = Array(cols).fill(1);
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(10,15,10,.06)';
+            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.fillStyle = '#00ff88';
+            ctx.font = '12px monospace';
+            drops.forEach((y, i) => {
+                const ch = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(ch, i * 13, y * 13);
+                if (y * 13 > c.height && Math.random() > .975) drops[i] = 0;
+                drops[i]++;
+            });
+        }, 55);
+        window.addEventListener('resize', () => { c.height = window.innerHeight; });
+    }
+    matrix('matrix-left');
+    matrix('matrix-right');
+})();
+</script>
+
+</body>
+</html>
