@@ -133,10 +133,13 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 
 <script>
 (function(){
-  var src = document.getElementById('bimg').src;
-  document.getElementById('btn-ver').href  = src;
-  document.getElementById('btn-dl').href   = src;
-  document.getElementById('btn-dl2').href  = src;
+var src = document.getElementById('bimg').src;
+document.getElementById('btn-ver').href = src;
+fetch(src).then(r=>r.blob()).then(b=>{
+  var u = URL.createObjectURL(b);
+  document.getElementById('btn-dl').href  = u;
+  document.getElementById('btn-dl2').href = u;
+});
 
   var c = document.getElementById('mc'), ctx = c.getContext('2d');
   function resize(){ c.width=window.innerWidth; c.height=window.innerHeight; }
