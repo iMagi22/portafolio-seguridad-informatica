@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 17 - Evaluación de Vulnerabilidades con CVSS v3.1</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9em; }
+        th, td { border: 1px solid rgba(0,255,102,0.3); padding: 10px; text-align: left; vertical-align: top; }
+        th { background: rgba(0,255,102,0.15); color: #00ff66; font-weight: bold; }
+        td { color: #fff; opacity: 0.9; }
+        tr:hover { background: rgba(0,255,102,0.05); }
+
+        .badge { display: inline-block; font-size: .75em; padding: 2px 8px; border: 1px solid; border-radius: 2px; }
+        .b-red    { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .b-orange { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .b-cyan   { color:#00cfff; border-color:#00cfff; background:rgba(0,207,255,.07); }
+        .b-yellow { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .b-green  { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+
+        .stat-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:16px 0; }
+        .stat-card { background:rgba(0,255,102,.05); border:1px solid rgba(0,255,102,.3); border-top:2px solid #00ff66; padding:14px 20px; text-align:center; min-width:110px; }
+        .stat-card .sv { font-size:1.8rem; font-weight:900; color:#00ff66; line-height:1; }
+        .stat-card .sv.red { color:#ff2244; } .stat-card .sv.yellow { color:#ffdd00; }
+        .stat-card .sl { font-size:.65rem; color:rgba(0,255,102,.6); letter-spacing:.1em; margin-top:3px; }
+
+        .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin-top:14px; }
+        .team-card { border:1px solid rgba(0,255,102,.25); padding:10px 14px; background:rgba(0,255,102,.03); }
+        .team-card.me { border-color:rgba(0,255,102,.55); background:rgba(0,255,102,.06); }
+        .team-card .name { color:#00ff66; font-weight:bold; }
+
+        .info-box { text-align:center; border:1px dashed #00ff66; padding:15px; margin-bottom:0; }
+        .info-box p { margin:4px 0; }
+        .risk-badge { display:inline-block; border:2px solid #00ff66; color:#00ff66; font-weight:bold; padding:6px 20px; letter-spacing:3px; margin-top:10px; animation:blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #00ff66;}50%{box-shadow:0 0 20px #00ff66,inset 0 0 10px rgba(0,255,102,.15);} }
+
+        .vector-string { background:rgba(0,0,0,.6); border:1px solid #00ff66; padding:14px 18px; font-family:"Courier New",monospace; color:#00ff66; font-size:1rem; letter-spacing:.05em; text-align:center; margin:12px 0; box-shadow:0 0 12px rgba(0,255,102,.15); }
+
+        /* ── CVSS Calculator replica ─────────────────────── */
+        .cvss-calc {
+            background:#f8f9fa;
+            border:1px solid #ddd;
+            border-radius:4px;
+            overflow:hidden;
+            margin:14px 0;
+            font-family:Arial,sans-serif;
+            font-size:13px;
+            color:#333;
+        }
+        .cvss-calc-header {
+            background:#fff;
+            border-bottom:1px solid #ddd;
+            padding:10px 16px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .cvss-calc-header .label { font-weight:bold; color:#555; font-size:13px; }
+        .cvss-score-badge {
+            background:#e67e22;
+            color:#fff;
+            font-weight:bold;
+            font-size:18px;
+            padding:6px 14px;
+            border-radius:3px;
+            line-height:1.2;
+            text-align:center;
+        }
+        .cvss-score-badge .sub { font-size:11px; display:block; font-weight:normal; }
+        .cvss-calc-body {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:0;
+            padding:0;
+        }
+        .cvss-col { padding:12px 16px; }
+        .cvss-col:first-child { border-right:1px solid #eee; }
+        .cvss-metric { margin-bottom:12px; }
+        .cvss-metric-name { font-weight:bold; color:#333; font-size:12px; margin-bottom:5px; }
+        .cvss-options { display:flex; gap:4px; flex-wrap:wrap; }
+        .cvss-opt {
+            padding:3px 10px;
+            border:1px solid #ccc;
+            border-radius:3px;
+            font-size:11.5px;
+            color:#555;
+            background:#fff;
+            cursor:default;
+        }
+        .cvss-opt.active {
+            background:#28a745;
+            border-color:#28a745;
+            color:#fff;
+            font-weight:bold;
+        }
+        @media(max-width:520px){ .cvss-calc-body{grid-template-columns:1fr;} .cvss-col:first-child{border-right:none;border-bottom:1px solid #eee;} }
+
+        .rec-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+        .rec-item { border:1px solid rgba(0,255,102,.18); padding:12px 14px; display:flex; gap:12px; background:rgba(0,255,102,.02); transition:border-color .2s; }
+        .rec-item:hover { border-color:rgba(0,255,102,.4); }
+        .rec-id { min-width:62px; }
+        .rec-badge { display:block; font-size:.58rem; padding:2px 5px; text-align:center; margin-bottom:3px; border:1px solid; }
+        .rec-badge.crit { color:#ff2244; border-color:#ff2244; background:rgba(255,34,68,.08); }
+        .rec-badge.alto { color:#ff6a00; border-color:#ff6a00; background:rgba(255,106,0,.07); }
+        .rec-badge.alt  { color:#00cfff; border-color:#00cfff; background:rgba(0,207,255,.07); }
+        .rec-badge.med  { color:#ffdd00; border-color:#ffdd00; background:rgba(255,221,0,.06); }
+        .rec-badge.ok   { color:#00ff66; border-color:#00ff66; background:rgba(0,255,102,.07); }
+        .rec-num { font-size:.7rem; color:rgba(255,255,255,.4); }
+        .rec-title { font-weight:bold; color:#fff; font-size:.88rem; margin-bottom:2px; }
+        .rec-desc { font-size:.8rem; color:rgba(255,255,255,.7); line-height:1.7; }
+
+        .concl-box { border:1px solid rgba(0,255,102,.2); padding:20px; margin-bottom:12px; background:rgba(0,255,102,.02); }
+        .concl-box.green  { border-top:2px solid #00ff66; }
+        .concl-box.orange { border-color:rgba(255,106,0,.3); border-top:2px solid #ff6a00; background:rgba(255,106,0,.03); }
+        .concl-box h3 { font-size:.82rem; letter-spacing:.12em; margin-bottom:12px; }
+        .concl-box.green h3 { color:#00ff66; } .concl-box.orange h3 { color:#ff6a00; }
+        .concl-box p { font-size:.85rem; color:rgba(255,255,255,.8); margin-bottom:8px; line-height:1.8; }
+        .concl-box p:last-child { margin-bottom:0; }
+        .concl-box strong { color:#00ff66; }
+
+        .refs-list { list-style:none; display:flex; flex-direction:column; gap:7px; margin-top:10px; }
+        .refs-list li { border-left:3px solid rgba(0,255,102,.3); padding:7px 12px; font-size:.8rem; color:rgba(255,255,255,.75); transition:border-color .2s; }
+        .refs-list li:hover { border-left-color:#00ff66; }
+        .refs-list li a { color:#00cfff; text-decoration:none; }
+        .refs-list li i { color:#00ff66; margin-right:6px; }
+
+        .pdf-btn-wrap { text-align:center; padding:16px 0 4px; }
+        .pdf-btn-wrap a { display:inline-flex; align-items:center; gap:8px; background:#00ff66; color:#050d0a; padding:11px 28px; font-weight:bold; font-size:.9rem; letter-spacing:.1em; text-decoration:none; transition:background .2s,box-shadow .2s; font-family:"Courier New",monospace; }
+        .pdf-btn-wrap a:hover { background:#00cc55; box-shadow:0 0 18px rgba(0,255,102,.4); }
+
+        /* score gauge */
+        .score-gauge { text-align:center; padding:20px 0 10px; }
+        .score-num { font-size:4rem; font-weight:900; color:#ffdd00; line-height:1; text-shadow:0 0 20px rgba(255,221,0,.4); }
+        .score-label { font-size:.75rem; letter-spacing:.2em; color:rgba(255,221,0,.7); margin-top:4px; }
+        .score-range { font-size:.7rem; color:rgba(255,255,255,.4); margin-top:4px; }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Actividad 17 — Evaluación de Vulnerabilidades con CVSS v3.1</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- PORTADA -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Fecha:</strong> 15/05/2026</p>
+        <p><strong>Actividad:</strong> 17 — Evaluación de Vulnerabilidades con CVSS v3.1</p>
+        <div class="risk-badge">◈ CVSS v3.1 — COMMON VULNERABILITY SCORING SYSTEM</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv">8</div><div class="sl">MÉTRICAS BASE</div></div>
+        <div class="stat-card"><div class="sv yellow">4.7</div><div class="sl">BASE SCORE</div></div>
+        <div class="stat-card"><div class="sv">MEDIA</div><div class="sl">SEVERIDAD</div></div>
+        <div class="stat-card"><div class="sv red">AV:N</div><div class="sl">NETWORK</div></div>
+        <div class="stat-card"><div class="sv">CIA:L</div><div class="sl">IMPACTO BAJO</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:18px;">Equipo 5 — Integrantes:</p>
+    <div class="team-grid">
+        <div class="team-card"><span class="name">Edwin Admael</span> Castillo Gómez — 181700</div>
+        <div class="team-card"><span class="name">Carlos René</span> Castillo Olvera — 182033</div>
+        <div class="team-card"><span class="name">Diego Osvaldo</span> Hernández Fernández — 182217</div>
+        <div class="team-card me"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702</div>
+    </div>
+</section>
+
+<!-- 1. OBJETIVOS -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-crosshairs"></i> 1. Objetivos</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        <strong style="color:#00ff66">Objetivo General:</strong> Aplicar el modelo CVSS v3.1 (Common Vulnerability Scoring System) para evaluar la gravedad de vulnerabilidades reales, interpretando correctamente sus métricas base y justificando la priorización del riesgo en un contexto organizacional.
+    </p>
+
+    <div class="rec-list">
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge ok">OE1</span><span class="rec-num">Métricas</span></div>
+            <div><div class="rec-title">Identificar y comprender las métricas base de CVSS v3.1</div>
+            <div class="rec-desc">Attack Vector (AV), Attack Complexity (AC), Privileges Required (PR), User Interaction (UI), Scope (S), Confidentiality (C), Integrity (I) y Availability (A).</div></div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge ok">OE2</span><span class="rec-num">Vector</span></div>
+            <div><div class="rec-title">Construir formalmente la cadena del vector CVSS</div>
+            <div class="rec-desc">A partir de un escenario técnico específico, mapear cada característica de la vulnerabilidad a su valor CVSS correspondiente y construir el vector string completo.</div></div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge ok">OE3</span><span class="rec-num">Score</span></div>
+            <div><div class="rec-title">Calcular e interpretar la puntuación de riesgo resultante</div>
+            <div class="rec-desc">Usar la calculadora oficial de FIRST para obtener el Base Score y priorizar estratégicamente las acciones de mitigación según la severidad obtenida.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. ESCENARIO -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-server"></i> 2. Escenario</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        Se evalúa una vulnerabilidad detectada en un <strong style="color:#00ff66">sistema web interno</strong> de la organización. A continuación se desglosan las características técnicas que determinan cada métrica CVSS:
+    </p>
+
+    <table>
+        <tr><th style="width:5%">#</th><th style="width:30%">MÉTRICA</th><th style="width:20%">VALOR ASIGNADO</th><th>JUSTIFICACIÓN</th></tr>
+        <tr>
+            <td>1</td>
+            <td><strong>Attack Vector (AV)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Vector de Ataque</span></td>
+            <td><span class="badge b-red">AV:N — Network</span></td>
+            <td>La vulnerabilidad es explotable remotamente a través de la red. No requiere acceso físico ni adyacencia — el mayor alcance posible.</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Attack Complexity (AC)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Complejidad del Ataque</span></td>
+            <td><span class="badge b-orange">AC:L — Low</span></td>
+            <td>No se requieren condiciones especiales previas. El atacante puede repetir el intento con alta probabilidad de éxito.</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Privileges Required (PR)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Privilegios Requeridos</span></td>
+            <td><span class="badge b-yellow">PR:H — High</span></td>
+            <td>Requiere cuenta con permisos de administrador o superusuario para explotar la vulnerabilidad. Factor limitante del score final.</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>User Interaction (UI)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Interacción del Usuario</span></td>
+            <td><span class="badge b-green">UI:N — None</span></td>
+            <td>La explotación no depende de que otro usuario realice ninguna acción. Explotación completamente autónoma.</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>Scope (S)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Alcance</span></td>
+            <td><span class="badge b-cyan">S:U — Unchanged</span></td>
+            <td>La vulnerabilidad no permite afectar componentes fuera del sistema vulnerable inicial. No hay movimiento lateral automático.</td>
+        </tr>
+        <tr>
+            <td>6a</td>
+            <td><strong>Confidentiality (C)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Confidencialidad</span></td>
+            <td><span class="badge b-green">C:L — Low</span></td>
+            <td>Solo exposición parcial de información. No compromete la totalidad de los datos del sistema.</td>
+        </tr>
+        <tr>
+            <td>6b</td>
+            <td><strong>Integrity (I)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Integridad</span></td>
+            <td><span class="badge b-green">I:L — Low</span></td>
+            <td>Modificación limitada de datos. No puede corromper la integridad completa del sistema.</td>
+        </tr>
+        <tr>
+            <td>6c</td>
+            <td><strong>Availability (A)</strong><br><span style="font-size:.78rem;color:rgba(255,255,255,.5)">Disponibilidad</span></td>
+            <td><span class="badge b-green">A:L — Low</span></td>
+            <td>Reducción parcial del rendimiento. El servicio sigue operando. No causa interrupción total.</td>
+        </tr>
+    </table>
+</section>
+
+<!-- 3. CADENA / VECTOR -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-code"></i> 3. Cadena del Vector CVSS</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:12px;">
+        Vector construido con la <strong style="color:#00ff66">Calculadora Oficial CVSS v3.1 de FIRST</strong>: <a href="https://www.first.org/cvss/calculator/3.1" target="_blank" style="color:#00cfff;">https://www.first.org/cvss/calculator/3.1</a>
+    </p>
+
+    <div class="vector-string">
+        CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L
+    </div>
+
+    <!-- CVSS Calculator Screenshot replica -->
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:16px 0 8px;">// CALCULADORA OFICIAL — RESULTADO OBTENIDO</p>
+    <div class="cvss-calc">
+        <div class="cvss-calc-header">
+            <span class="label">Base Score</span>
+            <div class="cvss-score-badge">4.7<span class="sub">Medium</span></div>
+        </div>
+        <div class="cvss-calc-body">
+            <div class="cvss-col">
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Attack Vector (AV)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt active">Network (N)</span>
+                        <span class="cvss-opt">Adjacent (A)</span>
+                        <span class="cvss-opt">Local (L)</span>
+                        <span class="cvss-opt">Physical (P)</span>
+                    </div>
+                </div>
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Attack Complexity (AC)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt active">Low (L)</span>
+                        <span class="cvss-opt">High (H)</span>
+                    </div>
+                </div>
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Privileges Required (PR)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt">None (N)</span>
+                        <span class="cvss-opt">Low (L)</span>
+                        <span class="cvss-opt active">High (H)</span>
+                    </div>
+                </div>
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">User Interaction (UI)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt active">None (N)</span>
+                        <span class="cvss-opt">Required (R)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="cvss-col">
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Scope (S)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt active">Unchanged (U)</span>
+                        <span class="cvss-opt">Changed (C)</span>
+                    </div>
+                </div>
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Confidentiality (C)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt">None (N)</span>
+                        <span class="cvss-opt active">Low (L)</span>
+                        <span class="cvss-opt">High (H)</span>
+                    </div>
+                </div>
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Integrity (I)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt">None (N)</span>
+                        <span class="cvss-opt active">Low (L)</span>
+                        <span class="cvss-opt">High (H)</span>
+                    </div>
+                </div>
+                <div class="cvss-metric">
+                    <div class="cvss-metric-name">Availability (A)</div>
+                    <div class="cvss-options">
+                        <span class="cvss-opt">None (N)</span>
+                        <span class="cvss-opt active">Low (L)</span>
+                        <span class="cvss-opt">High (H)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. INTERPRETACIÓN TÉCNICA -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-search"></i> 4. Interpretación Técnica y Análisis de Riesgo</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        A pesar de requerir privilegios elevados (PR:H), esta vulnerabilidad representa un <strong style="color:#00ff66">riesgo latente</strong> debido a la baja complejidad de su explotación (AC:L). Los vectores de amenaza potenciales incluyen:
+    </p>
+
+    <div class="rec-list">
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge crit">VECTOR 1</span><span class="rec-num">Interno</span></div>
+            <div>
+                <div class="rec-title">Insiders Maliciosos</div>
+                <div class="rec-desc">Usuarios internos con roles de administración que abusen de sus capacidades de acceso. El requerimiento de PR:H no protege frente a amenazas internas legítimas con intenciones maliciosas.</div>
+            </div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge alto">VECTOR 2</span><span class="rec-num">Externo</span></div>
+            <div>
+                <div class="rec-title">Movimiento Lateral o Escalada Previa</div>
+                <div class="rec-desc">Atacantes externos que ya hayan comprometido el perímetro y obtenido credenciales legítimas mediante <strong>phishing</strong>, reutilización de contraseñas o fuerza bruta. Una vez con PR:H, la explotación es directa gracias a AC:L + UI:N.</div>
+            </div>
+        </div>
+    </div>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:18px 0 8px;">// ANÁLISIS DE IMPACTO — TRÍADA CIA</p>
+    <table>
+        <tr><th style="width:22%">DIMENSIÓN CIA</th><th style="width:15%">VALOR</th><th>IMPLICACIÓN TÉCNICA</th></tr>
+        <tr>
+            <td><strong>Confidencialidad (C)</strong></td>
+            <td><span class="badge b-green">C:L — Bajo</span></td>
+            <td>La filtración de datos se limita a información no sensible. No se compromete la totalidad de los datos almacenados en el sistema.</td>
+        </tr>
+        <tr>
+            <td><strong>Integridad (I)</strong></td>
+            <td><span class="badge b-green">I:L — Bajo</span></td>
+            <td>Las alteraciones al sistema no afectan la lógica central del negocio. Modificación limitada de registros puntuales.</td>
+        </tr>
+        <tr>
+            <td><strong>Disponibilidad (A)</strong></td>
+            <td><span class="badge b-green">A:L — Bajo</span></td>
+            <td>Cualquier interrupción se traduce en degradación menor del servicio, sin provocar caídas críticas en la infraestructura interna.</td>
+        </tr>
+    </table>
+</section>
+
+<!-- 5. CLASIFICACIÓN -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-chart-bar"></i> 5. Clasificación y Puntuación Base</h2>
+
+    <div class="score-gauge">
+        <div class="score-num">4.7</div>
+        <div class="score-label">BASE SCORE — SEVERIDAD MEDIA</div>
+        <div class="score-range">Rango: 4.0 – 6.9 &nbsp;|&nbsp; CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L</div>
+    </div>
+
+    <table style="margin-top:10px;">
+        <tr><th>RANGO</th><th>SEVERIDAD</th><th>NUESTRO SCORE</th></tr>
+        <tr><td>0.1 – 3.9</td><td><span class="badge b-cyan">BAJA</span></td><td></td></tr>
+        <tr style="background:rgba(255,221,0,.06);">
+            <td><strong>4.0 – 6.9</strong></td>
+            <td><span class="badge b-yellow">MEDIA ✓</span></td>
+            <td><strong style="color:#ffdd00;">4.7 — MEDIA</strong></td>
+        </tr>
+        <tr><td>7.0 – 8.9</td><td><span class="badge b-orange">ALTA</span></td><td></td></tr>
+        <tr><td>9.0 – 10.0</td><td><span class="badge b-red">CRÍTICA</span></td><td></td></tr>
+    </table>
+</section>
+
+<!-- CONCLUSIÓN -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> Conclusión</h2>
+    <div class="concl-box green">
+        <h3>// CLASIFICACIÓN FINAL — RIESGO MEDIO</h3>
+        <p>La vulnerabilidad se clasifica formalmente como de <strong>Riesgo Medio</strong> (Base Score: 4.7). De acuerdo con las mejores prácticas de gestión de vulnerabilidades, se recomienda su remediación mediante un <strong>plan programado dentro del ciclo normal de parches de seguridad</strong>. No requiere una respuesta de emergencia (como un riesgo Alto o Crítico).</p>
+    </div>
+    <div class="concl-box orange">
+        <h3>// ADVERTENCIA — EXPLOIT CHAINING</h3>
+        <p>La vulnerabilidad no debe ignorarse. Aunque el impacto en la tríada CIA es bajo, la combinación de <strong>AV:N + AC:L + UI:N</strong> la hace susceptible de ser utilizada como un <strong>eslabón secundario en una cadena de ataque (exploit chaining)</strong>. Un adversario que ya tenga acceso privilegiado puede explotar esta vulnerabilidad sin esfuerzo adicional, amplificando el daño total de un incidente más complejo.</p>
+    </div>
+</section>
+
+<!-- REFERENCIAS -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> Referencias</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-external-link-alt"></i>FIRST.org — <em>CVSS v3.1 Calculator</em> · <a href="https://www.first.org/cvss/calculator/3.1" target="_blank">first.org/cvss/calculator/3.1</a></li>
+        <li><i class="fas fa-file-alt"></i>FIRST.org — <em>CVSS v3.1 Specification Document</em> · <a href="https://www.first.org/cvss/v3.1/specification-document" target="_blank">first.org/cvss/v3.1/specification-document</a></li>
+        <li><i class="fas fa-external-link-alt"></i>NIST NVD — <em>National Vulnerability Database — CVSS Scoring</em> · <a href="https://nvd.nist.gov/vuln-metrics/cvss" target="_blank">nvd.nist.gov/vuln-metrics/cvss</a></li>
+        <li><i class="fas fa-external-link-alt"></i>MITRE CVE — <em>Common Vulnerabilities and Exposures</em> · <a href="https://cve.mitre.org" target="_blank">cve.mitre.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>CISA — <em>Known Exploited Vulnerabilities Catalog</em> · <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank">cisa.gov/known-exploited-vulnerabilities-catalog</a></li>
+    </ul>
+    <div class="pdf-btn-wrap" style="margin-top:28px;">
+        <a href="../pdf/actividad17.pdf" download>
+            <i class="fas fa-file-pdf"></i> DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+        </a>
+    </div>
+</section>
+
+</main>
+</body>
+</html>
