@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 18 - Modelo Diamante de Intrusión</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9em; }
+        th, td { border: 1px solid rgba(0, 255, 102, 0.3); padding: 10px; text-align: left; vertical-align: top; }
+        th { background: rgba(0, 255, 102, 0.15); color: #00ff66; font-weight: bold; }
+        td { color: #fff; opacity: 0.9; }
+        tr:hover { background: rgba(0, 255, 102, 0.05); }
+
+        .badge { display: inline-block; font-size: .75em; padding: 2px 8px; border: 1px solid; border-radius: 2px; }
+        .b-red    { color: #ff2244; border-color: #ff2244; background: rgba(255,34,68,.08); }
+        .b-orange { color: #ff6a00; border-color: #ff6a00; background: rgba(255,106,0,.07); }
+        .b-cyan   { color: #00cfff; border-color: #00cfff; background: rgba(0,207,255,.07); }
+        .b-yellow { color: #ffdd00; border-color: #ffdd00; background: rgba(255,221,0,.06); }
+        .b-green  { color: #00ff66; border-color: #00ff66; background: rgba(0,255,102,.07); }
+
+        .stat-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 16px 0; }
+        .stat-card { background: rgba(0,255,102,.05); border: 1px solid rgba(0,255,102,.3); border-top: 2px solid #00ff66; padding: 14px 20px; text-align: center; min-width: 110px; }
+        .stat-card .sv { font-size: 1.8rem; font-weight: 900; color: #00ff66; line-height: 1; }
+        .stat-card .sv.red { color: #ff2244; }
+        .stat-card .sv.yellow { color: #ffdd00; }
+        .stat-card .sl { font-size: .65rem; color: rgba(0,255,102,.6); letter-spacing: .1em; margin-top: 3px; }
+
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 8px; margin-top: 14px; }
+        .team-card { border: 1px solid rgba(0,255,102,.25); padding: 10px 14px; background: rgba(0,255,102,.03); }
+        .team-card.me { border-color: rgba(0,255,102,.55); background: rgba(0,255,102,.06); }
+        .team-card .name { color: #00ff66; font-weight: bold; }
+
+        .info-box { text-align: center; border: 1px dashed #00ff66; padding: 15px; margin-bottom: 0; }
+        .info-box p { margin: 4px 0; }
+        .risk-badge { display: inline-block; border: 2px solid #00ff66; color: #00ff66; font-weight: bold; padding: 6px 20px; letter-spacing: 3px; margin-top: 10px; animation: blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #00ff66;}50%{box-shadow:0 0 20px #00ff66,inset 0 0 10px rgba(0,255,102,.15);} }
+
+        .kill-chain { display: flex; align-items: stretch; overflow-x: auto; gap: 0; margin-top: 10px; padding-bottom: 6px; }
+        .kc-step { flex: 1; min-width: 120px; border: 1px solid rgba(0,255,102,.2); border-right: none; padding: 14px 10px; position: relative; background: rgba(0,255,102,.02); transition: background .2s; }
+        .kc-step:last-child { border-right: 1px solid rgba(0,255,102,.2); }
+        .kc-step:hover { background: rgba(0,255,102,.04); }
+        .kc-step::after { content: "▶"; position: absolute; right: -11px; top: 50%; transform: translateY(-50%); color: #00ff66; font-size: .7rem; z-index: 2; }
+        .kc-step:last-child::after { display: none; }
+        .kc-step .kn { font-size: .58rem; color: rgba(0,255,102,.5); letter-spacing: .15em; margin-bottom: 5px; }
+        .kc-step .ki { font-size: 1.2rem; margin-bottom: 5px; }
+        .kc-step .kt { font-weight: bold; color: #fff; font-size: .82rem; margin-bottom: 4px; }
+        .kc-step .kd { font-size: .67rem; color: #00ff66; line-height: 1.5; }
+        .kc-root { min-width: 120px; border: 1px solid #00ff66; padding: 14px 10px; background: rgba(0,255,102,.05); display: flex; flex-direction:column; align-items: center; justify-content: center; text-align: center; }
+        .kc-root .ki { font-size: 1.5rem; color: #00ff66; }
+        .kc-root .kt { font-weight: 900; color: #00ff66; font-size: .9rem; margin-top: 5px; }
+        .kc-root .kd { font-size: .67rem; color: #00ff66; margin-top: 6px; line-height: 1.5; }
+
+        .mocks-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 14px; margin: 10px 0; }
+        .mock-window { border: 1px solid rgba(0,255,102,.25); overflow: hidden; }
+        .mock-bar { background: rgba(0,0,0,.5); padding: 5px 10px; font-size: .65rem; color: rgba(0,255,102,.5); border-bottom: 1px solid rgba(0,255,102,.15); }
+        .mock-body { padding: 16px; background: rgba(0,0,0,.4); font-size: .82rem; color: rgba(255,255,255,.85); line-height: 1.8; font-family: "Courier New", monospace; }
+
+        .cia-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr)); gap: 12px; margin-top: 10px; }
+        .cia-card { border: 1px solid rgba(0,255,102,.2); padding: 18px; background: rgba(0,255,102,.02); }
+        .cia-letter { font-size: 2.4rem; font-weight: 900; line-height: 1; margin-bottom: 2px; opacity: .18; }
+        .cia-card.c1 .cia-letter { color: #ff2244; }
+        .cia-card.c2 .cia-letter { color: #ff6a00; }
+        .cia-card.c3 .cia-letter { color: #00cfff; }
+        .cia-card.c4 .cia-letter { color: #ffdd00; }
+        .cia-title { font-weight: bold; color: #fff; margin-bottom: 3px; }
+        .cia-badge { display: inline-block; font-size: .6rem; padding: 1px 7px; margin-bottom: 8px; border: 1px solid; }
+        .cia-card.c1 .cia-badge { color: #ff2244; border-color: #ff2244; background: rgba(255,34,68,.08); }
+        .cia-card.c2 .cia-badge { color: #ff6a00; border-color: #ff6a00; background: rgba(255,106,0,.07); }
+        .cia-card.c3 .cia-badge { color: #00cfff; border-color: #00cfff; background: rgba(0,207,255,.08); }
+        .cia-card.c4 .cia-badge { color: #ffdd00; border-color: #ffdd00; background: rgba(255,221,0,.06); }
+        .cia-text { font-size: .82rem; color: rgba(255,255,255,.75); }
+
+        .rec-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .rec-item { border: 1px solid rgba(0,255,102,.18); padding: 12px 14px; display: flex; gap: 12px; background: rgba(0,255,102,.02); transition: border-color .2s; }
+        .rec-item:hover { border-color: rgba(0,255,102,.4); }
+        .rec-id { min-width: 62px; }
+        .rec-badge { display: block; font-size: .58rem; padding: 2px 5px; text-align: center; margin-bottom: 3px; border: 1px solid; }
+        .rec-badge.crit { color: #ff2244; border-color: #ff2244; background: rgba(255,34,68,.08); }
+        .rec-badge.alto { color: #ff6a00; border-color: #ff6a00; background: rgba(255,106,0,.07); }
+        .rec-badge.alt  { color: #00cfff; border-color: #00cfff; background: rgba(0,207,255,.07); }
+        .rec-badge.med  { color: #ffdd00; border-color: #ffdd00; background: rgba(255,221,0,.06); }
+        .rec-badge.ok   { color: #00ff66; border-color: #00ff66; background: rgba(0,255,102,.07); }
+        .rec-num { font-size: .7rem; color: rgba(255,255,255,.4); }
+        .rec-title { font-weight: bold; color: #fff; font-size: .88rem; margin-bottom: 2px; }
+        .rec-desc { font-size: .8rem; color: rgba(255,255,255,.7); line-height: 1.7; }
+
+        .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 10px; margin-top: 10px; }
+        .rm-col { border: 1px solid rgba(0,255,102,.18); padding: 14px; background: rgba(0,255,102,.02); }
+        .rm-phase { font-size: .6rem; letter-spacing: .14em; margin-bottom: 8px; display: block; font-weight: bold; }
+        .rm-phase.s1 { color: #ff2244; } .rm-phase.s2 { color: #ff6a00; }
+        .rm-phase.s3 { color: #ffdd00; } .rm-phase.sc { color: #00ff66; }
+        .rm-item { font-size: .77rem; color: rgba(255,255,255,.75); padding: 5px 0; border-bottom: 1px solid rgba(0,255,102,.05); }
+        .rm-item:last-child { border-bottom: none; }
+        .rm-item i { color: #00ff66; margin-right: 4px; font-size: .68rem; }
+
+        .concl-box { border: 1px solid rgba(0,255,102,.2); padding: 20px; margin-bottom: 12px; background: rgba(0,255,102,.02); }
+        .concl-box.green  { border-top: 2px solid #00ff66; }
+        .concl-box.orange { border-color: rgba(255,106,0,.3); border-top: 2px solid #ff6a00; background: rgba(255,106,0,.03); }
+        .concl-box h3 { font-size: .82rem; letter-spacing: .12em; margin-bottom: 12px; }
+        .concl-box.green  h3 { color: #00ff66; }
+        .concl-box.orange h3 { color: #ff6a00; }
+        .concl-box p { font-size: .85rem; color: rgba(255,255,255,.8); margin-bottom: 8px; line-height: 1.8; }
+        .concl-box p:last-child { margin-bottom: 0; }
+        .concl-box strong { color: #00ff66; }
+
+        .refs-list { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+        .refs-list li { border-left: 3px solid rgba(0,255,102,.3); padding: 7px 12px; font-size: .8rem; color: rgba(255,255,255,.75); transition: border-color .2s; }
+        .refs-list li:hover { border-left-color: #00ff66; }
+        .refs-list li a { color: #00cfff; text-decoration: none; }
+        .refs-list li i { color: #00ff66; margin-right: 6px; }
+
+        .pdf-btn-wrap { text-align: center; padding: 16px 0 4px; }
+        .pdf-btn-wrap a { display: inline-flex; align-items: center; gap: 8px; background: #00ff66; color: #050d0a; padding: 11px 28px; font-weight: bold; font-size: .9rem; letter-spacing: .1em; text-decoration: none; transition: background .2s, box-shadow .2s; font-family: "Courier New", monospace; }
+        .pdf-btn-wrap a:hover { background: #00cc55; box-shadow: 0 0 18px rgba(0,255,102,.4); }
+
+        .diamond-wrap { text-align: center; margin: 10px 0 18px; }
+        .diamond-wrap svg { max-width: 500px; width: 100%; }
+
+        @media(max-width:600px){
+            .kill-chain { flex-direction: column; }
+            .kc-step::after { content:"▼"; right:50%; bottom:-11px; top:auto; transform:translateX(50%); }
+            .kc-step { border-right: 1px solid rgba(0,255,102,.2); border-bottom: none; }
+            .kc-step:last-child { border-bottom: 1px solid rgba(0,255,102,.2); }
+        }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Actividad 18 — Modelo Diamante de Intrusión</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- PORTADA -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Parcial:</strong> 3</p>
+        <p><strong>Actividad:</strong> 18 — Modelo Diamante de Intrusión &amp; Análisis de Amenazas APT</p>
+        <p><strong>Fecha:</strong> 15/05/2026</p>
+        <div class="risk-badge">◈ THREAT INTELLIGENCE — MODELO DIAMANTE</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv">4</div><div class="sl">ELEMENTOS</div></div>
+        <div class="stat-card"><div class="sv">6</div><div class="sl">METACARACTERÍSTICAS</div></div>
+        <div class="stat-card"><div class="sv yellow">4</div><div class="sl">FASES KILL CHAIN</div></div>
+        <div class="stat-card"><div class="sv red">2</div><div class="sl">HILOS APT</div></div>
+        <div class="stat-card"><div class="sv">APT</div><div class="sl">TIPO DE AMENAZA</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:18px;">Equipo 5 — Integrantes:</p>
+    <div class="team-grid">
+        <div class="team-card"><span class="name">Edwin Admael</span> Castillo Gómez — 181700</div>
+        <div class="team-card"><span class="name">Carlos René</span> Castillo Olvera — 182033</div>
+        <div class="team-card"><span class="name">Diego Osvaldo</span> Hernández Fernández — 182217</div>
+        <div class="team-card me"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702</div>
+    </div>
+</section>
+
+<!-- PARTE 01 — MODELO DIAMANTE -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-gem"></i> Parte 01 — Comprensión del Modelo Diamante</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:16px;">
+        El <strong style="color:#00ff66">Modelo Diamante de Intrusión</strong> es un marco analítico de threat intelligence que representa cada evento de intrusión como la interacción de cuatro vértices fundamentales que definen la naturaleza, el origen y el impacto de un ataque cibernético.
+    </p>
+
+    <!-- Diagrama SVG -->
+    <div class="diamond-wrap">
+        <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" style="font-family:Courier New,monospace;">
+            <rect width="500" height="420" fill="transparent"/>
+            <line x1="250" y1="40" x2="440" y2="210" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.4"/>
+            <line x1="440" y1="210" x2="250" y2="380" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.4"/>
+            <line x1="250" y1="380" x2="60" y2="210" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.4"/>
+            <line x1="60" y1="210" x2="250" y2="40" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.4"/>
+            <line x1="250" y1="40" x2="250" y2="380" stroke="rgba(0,255,102,.1)" stroke-width="1"/>
+            <line x1="60" y1="210" x2="440" y2="210" stroke="rgba(0,255,102,.1)" stroke-width="1"/>
+            <circle cx="250" cy="210" r="36" fill="rgba(0,255,102,.06)" stroke="#00ff66" stroke-width="1.5"/>
+            <text x="250" y="205" text-anchor="middle" fill="#00ff66" font-size="9" letter-spacing="1">EVENTO</text>
+            <text x="250" y="220" text-anchor="middle" fill="#00ff66" font-size="9" letter-spacing="1">INTRUSIÓN</text>
+            <circle cx="250" cy="40" r="30" fill="rgba(255,34,68,.1)" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="250" y="35" text-anchor="middle" fill="#ff2244" font-size="11" font-weight="bold">ADV</text>
+            <text x="250" y="49" text-anchor="middle" fill="#ff2244" font-size="8">ERSARIO</text>
+            <text x="250" y="85" text-anchor="middle" fill="rgba(255,34,68,.7)" font-size="9">APT / Threat Actor</text>
+            <circle cx="250" cy="380" r="30" fill="rgba(255,221,0,.1)" stroke="#ffdd00" stroke-width="1.5"/>
+            <text x="250" y="375" text-anchor="middle" fill="#ffdd00" font-size="11" font-weight="bold">VÍC</text>
+            <text x="250" y="389" text-anchor="middle" fill="#ffdd00" font-size="8">TIMA</text>
+            <text x="250" y="335" text-anchor="middle" fill="rgba(255,221,0,.7)" font-size="9">Organización / Activos</text>
+            <circle cx="440" cy="210" r="30" fill="rgba(255,106,0,.1)" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="440" y="205" text-anchor="middle" fill="#ff6a00" font-size="11" font-weight="bold">CAP</text>
+            <text x="440" y="219" text-anchor="middle" fill="#ff6a00" font-size="8">ACIDAD</text>
+            <text x="440" y="256" text-anchor="middle" fill="rgba(255,106,0,.7)" font-size="9">TTPs / Malware C2</text>
+            <circle cx="60" cy="210" r="30" fill="rgba(0,207,255,.1)" stroke="#00cfff" stroke-width="1.5"/>
+            <text x="60" y="205" text-anchor="middle" fill="#00cfff" font-size="9" font-weight="bold">INFRA</text>
+            <text x="60" y="219" text-anchor="middle" fill="#00cfff" font-size="8">ESTRUCTURA</text>
+            <text x="60" y="256" text-anchor="middle" fill="rgba(0,207,255,.7)" font-size="9">VPS / Dominios C2</text>
+            <text x="250" y="410" text-anchor="middle" fill="rgba(0,255,102,.3)" font-size="8" letter-spacing="2">MODELO DIAMANTE — CALTAGIRONE ET AL. 2013</text>
+        </svg>
+    </div>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:0 0 8px;">// TABLA CONCEPTUAL — 4 ELEMENTOS</p>
+    <table>
+        <tr><th style="width:15%">ELEMENTO</th><th style="width:40%">DESCRIPCIÓN</th><th>EJEMPLO PRÁCTICO</th></tr>
+        <tr>
+            <td><span class="badge b-red">ADVERSARIO</span></td>
+            <td>Actor de amenaza — individuo o grupo responsable de dirigir y ejecutar la intrusión cibernética para alcanzar un objetivo específico (financiero, espionaje, sabotaje).</td>
+            <td>Grupo tipo <strong>APT</strong> (Amenaza Persistente Avanzada) o atacante externo (Red Team / Black Hat) motivado por la exfiltración de información confidencial.</td>
+        </tr>
+        <tr>
+            <td><span class="badge b-orange">CAPACIDAD</span></td>
+            <td>Conjunto de herramientas, técnicas, tácticas y procedimientos (<strong>TTPs</strong>) desarrollados o adquiridos que el adversario utiliza para llevar a cabo la intrusión.</td>
+            <td>Desarrollo de un <em>payload</em> malicioso o uso de <strong>SQL Injection</strong> para extracción de registros en base de datos.</td>
+        </tr>
+        <tr>
+            <td><span class="badge b-cyan">INFRAESTRUCTURA</span></td>
+            <td>Estructura física y/o lógica (IPs, dominios, servidores, redes) empleada por el adversario para controlar capacidades, enviar malware y mantener comunicación C2.</td>
+            <td>Servidor privado virtual <strong>(VPS)</strong> como servidor de Comando y Control (C2), junto con dominios ofuscados para campañas de phishing.</td>
+        </tr>
+        <tr>
+            <td><span class="badge b-yellow">VÍCTIMA</span></td>
+            <td>Objetivo principal del ataque: persona, organización, servidor de red, activo de información o dirección de correo específica comprometida por el adversario.</td>
+            <td>Servidor de bases de datos interno o credenciales de acceso de un <strong>administrador de sistemas</strong> dentro de la organización afectada.</td>
+        </tr>
+    </table>
+</section>
+
+<!-- PARTE 02 — ANÁLISIS DE EVENTO -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-search"></i> Parte 02 — Análisis de Evento (Modelo Diamante)</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        Se realizó el desglose del incidente detectado en la organización, donde se identificó <strong style="color:#00ff66">comportamiento anómalo</strong> relacionado con la ejecución de código malicioso y comunicaciones hacia infraestructura externa.
+    </p>
+
+    <div class="mocks-grid">
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff5f56">●</span> <span style="color:#ffbd2e">●</span> <span style="color:#27c93f">●</span> &nbsp; incidente.log — DETECCIÓN</div>
+            <div class="mock-body">
+                <span style="color:#ff2244">[ALERT]</span> Comportamiento anómalo detectado<br>
+                <span style="color:#ff2244">[ALERT]</span> Ejecución de código malicioso<br>
+                <span style="color:#ffdd00">[WARN] </span> Comunicaciones hacia IPs externas<br>
+                <span style="color:#00ff66">[INFO] </span> Fase: Comando y Control (C2)<br>
+                <span style="color:#00ff66">[INFO] </span> Múltiples hosts internos afectados<br>
+                <span style="color:#00cfff">[SCAN] </span> Beaconing DNS detectado
+            </div>
+        </div>
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff5f56">●</span> <span style="color:#ffbd2e">●</span> <span style="color:#27c93f">●</span> &nbsp; whois-atribucion.txt</div>
+            <div class="mock-body">
+                <span style="color:#00ff66">$ </span>whois attacker-domain[.]xyz<br>
+                <span style="color:#00cfff">Registrar:</span> NameSilo LLC<br>
+                <span style="color:#00cfff">Created:</span> 2026-04-11 (reciente)<br>
+                <span style="color:#00cfff">Nameserver:</span> ns1.dynamic-dns[.]net<br>
+                <span style="color:#ffdd00">→ Infraestructura descartable</span><br>
+                <span style="color:#ffdd00">→ Patrón: Fast-Flux DNS APT</span>
+            </div>
+        </div>
+    </div>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:14px 0 8px;">// METACARACTERÍSTICAS DEL EVENTO</p>
+    <table>
+        <tr><th style="width:22%">METACARACTERÍSTICA</th><th>DESCRIPCIÓN DEL EVENTO</th></tr>
+        <tr><td><span class="badge b-cyan">MARCA DE TIEMPO</span></td><td>Momento de detección del comportamiento anómalo por los sistemas de monitoreo y posterior alerta de los equipos infectados tras la ejecución del malware.</td></tr>
+        <tr><td><span class="badge b-red">FASE</span></td><td>El evento se sitúa predominantemente en la fase de <strong>Comando y Control (C2)</strong> y <strong>Acciones sobre los Objetivos</strong>, dado que se reveló comunicación establecida con dominios externos.</td></tr>
+        <tr><td><span class="badge b-red">RESULTADO</span></td><td>Se confirmó la ejecución exitosa del código malicioso, logrando la resolución de dominios externos y el establecimiento de <strong>túneles de comunicación bidireccional</strong>.</td></tr>
+        <tr><td><span class="badge b-orange">DIRECCIÓN</span></td><td>Flujo de tráfico originado desde el interior de la infraestructura organizacional (red interna) hacia <strong>direcciones IP externas</strong> y dominios de control remotos.</td></tr>
+        <tr><td><span class="badge b-yellow">METODOLOGÍA</span></td><td>Técnica de <strong>balizamiento (beaconing)</strong> y resolución de nombres de dominio dinámicos para evadir controles de seguridad y mantener persistencia.</td></tr>
+        <tr><td><span class="badge b-green">RECURSOS</span></td><td>Herramientas de análisis de red (logs), bases de datos <strong>WHOIS</strong> para atribución de infraestructura y motores de detección de malware.</td></tr>
+    </table>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:18px 0 8px;">// ANÁLISIS DETALLADO — 5 PUNTOS CLAVE</p>
+    <div class="rec-list">
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge crit">PUNTO 1</span><span class="rec-num">Adversario</span></div>
+            <div><div class="rec-title">¿Quién es el adversario?</div>
+            <div class="rec-desc">Actor de amenaza externo rastreado mediante herramientas de WHOIS/IP. Capacidad de registrar dominios específicos y gestionar servidores de control — perfil consistente con un grupo <strong>APT</strong>.</div></div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge alto">PUNTO 2</span><span class="rec-num">Capacidad</span></div>
+            <div><div class="rec-title">¿Cuál es la capacidad utilizada?</div>
+            <div class="rec-desc">Variante de malware con funciones avanzadas: evasión de detecciones, <strong>consultas DNS</strong> para resolver dominios C2 y conexiones persistentes hacia el exterior para recibir instrucciones.</div></div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge alt">PUNTO 3</span><span class="rec-num">Infraest.</span></div>
+            <div><div class="rec-title">¿Qué tipo de infraestructura se emplea?</div>
+            <div class="rec-desc">Infraestructura <strong>híbrida</strong>: dominios registrados específicamente para el ataque + IPs externas como nodos de terminación C2. Permite interacción con sistemas comprometidos sin exposición directa del adversario.</div></div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge med">PUNTO 4</span><span class="rec-num">Víctima</span></div>
+            <div><div class="rec-title">¿Quién es la víctima primaria?</div>
+            <div class="rec-desc">La organización afectada — equipos y terminales de red donde se detectó el comportamiento anómalo. Impacto centralizado en los <strong>activos de información internos</strong> como punto de entrada.</div></div>
+        </div>
+        <div class="rec-item">
+            <div class="rec-id"><span class="rec-badge crit">PUNTO 5</span><span class="rec-num">Mov. Lateral</span></div>
+            <div><div class="rec-title">¿Existe evidencia de movimiento lateral?</div>
+            <div class="rec-desc"><strong style="color:#ff2244">SÍ — evidencia clara.</strong> Los logs mostraron que múltiples hosts internos intentaban establecer conexiones hacia las mismas IPs externas, indicando <strong>distribución del compromiso</strong> en la red local.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- PARTE 03 — KILL CHAIN -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-link"></i> Parte 03 — Relación con la Cyber Kill Chain</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        Correlación de los eventos identificados con las fases del modelo <strong style="color:#00ff66">Cyber Kill Chain de Lockheed Martin</strong>, posicionando cada evento cronológica y tácticamente dentro del ciclo de vida del ataque.
+    </p>
+
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">FASE 1</div><div class="ki">📧</div><div class="kt">ENTREGA</div><div class="kd">Envío de phishing<br>Spear Phishing<br>al admin<br>payload adjunto</div></div>
+        <div class="kc-step"><div class="kn">FASE 2-3</div><div class="ki">💥</div><div class="kt">EXPLOTACIÓN<br>+ INSTALACIÓN</div><div class="kd">Ejecución malware<br>Fallo humano →<br>detonación payload<br>persistencia OS</div></div>
+        <div class="kc-step"><div class="kn">FASE 4</div><div class="ki">📡</div><div class="kt">COMANDO Y<br>CONTROL (C2)</div><div class="kd">Conexión a C2<br>Túnel cifrado<br>bidireccional<br>beaconing DNS</div></div>
+        <div class="kc-step"><div class="kn">FASE 5</div><div class="ki">🔍</div><div class="kt">ACCIONES<br>OBJETIVOS</div><div class="kd">Detección malware<br>Anomalías en<br>binarios / tráfico<br>externo inusual</div></div>
+        <div class="kc-root"><div class="ki">🛡️</div><div class="kt">RESPUESTA<br>INCIDENTE</div><div class="kd">Contención<br>Erradicación<br>Recuperación</div></div>
+    </div>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:18px 0 8px;">// MAPEO EVENTO → FASE KILL CHAIN</p>
+    <table>
+        <tr><th>EVENTO DETECTADO</th><th style="width:35%">FASE KILL CHAIN</th><th>JUSTIFICACIÓN TÉCNICA</th></tr>
+        <tr><td><strong>Envío de phishing</strong></td><td><span class="badge b-cyan">ENTREGA (Delivery)</span></td><td>Vector de transmisión — ingeniería social corporativa como medio de transporte del payload hacia la víctima.</td></tr>
+        <tr><td><strong>Ejecución del malware</strong></td><td><span class="badge b-orange">EXPLOTACIÓN / INSTALACIÓN</span></td><td>Interacción víctima → detonación → instalación. El agente crea servicios de persistencia antes de comunicarse al exterior.</td></tr>
+        <tr><td><strong>Conexión a C2</strong></td><td><span class="badge b-red">COMANDO Y CONTROL</span></td><td>Canal bidireccional cifrado. Permite administrar el equipo comprometido remotamente y exfiltrar datos de forma estructurada.</td></tr>
+        <tr><td><strong>Detección de malware</strong></td><td><span class="badge b-yellow">INSTALACIÓN / ACCIONES OBJETIVOS</span></td><td>Evento defensivo (Blue Team). Comportamiento originado en fases avanzadas — anomalías en binarios en memoria o tráfico inusual.</td></tr>
+    </table>
+</section>
+
+<!-- PARTE 04 — HILOS DE ACTIVIDAD -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-sitemap"></i> Parte 04 — Hilos de Actividad (Activity Threads)</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        Mapeo del escenario APT mediante la metodología de <strong style="color:#00ff66">hilos de actividad</strong> del Modelo Diamante, visualizando la secuencia de eventos y la correlación entre intrusiones.
+    </p>
+
+    <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin-bottom:10px;">// DIAGRAMA LÓGICO — FLUJO DE HILOS</p>
+    <div class="diamond-wrap" style="text-align:left;">
+        <svg viewBox="0 0 780 310" xmlns="http://www.w3.org/2000/svg" style="font-family:Courier New,monospace;max-width:780px;width:100%;">
+            <defs>
+                <marker id="ag" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#00ff66"/></marker>
+                <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff2244"/></marker>
+            </defs>
+            <rect width="780" height="310" fill="transparent"/>
+            <text x="10" y="22" fill="#00ff66" font-size="9" letter-spacing="2" font-weight="bold">HILO 1 — VÍCTIMA 1 (Administrador)</text>
+            <rect x="10" y="35" width="90" height="50" rx="3" fill="rgba(255,34,68,.08)" stroke="#ff2244" stroke-width="1.5"/>
+            <text x="55" y="55" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">ADVERSARIO</text>
+            <text x="55" y="69" text-anchor="middle" fill="rgba(255,34,68,.7)" font-size="7.5">APT Externo</text>
+            <line x1="100" y1="60" x2="130" y2="60" stroke="#00ff66" stroke-width="1.5" marker-end="url(#ag)"/>
+            <text x="115" y="55" text-anchor="middle" fill="rgba(0,255,102,.5)" font-size="7">Phishing</text>
+            <rect x="130" y="35" width="90" height="50" rx="3" fill="rgba(255,106,0,.08)" stroke="#ff6a00" stroke-width="1.5"/>
+            <text x="175" y="55" text-anchor="middle" fill="#ff6a00" font-size="9" font-weight="bold">CAPACIDAD</text>
+            <text x="175" y="69" text-anchor="middle" fill="rgba(255,106,0,.7)" font-size="7.5">Malware C2</text>
+            <line x1="220" y1="60" x2="250" y2="60" stroke="#00ff66" stroke-width="1.5" marker-end="url(#ag)"/>
+            <text x="235" y="55" text-anchor="middle" fill="rgba(0,255,102,.5)" font-size="7">Payload</text>
+            <rect x="250" y="35" width="90" height="50" rx="3" fill="rgba(255,221,0,.1)" stroke="#ffdd00" stroke-width="2"/>
+            <text x="295" y="52" text-anchor="middle" fill="#ffdd00" font-size="9" font-weight="bold">VÍCTIMA 1</text>
+            <text x="295" y="65" text-anchor="middle" fill="rgba(255,221,0,.8)" font-size="7.5">Admin comprometido</text>
+            <text x="295" y="78" text-anchor="middle" fill="rgba(255,221,0,.6)" font-size="7">Estación de trabajo</text>
+            <line x1="340" y1="60" x2="370" y2="60" stroke="#00ff66" stroke-width="1.5" marker-end="url(#ag)"/>
+            <text x="355" y="55" text-anchor="middle" fill="rgba(0,255,102,.5)" font-size="7">C2 canal</text>
+            <rect x="370" y="35" width="90" height="50" rx="3" fill="rgba(0,207,255,.08)" stroke="#00cfff" stroke-width="1.5"/>
+            <text x="415" y="52" text-anchor="middle" fill="#00cfff" font-size="9" font-weight="bold">INFRA C2</text>
+            <text x="415" y="65" text-anchor="middle" fill="rgba(0,207,255,.7)" font-size="7.5">VPS Externo</text>
+            <text x="415" y="78" text-anchor="middle" fill="rgba(0,207,255,.5)" font-size="7">Dominio ofuscado</text>
+            <text x="390" y="110" text-anchor="middle" fill="#ff2244" font-size="9" letter-spacing="1" font-weight="bold">↓ PIVOTING — MOVIMIENTO LATERAL</text>
+            <text x="390" y="125" text-anchor="middle" fill="rgba(255,34,68,.6)" font-size="8">Víctima 1 pasa a ser parte de la infraestructura del adversario (nodo proxy)</text>
+            <line x1="295" y1="85" x2="295" y2="175" stroke="rgba(255,34,68,.4)" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="10" y="160" fill="#00ff66" font-size="9" letter-spacing="2" font-weight="bold">HILO 2 — VÍCTIMA 2 (Expansión secundaria)</text>
+            <rect x="250" y="175" width="90" height="50" rx="3" fill="rgba(255,34,68,.12)" stroke="#ff2244" stroke-width="2" stroke-dasharray="5,3"/>
+            <text x="295" y="193" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">V1 = PROXY</text>
+            <text x="295" y="206" text-anchor="middle" fill="rgba(255,34,68,.8)" font-size="7.5">IP interna confiable</text>
+            <text x="295" y="218" text-anchor="middle" fill="rgba(255,34,68,.6)" font-size="7">Evasión IPS perimetral</text>
+            <line x1="340" y1="200" x2="490" y2="200" stroke="#ff2244" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+            <text x="415" y="193" text-anchor="middle" fill="rgba(255,34,68,.6)" font-size="7.5">Reconocimiento interno + credenciales admin</text>
+            <rect x="490" y="175" width="90" height="50" rx="3" fill="rgba(255,34,68,.15)" stroke="#ff2244" stroke-width="2"/>
+            <text x="535" y="193" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">VÍCTIMA 2</text>
+            <text x="535" y="206" text-anchor="middle" fill="rgba(255,34,68,.8)" font-size="7.5">BD / Controlador</text>
+            <text x="535" y="218" text-anchor="middle" fill="rgba(255,34,68,.6)" font-size="7">Activo de mayor valor</text>
+            <line x1="75" y1="268" x2="105" y2="268" stroke="#00ff66" stroke-width="1.5"/>
+            <text x="108" y="271" fill="rgba(0,255,102,.5)" font-size="7">Flujo normal</text>
+            <line x1="195" y1="268" x2="225" y2="268" stroke="#ff2244" stroke-width="1.5" stroke-dasharray="4,2"/>
+            <text x="228" y="271" fill="rgba(255,34,68,.5)" font-size="7">Movimiento lateral / Pivoting</text>
+            <rect x="380" y="262" width="12" height="12" rx="2" fill="rgba(255,221,0,.1)" stroke="#ffdd00" stroke-width="1"/>
+            <text x="395" y="271" fill="rgba(255,221,0,.5)" font-size="7">Víctima activa</text>
+            <rect x="460" y="262" width="12" height="12" rx="2" fill="rgba(255,34,68,.12)" stroke="#ff2244" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="475" y="271" fill="rgba(255,34,68,.5)" font-size="7">Víctima como nodo proxy</text>
+            <text x="10" y="295" fill="rgba(0,255,102,.3)" font-size="7.5">El Modelo Diamante correlaciona ambos hilos como parte de la misma campaña APT usando la misma infraestructura C2.</text>
+        </svg>
+    </div>
+
+    <div class="roadmap-grid">
+        <div class="rm-col" style="border-top:2px solid #ff2244;">
+            <span class="rm-phase s1">HILO 1 — COMPROMISO INICIAL</span>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i><strong>Vector:</strong> Spear Phishing al admin</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Ejecución silenciosa del malware</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Persistencia en sistema operativo</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Comunicaciones C2 cifradas salientes</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i><em>Beachhead</em> establecido en red corporativa</div>
+        </div>
+        <div class="rm-col" style="border-top:2px solid #ffdd00;">
+            <span class="rm-phase s3">PIVOTING — MOVIMIENTO LATERAL</span>
+            <div class="rm-item"><i class="fas fa-arrows-alt-h"></i>V1 pasa a ser infraestructura del adversario</div>
+            <div class="rm-item"><i class="fas fa-arrows-alt-h"></i>Nodo proxy configurado en host admin</div>
+            <div class="rm-item"><i class="fas fa-arrows-alt-h"></i>Tráfico enrutado por IP interna confiable</div>
+            <div class="rm-item"><i class="fas fa-arrows-alt-h"></i>IPS perimetral evadido completamente</div>
+            <div class="rm-item"><i class="fas fa-arrows-alt-h"></i>IP real del adversario ocultada</div>
+        </div>
+        <div class="rm-col" style="border-top:2px solid #ff6a00;">
+            <span class="rm-phase s2">HILO 2 — EXPANSIÓN</span>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Reconocimiento interno desde V1</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Identificación de V2: BD / Controlador</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Ataque desde IP interna confiable</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Credenciales admin comprometidas</div>
+            <div class="rm-item"><i class="fas fa-arrow-right"></i>Compromiso del activo de mayor valor</div>
+        </div>
+        <div class="rm-col" style="border-top:2px solid #00ff66;">
+            <span class="rm-phase sc">CORRELACIÓN DIAMANTE</span>
+            <div class="rm-item"><i class="fas fa-link"></i>Mismo adversario en ambos hilos</div>
+            <div class="rm-item"><i class="fas fa-link"></i>Misma infraestructura C2 compartida</div>
+            <div class="rm-item"><i class="fas fa-link"></i>TTPs idénticos — misma campaña APT</div>
+            <div class="rm-item"><i class="fas fa-link"></i>V1 cambia rol: víctima → infraestructura</div>
+            <div class="rm-item"><i class="fas fa-link"></i>Campaña APT coordinada confirmada</div>
+        </div>
+    </div>
+</section>
+
+<!-- CONCLUSIÓN -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> Conclusión y Reflexión Técnica</h2>
+    <div class="concl-box green">
+        <h3>// APORTACIÓN DEL MODELO DIAMANTE AL ANÁLISIS</h3>
+        <p>El Modelo Diamante demostró su valor como framework de threat intelligence al estructurar un incidente complejo en cuatro vértices claramente definidos. Su mayor fortaleza fue revelar la <strong>transición de roles</strong>: la Víctima 1 dejó de ser solo un objetivo para convertirse en parte de la infraestructura del adversario — un insight que los modelos tradicionales de análisis de logs difícilmente capturan. La correlación de los dos hilos de actividad confirmó que se trataba de una campaña APT coordinada, no de dos incidentes aislados.</p>
+    </div>
+    <div class="concl-box orange">
+        <h3>// KILL CHAIN + MODELO DIAMANTE — INTEGRACIÓN PROFESIONAL</h3>
+        <p>La combinación de ambos modelos proporcionó una visión completa: mientras la Kill Chain define el <strong>cuándo</strong> (fase táctica), el Modelo Diamante define el <strong>quién, con qué, cómo y contra quién</strong>. Esta integración es el estándar en operaciones de Threat Intelligence en entornos SOC y equipos CSIRT. La detección del beaconing DNS y el análisis WHOIS representan técnicas reales de atribución en investigaciones de nivel avanzado.</p>
+    </div>
+</section>
+
+<!-- REFERENCIAS -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> Referencias</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-file-alt"></i>Caltagirone, S., Pendergast, A., &amp; Betz, C. (2013). <em>The Diamond Model of Intrusion Analysis</em> · <a href="https://www.activeresponse.org/wp-content/uploads/2013/07/diamond.pdf" target="_blank">activeresponse.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Lockheed Martin — <em>Cyber Kill Chain Framework</em> · <a href="https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html" target="_blank">lockheedmartin.com</a></li>
+        <li><i class="fas fa-external-link-alt"></i>MITRE ATT&amp;CK — <em>Tactics, Techniques and Procedures</em> · <a href="https://attack.mitre.org" target="_blank">attack.mitre.org</a></li>
+        <li><i class="fas fa-external-link-alt"></i>CISA — <em>APT Threat Actors and Intrusion Detection</em> · <a href="https://www.cisa.gov/topics/cyber-threats-and-advisories/advanced-persistent-threats" target="_blank">cisa.gov</a></li>
+        <li><i class="fas fa-external-link-alt"></i>NIST SP 800-61 Rev.2 — <em>Computer Security Incident Handling Guide</em> · <a href="https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final" target="_blank">nist.gov</a></li>
+        <li><i class="fas fa-external-link-alt"></i>ENISA Threat Landscape 2024 — <em>APT Groups</em> · <a href="https://www.enisa.europa.eu/publications/enisa-threat-landscape-2024" target="_blank">enisa.europa.eu</a></li>
+    </ul>
+    <div class="pdf-btn-wrap" style="margin-top:28px;">
+        <a href="../pdf/actividad18.pdf" download>
+            <i class="fas fa-file-pdf"></i> DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+        </a>
+    </div>
+</section>
+
+</main>
+</body>
+</html>
