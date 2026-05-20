@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 14 - Ingeniería Social</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .stat-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:16px 0; }
+        .stat-card { background:rgba(0,255,102,.05); border:1px solid rgba(0,255,102,.3); border-top:2px solid #00ff66; padding:14px 20px; text-align:center; min-width:110px; }
+        .stat-card .sv { font-size:1.8rem; font-weight:900; color:#00ff66; line-height:1; }
+        .stat-card .sv.red { color:#ff2244; } .stat-card .sv.yellow { color:#ffdd00; }
+        .stat-card .sl { font-size:.65rem; color:rgba(0,255,102,.6); letter-spacing:.1em; margin-top:3px; }
+        .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin-top:14px; }
+        .team-card { border:1px solid rgba(0,255,102,.25); padding:10px 14px; background:rgba(0,255,102,.03); }
+        .team-card.me { border-color:rgba(0,255,102,.55); background:rgba(0,255,102,.06); }
+        .team-card .name { color:#00ff66; font-weight:bold; }
+        .info-box { text-align:center; border:1px dashed #00ff66; padding:15px; margin-bottom:0; }
+        .info-box p { margin:4px 0; }
+        .risk-badge { display:inline-block; border:2px solid #00ff66; color:#00ff66; font-weight:bold; padding:6px 20px; letter-spacing:3px; margin-top:10px; animation:blink-border 1.8s ease-in-out infinite; }
+        @keyframes blink-border { 0%,100%{box-shadow:0 0 6px #00ff66;}50%{box-shadow:0 0 20px #00ff66,inset 0 0 10px rgba(0,255,102,.15);} }
+
+        /* Kill chain */
+        .kill-chain { display:flex; align-items:stretch; overflow-x:auto; gap:0; margin-top:10px; padding-bottom:6px; }
+        .kc-step { flex:1; min-width:110px; border:1px solid rgba(0,255,102,.2); border-right:none; padding:12px 8px; position:relative; background:rgba(0,255,102,.02); }
+        .kc-step:last-child { border-right:1px solid rgba(0,255,102,.2); }
+        .kc-step::after { content:"▶"; position:absolute; right:-11px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.7rem; z-index:2; }
+        .kc-step:last-child::after { display:none; }
+        .kc-step .kn { font-size:.55rem; color:rgba(0,255,102,.5); letter-spacing:.1em; margin-bottom:4px; }
+        .kc-step .ki { font-size:1.1rem; margin-bottom:4px; }
+        .kc-step .kt { font-weight:bold; color:#fff; font-size:.75rem; margin-bottom:3px; }
+        .kc-step .kd { font-size:.63rem; color:#00ff66; line-height:1.4; }
+        .kc-root { min-width:110px; border:1px solid #ff2244; padding:12px 8px; background:rgba(255,34,68,.05); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        .kc-root .ki { font-size:1.3rem; color:#ff2244; }
+        .kc-root .kt { font-weight:900; color:#ff2244; font-size:.82rem; margin-top:4px; }
+        .kc-root .kd { font-size:.63rem; color:#ff2244; margin-top:5px; line-height:1.4; }
+
+        /* Mocks */
+        .mocks-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; margin:10px 0; }
+        .mock-window { border:1px solid rgba(0,255,102,.25); overflow:hidden; }
+        .mock-bar { background:rgba(0,0,0,.5); padding:5px 10px; font-size:.65rem; color:rgba(0,255,102,.5); border-bottom:1px solid rgba(0,255,102,.15); }
+        .mock-body { padding:14px; background:rgba(0,0,0,.4); font-size:.8rem; color:rgba(255,255,255,.85); line-height:1.8; font-family:"Courier New",monospace; }
+
+        /* Image grid */
+        .img-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:14px 0; }
+        .img-card { border:1px solid rgba(0,255,102,.2); overflow:hidden; background:rgba(0,0,0,.3); }
+        .img-card img { width:100%; display:block; height:160px; object-fit:cover; opacity:.88; transition:opacity .2s; }
+        .img-card img:hover { opacity:1; }
+        .img-caption { font-size:.68rem; color:rgba(0,255,102,.6); padding:6px 10px; letter-spacing:.08em; text-align:center; border-top:1px solid rgba(0,255,102,.15); }
+
+        /* Q&A */
+        .qa-list { display:flex; flex-direction:column; gap:0; }
+        .qa-item { border-bottom:1px solid rgba(0,255,102,.07); padding:11px 0; }
+        .qa-item:last-child { border-bottom:none; }
+        .qa-q { font-size:.86rem; font-weight:bold; color:#00ff66; margin-bottom:4px; display:flex; gap:10px; }
+        .qa-num { color:rgba(0,255,102,.45); min-width:22px; flex-shrink:0; }
+        .qa-a { font-size:.82rem; color:rgba(255,255,255,.8); line-height:1.75; padding-left:32px; }
+        .qa-a strong { color:#00ff66; }
+
+        /* Concl */
+        .concl-box { border:1px solid rgba(0,255,102,.2); padding:18px; margin-bottom:12px; background:rgba(0,255,102,.02); }
+        .concl-box.green { border-top:2px solid #00ff66; }
+        .concl-box.orange { border-color:rgba(255,106,0,.3); border-top:2px solid #ff6a00; background:rgba(255,106,0,.03); }
+        .concl-box h3 { font-size:.8rem; letter-spacing:.12em; margin-bottom:10px; }
+        .concl-box.green h3 { color:#00ff66; } .concl-box.orange h3 { color:#ff6a00; }
+        .concl-box p { font-size:.83rem; color:rgba(255,255,255,.8); margin-bottom:6px; line-height:1.75; }
+        .concl-box p:last-child { margin-bottom:0; }
+        .concl-box strong { color:#00ff66; }
+
+        /* Refs + PDF */
+        .refs-list { list-style:none; display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+        .refs-list li { border-left:3px solid rgba(0,255,102,.3); padding:6px 12px; font-size:.78rem; color:rgba(255,255,255,.75); transition:border-color .2s; }
+        .refs-list li:hover { border-left-color:#00ff66; }
+        .refs-list li a { color:#00cfff; text-decoration:none; }
+        .refs-list li i { color:#00ff66; margin-right:6px; }
+        .pdf-btn-wrap { text-align:center; padding:16px 0 4px; }
+        .pdf-btn-wrap a { display:inline-flex; align-items:center; gap:8px; background:#00ff66; color:#050d0a; padding:11px 28px; font-weight:bold; font-size:.9rem; letter-spacing:.1em; text-decoration:none; transition:background .2s,box-shadow .2s; font-family:"Courier New",monospace; }
+        .pdf-btn-wrap a:hover { background:#00cc55; box-shadow:0 0 18px rgba(0,255,102,.4); }
+
+        @media(max-width:600px){
+            .kill-chain{flex-direction:column;}
+            .kc-step::after{content:"▼";right:50%;bottom:-11px;top:auto;transform:translateX(50%);}
+            .kc-step{border-right:1px solid rgba(0,255,102,.2);border-bottom:none;}
+            .kc-step:last-child{border-bottom:1px solid rgba(0,255,102,.2);}
+        }
+    </style>
+</head>
+<body>
+<canvas id="matrix-left"></canvas>
+<canvas id="matrix-right"></canvas>
+
+<header>
+    <h1>Actividad 14 — Ingeniería Social (El Arte del Engaño)</h1>
+    <nav><a href="../actividades.html"><i class="fas fa-arrow-left"></i> Volver a Actividades</a></nav>
+</header>
+
+<main>
+
+<!-- PORTADA -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <div class="info-box">
+        <p><strong>CNO V: SEGURIDAD INFORMÁTICA</strong></p>
+        <p><strong>Docente:</strong> Mtro. Servando López Contreras &nbsp;|&nbsp; <strong>Grupo:</strong> T46B &nbsp;|&nbsp; <strong>Fecha:</strong> 15/04/2026</p>
+        <p><strong>Caso:</strong> Robo de $230M USD en Bitcoin — Malone Lam &amp; Jeandiel Serrano (2024)</p>
+        <div class="risk-badge">⚠ INGENIERÍA SOCIAL — EL ARTE DEL ENGAÑO</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-card"><div class="sv red">$230M</div><div class="sl">USD ROBADOS</div></div>
+        <div class="stat-card"><div class="sv">4,100</div><div class="sl">BTC SUSTRAÍDOS</div></div>
+        <div class="stat-card"><div class="sv yellow">15</div><div class="sl">PREGUNTAS</div></div>
+        <div class="stat-card"><div class="sv">0</div><div class="sl">EXPLOITS TÉCNICOS</div></div>
+        <div class="stat-card"><div class="sv red">VISHING</div><div class="sl">VECTOR PRINCIPAL</div></div>
+    </div>
+    <p style="color:#00ff66;font-weight:bold;margin-top:16px;">Integrante:</p>
+    <div class="team-grid">
+        <div class="team-card me" style="grid-column:span 2"><span class="name">Magdalena Yesenia</span> Tristán Rivera — 174702</div>
+    </div>
+</section>
+
+<!-- CONTEXTO -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-crosshairs"></i> Contexto — Caso Malone Lam / Jeandiel Serrano (2024)</h2>
+
+    <p style="color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:14px;">
+        En agosto de 2024 se ejecutó uno de los mayores robos de criptomonedas mediante <strong style="color:#00ff66">ingeniería social pura</strong> — sin explotar ninguna vulnerabilidad técnica. Usando vishing, suplantación de identidad y acceso remoto, los atacantes sustrajeron <strong style="color:#ff2244">~4,100 Bitcoin (~$230M USD)</strong> de una sola víctima.
+    </p>
+
+    <!-- Imágenes del caso -->
+    <div class="img-grid">
+        <div class="img-card">
+            <img src="https://www.nextdlp.com/hs-fs/hubfs/vishing-attack.png" 
+                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Phishing_on_transparent_background.PNG/640px-Phishing_on_transparent_background.PNG'"
+                 alt="Vishing attack - ingeniería social por teléfono" loading="lazy"/>
+            <div class="img-caption">VISHING — ATAQUE VÍA LLAMADA TELEFÓNICA</div>
+        </div>
+        <div class="img-card">
+            <img src="https://cdn.pixabay.com/photo/2021/05/30/19/11/bitcoin-6295084_1280.jpg"
+                 alt="Bitcoin cryptocurrency theft dark" loading="lazy"/>
+            <div class="img-caption">$230M USD EN BITCOIN — SIN EXPLOITS TÉCNICOS</div>
+        </div>
+        <div class="img-card">
+            <img src="https://anydesk.com/en/remote-access-and-scams/img/remote-scam-1.png"
+                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/AnyDesk_logo.svg/640px-AnyDesk_logo.svg.png'"
+                 alt="AnyDesk scam remote access" loading="lazy"/>
+            <div class="img-caption">ANYDESK — HERRAMIENTA DE ACCESO REMOTO UTILIZADA</div>
+        </div>
+    </div>
+
+    <div class="mocks-grid">
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff5f56">●</span> <span style="color:#ffbd2e">●</span> <span style="color:#27c93f">●</span> &nbsp; attack-log.txt</div>
+            <div class="mock-body">
+                <span style="color:#ff2244">[1]</span> Reconocimiento OSINT de la víctima<br>
+                <span style="color:#ff6a00">[2]</span> Llamada falsa: "Google Support"<br>
+                <span style="color:#ffdd00">[3]</span> Pánico: "su cuenta está comprometida"<br>
+                <span style="color:#ffdd00">[4]</span> Víctima instala AnyDesk<br>
+                <span style="color:#ff2244">[5]</span> Acceso total al wallet de BTC<br>
+                <span style="color:#ff2244">[6]</span> 4,100 BTC transferidos<br>
+                <span style="color:#00cfff">[★]</span> ZachXBT rastrea on-chain + RRSS
+            </div>
+        </div>
+        <div class="mock-window">
+            <div class="mock-bar"><span style="color:#ff5f56">●</span> <span style="color:#ffbd2e">●</span> <span style="color:#27c93f">●</span> &nbsp; atacantes.txt</div>
+            <div class="mock-body">
+                <span style="color:#00ff66">Malone Lam</span> ("Greavys")<br>
+                <span style="color:#00cfff">  → </span>Coordinador del esquema<br><br>
+                <span style="color:#00ff66">Jeandiel Serrano</span> ("Box")<br>
+                <span style="color:#00cfff">  → </span>Suplantó soporte Google/Gemini<br><br>
+                <span style="color:#ffdd00">Herramienta:</span> AnyDesk + Caller Spoofing<br>
+                <span style="color:#ffdd00">Detonador:</span> ZachXBT → on-chain tracking
+            </div>
+        </div>
+    </div>
+
+    <!-- Kill chain -->
+    <p style="font-size:.68rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin:14px 0 8px;">// CADENA DEL ATAQUE</p>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — RECONOC.</div><div class="ki">🔍</div><div class="kt">OSINT víctima</div><div class="kd">Gmail, exchange<br>perfil de activos</div></div>
+        <div class="kc-step"><div class="kn">02 — PRETEXTING</div><div class="ki">📞</div><div class="kt">Llamada Google</div><div class="kd">Caller ID spoofed<br>urgencia creada</div></div>
+        <div class="kc-step"><div class="kn">03 — VISHING</div><div class="ki">😱</div><div class="kt">"Cuenta hackeada"</div><div class="kd">Miedo + urgencia<br>sin verificación</div></div>
+        <div class="kc-step"><div class="kn">04 — ACCESO</div><div class="ki">💻</div><div class="kt">AnyDesk instalado</div><div class="kd">Control remoto<br>total del equipo</div></div>
+        <div class="kc-step"><div class="kn">05 — BYPASS MFA</div><div class="ki">🔑</div><div class="kt">Códigos 2FA</div><div class="kd">Víctima entrega<br>verificación</div></div>
+        <div class="kc-root"><div class="ki">💀</div><div class="kt">4,100 BTC<br>$230M USD</div><div class="kd">Transferidos<br>en minutos</div></div>
+    </div>
+</section>
+
+<!-- CUESTIONARIO -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-list-ol"></i> Cuestionario — 15 Preguntas</h2>
+
+    <div class="qa-list">
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">01.</span>¿Cuál fue el principal vector de ataque utilizado por Lam Malone?</div>
+            <div class="qa-a"><strong>Vishing</strong> — ingeniería social mediante llamadas telefónicas con <strong>caller ID spoofing</strong>, haciendo aparecer que las llamadas provenían de Google y Gemini.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">02.</span>¿Qué principio psicológico explotó para lograr transferencias millonarias?</div>
+            <div class="qa-a"><strong>Urgencia y miedo</strong> — crearon una falsa emergencia donde la víctima creía que su cuenta estaba siendo comprometida en tiempo real, presionándola a actuar sin verificar.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">03.</span>¿Qué tipo de ataque de ingeniería social se identifica en este caso?</div>
+            <div class="qa-a"><strong>Vishing</strong> (voice phishing), <strong>suplantación de identidad</strong> (impersonation) y <strong>pretexting</strong>, combinados en una campaña coordinada multi-actor.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">04.</span>¿Qué debilidad de seguridad informática facilitó el fraude?</div>
+            <div class="qa-a">El <strong>factor humano</strong>: la víctima fue manipulada para entregar voluntariamente sus códigos MFA. La autenticación multifactor no falló técnicamente — fue <strong>circunvenida mediante ingeniería social</strong>.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">05.</span>¿Cómo complementaban Chetal Veer y Serrano Jeandiel el ataque iniciado por Lam?</div>
+            <div class="qa-a">Jeandiel Serrano se hizo pasar por <strong>representante de Google</strong> para presionar a la víctima, mientras otros cómplices utilizaron <strong>spoofing de números</strong> y recolectaron datos de Gmail para reforzar la credibilidad del engaño.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">06.</span>¿Cuál fue el resultado económico total del esquema fraudulento?</div>
+            <div class="qa-a">Aproximadamente <strong>4,100 Bitcoin</strong> equivalentes a <strong>~$230 millones de dólares</strong> al momento del robo (agosto 2024) — uno de los mayores robos cripto por ingeniería social de la historia.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">07.</span>¿Qué evento marcó el punto de quiebre del caso?</div>
+            <div class="qa-a">El rastreo on-chain de <strong>ZachXBT</strong> combinado con la exhibición pública del estilo de vida lujoso de los atacantes en redes sociales — sus propias publicaciones los delataron.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">08.</span>¿Qué evidencia física encontraron las autoridades al detener a los implicados?</div>
+            <div class="qa-a"><strong>Relojes de lujo, ropa de diseñador y automóviles</strong> adquiridos con los fondos robados, evidencia clave para demostrar enriquecimiento ilícito y lavado de dinero.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">09.</span>¿Qué decisión tomó Jeandiel Serrano frente al proceso judicial?</div>
+            <div class="qa-a">Se <strong>declaró culpable</strong> (guilty plea) y acordó cooperar con las autoridades como testigo colaborador a cambio de una posible reducción de sentencia.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">10.</span>¿Qué consecuencias legales enfrenta el grupo por estos hechos?</div>
+            <div class="qa-a">Cargos federales por <strong>conspiración para cometer fraude electrónico</strong> y <strong>lavado de dinero</strong>, con penas de hasta 20 años de prisión por cargo federal en EE.UU.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">11.</span>¿Qué empresas fueron suplantadas durante el ataque?</div>
+            <div class="qa-a"><strong>Google</strong> (soporte técnico falso) y <strong>Gemini</strong> (el exchange de criptomonedas de la víctima), creando una narrativa coherente de emergencia de seguridad.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">12.</span>¿Qué herramienta de acceso remoto fue utilizada para comprometer a la víctima?</div>
+            <div class="qa-a"><strong>AnyDesk</strong> — convencieron a la víctima de instalarlo para "resolver el problema", obteniendo así control completo sobre su dispositivo y wallet de criptomonedas.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">13.</span>¿Qué acción realizaron inmediatamente después del robo para ocultar los fondos?</div>
+            <div class="qa-a">Ejecutaron <strong>blanqueo de criptomonedas</strong>: fragmentaron los BTC en múltiples transacciones, los distribuyeron en decenas de wallets y usaron <strong>mixing services</strong> para oscurecer el rastro on-chain.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">14.</span>¿Quién contribuyó al rastreo de las transacciones y exposición del caso?</div>
+            <div class="qa-a">El investigador de blockchain <strong>ZachXBT</strong>, mediante análisis on-chain y correlación con redes sociales de los sospechosos, logrando identificarlos públicamente antes del arresto.</div>
+        </div>
+        <div class="qa-item">
+            <div class="qa-q"><span class="qa-num">15.</span>¿Cuál fue el detallito que tuvo Jeandiel Serrano con Skylar Harrison?</div>
+            <div class="qa-a">Le obsequió a su pareja <strong>Skylar Harrison un bolso de diseñador de lujo</strong> comprado con fondos robados. Este gasto documentado en redes sociales contribuyó a la identificación y arresto del grupo.</div>
+        </div>
+    </div>
+</section>
+
+<!-- CONCLUSIÓN -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-flag-checkered"></i> Conclusión y Reflexión Técnica</h2>
+    <div class="concl-box green">
+        <h3>// EL ESLABÓN MÁS DÉBIL — EL FACTOR HUMANO</h3>
+        <p>El caso Malone Lam demuestra que el <strong>factor humano es el eslabón más débil de la cadena de seguridad</strong>. Sin explotar ningún CVE ni malware, los atacantes robaron $230M USD usando únicamente llamadas telefónicas y manipulación psicológica. La MFA fue inútil porque la víctima fue convencida de entregar sus propios códigos.</p>
+    </div>
+    <div class="concl-box orange">
+        <h3>// CONTRAMEDIDAS CLAVE</h3>
+        <p>🔴 <strong>Nunca compartir códigos MFA</strong> — las empresas legítimas jamás los solicitan por teléfono.</p>
+        <p>🔴 <strong>Verificar identidad independientemente</strong> — colgar y llamar al número oficial de la empresa.</p>
+        <p>🔴 <strong>No instalar software remoto</strong> a solicitud de llamadas no solicitadas (AnyDesk, TeamViewer).</p>
+        <p>🔴 <strong>La urgencia es señal de alerta</strong> — la presión de "actúa ahora" es un indicador clásico de ingeniería social.</p>
+    </div>
+</section>
+
+<!-- REFERENCIAS -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-book"></i> Referencias</h2>
+    <ul class="refs-list">
+        <li><i class="fas fa-external-link-alt"></i>ZachXBT — <em>On-chain analysis: Malone Lam / Jeandiel Serrano case</em> · <a href="https://zachxbt.mirror.xyz" target="_blank">zachxbt.mirror.xyz</a></li>
+        <li><i class="fas fa-gavel"></i>U.S. Department of Justice — <em>Federal charges: wire fraud conspiracy, money laundering (2024)</em> · <a href="https://www.justice.gov" target="_blank">justice.gov</a></li>
+        <li><i class="fas fa-external-link-alt"></i>Krebs on Security — <em>Social engineering targeting cryptocurrency holders</em> · <a href="https://krebsonsecurity.com" target="_blank">krebsonsecurity.com</a></li>
+        <li><i class="fas fa-external-link-alt"></i>CISA — <em>Vishing Guidance: Protecting Against Voice Phishing</em> · <a href="https://www.cisa.gov/news-events/alerts/2020/10/19/vishing-guidance" target="_blank">cisa.gov</a></li>
+        <li><i class="fas fa-external-link-alt"></i>AnyDesk — <em>How to Avoid Remote Access Scams</em> · <a href="https://anydesk.com/en/remote-access-and-scams" target="_blank">anydesk.com</a></li>
+    </ul>
+    <div class="pdf-btn-wrap" style="margin-top:24px;">
+        <a href="../pdf/actividad14.pdf" download>
+            <i class="fas fa-file-pdf"></i> DESCARGAR DOCUMENTACIÓN COMPLETA (PDF)
+        </a>
+    </div>
+</section>
+
+</main>
+</body>
+</html>
