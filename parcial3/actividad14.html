@@ -45,7 +45,7 @@
         /* Image grid */
         .img-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:14px 0; }
         .img-card { border:1px solid rgba(0,255,102,.2); overflow:hidden; background:rgba(0,0,0,.3); }
-        .img-card img { width:100%; display:block; height:160px; object-fit:cover; opacity:.88; transition:opacity .2s; }
+        .img-card svg { width:100%; display:block; } .img-card img { width:100%; display:block; height:160px; object-fit:cover; opacity:.88; }
         .img-card img:hover { opacity:1; }
         .img-caption { font-size:.68rem; color:rgba(0,255,102,.6); padding:6px 10px; letter-spacing:.08em; text-align:center; border-top:1px solid rgba(0,255,102,.15); }
 
@@ -128,24 +128,97 @@
         En agosto de 2024 se ejecutó uno de los mayores robos de criptomonedas mediante <strong style="color:#00ff66">ingeniería social pura</strong> — sin explotar ninguna vulnerabilidad técnica. Usando vishing, suplantación de identidad y acceso remoto, los atacantes sustrajeron <strong style="color:#ff2244">~4,100 Bitcoin (~$230M USD)</strong> de una sola víctima.
     </p>
 
-    <!-- Imágenes del caso -->
+    <!-- Ilustraciones SVG del caso -->
     <div class="img-grid">
         <div class="img-card">
-            <img src="https://www.nextdlp.com/hs-fs/hubfs/vishing-attack.png" 
-                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Phishing_on_transparent_background.PNG/640px-Phishing_on_transparent_background.PNG'"
-                 alt="Vishing attack - ingeniería social por teléfono" loading="lazy"/>
+            <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="font-family:Courier New,monospace">
+  <rect width="320" height="200" fill="#060f0b"/>
+  <!-- Phone -->
+  <rect x="50" y="40" width="70" height="120" rx="10" fill="#0a1f14" stroke="#00ff66" stroke-width="1.5"/>
+  <rect x="58" y="55" width="54" height="80" fill="#051008"/>
+  <circle cx="85" cy="148" r="5" fill="none" stroke="#00ff66" stroke-width="1.2"/>
+  <text x="85" y="52" text-anchor="middle" fill="#00ff66" font-size="7" letter-spacing="1">LLAMADA</text>
+  <!-- Call lines -->
+  <line x1="120" y1="100" x2="200" y2="100" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="160" y="90" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">SPOOFED</text>
+  <text x="160" y="112" text-anchor="middle" fill="rgba(0,255,102,.5)" font-size="7">"Google Support"</text>
+  <!-- Attacker -->
+  <circle cx="240" cy="80" r="18" fill="#1a0a0a" stroke="#ff2244" stroke-width="1.5"/>
+  <text x="240" y="76" text-anchor="middle" fill="#ff2244" font-size="16">😈</text>
+  <text x="240" y="92" text-anchor="middle" fill="rgba(255,34,68,.7)" font-size="7">ATACANTE</text>
+  <!-- Victim scared -->
+  <circle cx="85" cy="95" r="12" fill="#0a1f14" stroke="#ffdd00" stroke-width="1"/>
+  <text x="85" y="99" text-anchor="middle" fill="#ffdd00" font-size="11">😱</text>
+  <!-- Labels -->
+  <text x="160" y="155" text-anchor="middle" fill="#ff2244" font-size="9" font-weight="bold">VISHING ATTACK</text>
+  <text x="160" y="168" text-anchor="middle" fill="rgba(255,34,68,.5)" font-size="7">Urgencia · Miedo · Engaño</text>
+  <!-- Badges -->
+  <rect x="20" y="178" width="60" height="14" rx="2" fill="rgba(255,34,68,.15)" stroke="#ff2244" stroke-width="0.8"/>
+  <text x="50" y="188" text-anchor="middle" fill="#ff2244" font-size="6.5" letter-spacing="1">VISHING</text>
+  <rect x="90" y="178" width="80" height="14" rx="2" fill="rgba(255,221,0,.1)" stroke="#ffdd00" stroke-width="0.8"/>
+  <text x="130" y="188" text-anchor="middle" fill="#ffdd00" font-size="6.5" letter-spacing="1">CALLER ID SPOOF</text>
+  <rect x="180" y="178" width="120" height="14" rx="2" fill="rgba(0,255,102,.08)" stroke="#00ff66" stroke-width="0.8"/>
+  <text x="240" y="188" text-anchor="middle" fill="#00ff66" font-size="6.5" letter-spacing="1">SOCIAL ENGINEERING</text>
+</svg>
             <div class="img-caption">VISHING — ATAQUE VÍA LLAMADA TELEFÓNICA</div>
         </div>
         <div class="img-card">
-            <img src="https://cdn.pixabay.com/photo/2021/05/30/19/11/bitcoin-6295084_1280.jpg"
-                 alt="Bitcoin cryptocurrency theft dark" loading="lazy"/>
-            <div class="img-caption">$230M USD EN BITCOIN — SIN EXPLOITS TÉCNICOS</div>
+            <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="font-family:Courier New,monospace">
+  <rect width="320" height="200" fill="#060f0b"/>
+  <!-- Bitcoin symbol big -->
+  <circle cx="160" cy="90" r="55" fill="rgba(255,170,0,.06)" stroke="rgba(255,170,0,.3)" stroke-width="1.5"/>
+  <circle cx="160" cy="90" r="42" fill="rgba(255,170,0,.04)" stroke="rgba(255,170,0,.2)" stroke-width="1"/>
+  <text x="160" y="103" text-anchor="middle" fill="#ffaa00" font-size="52" font-weight="bold" opacity=".8">₿</text>
+  <!-- Amount -->
+  <text x="160" y="158" text-anchor="middle" fill="#ff2244" font-size="13" font-weight="bold">4,100 BTC ROBADOS</text>
+  <text x="160" y="172" text-anchor="middle" fill="rgba(255,34,68,.6)" font-size="9">~$230,000,000 USD · Agosto 2024</text>
+  <!-- Corner decorations -->
+  <text x="18" y="30" fill="rgba(0,255,102,.3)" font-size="8">01001000</text>
+  <text x="18" y="42" fill="rgba(0,255,102,.2)" font-size="8">10110011</text>
+  <text x="220" y="30" fill="rgba(0,255,102,.3)" font-size="8">11001010</text>
+  <text x="220" y="42" fill="rgba(0,255,102,.2)" font-size="8">01011101</text>
+  <!-- Chain links -->
+  <text x="18" y="190" fill="rgba(255,170,0,.4)" font-size="7" letter-spacing="1">BLOCKCHAIN TRACE</text>
+  <line x1="18" y1="178" x2="302" y2="178" stroke="rgba(255,170,0,.15)" stroke-width="0.8" stroke-dasharray="4,3"/>
+</svg>
+            <div class="img-caption">4,100 BTC — $230M USD ROBADOS (2024)</div>
         </div>
         <div class="img-card">
-            <img src="https://anydesk.com/en/remote-access-and-scams/img/remote-scam-1.png"
-                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/AnyDesk_logo.svg/640px-AnyDesk_logo.svg.png'"
-                 alt="AnyDesk scam remote access" loading="lazy"/>
-            <div class="img-caption">ANYDESK — HERRAMIENTA DE ACCESO REMOTO UTILIZADA</div>
+            <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="font-family:Courier New,monospace">
+  <rect width="320" height="200" fill="#060f0b"/>
+  <!-- Victim screen -->
+  <rect x="20" y="30" width="120" height="85" rx="4" fill="#0a1f14" stroke="#00ff66" stroke-width="1.2"/>
+  <rect x="20" y="30" width="120" height="14" rx="4" fill="rgba(0,255,102,.12)"/>
+  <text x="80" y="41" text-anchor="middle" fill="#00ff66" font-size="7">VÍCTIMA — PC</text>
+  <text x="36" y="60" fill="rgba(0,255,102,.6)" font-size="7">$ anydesk --accept</text>
+  <text x="36" y="74" fill="#ffdd00" font-size="7">⚠ Access granted</text>
+  <text x="36" y="88" fill="#ff2244" font-size="7">🔴 Screen shared</text>
+  <text x="36" y="102" fill="rgba(255,34,68,.6)" font-size="6">Wallet visible...</text>
+  <!-- Arrow with label -->
+  <line x1="140" y1="72" x2="180" y2="72" stroke="#ff2244" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="160" y="65" text-anchor="middle" fill="#ff2244" font-size="7.5" font-weight="bold">CONTROL</text>
+  <text x="160" y="84" text-anchor="middle" fill="rgba(255,34,68,.5)" font-size="6.5">REMOTO</text>
+  <!-- Attacker screen -->
+  <rect x="180" y="30" width="120" height="85" rx="4" fill="#1a0505" stroke="#ff2244" stroke-width="1.5"/>
+  <rect x="180" y="30" width="120" height="14" rx="4" fill="rgba(255,34,68,.15)"/>
+  <text x="240" y="41" text-anchor="middle" fill="#ff2244" font-size="7">ATACANTE — CONTROL</text>
+  <text x="196" y="60" fill="rgba(255,34,68,.7)" font-size="7">&gt; View wallet</text>
+  <text x="196" y="74" fill="#ff2244" font-size="7">&gt; Transfer all BTC</text>
+  <text x="196" y="88" fill="#ffdd00" font-size="7">$ 4,100 BTC →</text>
+  <text x="196" y="102" fill="rgba(255,34,68,.5)" font-size="6">Target wallet...</text>
+  <!-- AnyDesk label -->
+  <rect x="90" y="125" width="140" height="20" rx="3" fill="rgba(255,34,68,.1)" stroke="#ff2244" stroke-width="1"/>
+  <text x="160" y="139" text-anchor="middle" fill="#ff2244" font-size="8" font-weight="bold" letter-spacing="1">ANYDESK — ACCESO REMOTO</text>
+  <!-- Info -->
+  <text x="160" y="165" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="7.5">"Instálalo para solucionar el problema"</text>
+  <text x="160" y="180" text-anchor="middle" fill="rgba(255,34,68,.5)" font-size="7">Herramienta legítima usada con fines maliciosos</text>
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ff2244"/>
+    </marker>
+  </defs>
+</svg>
+            <div class="img-caption">ANYDESK — CONTROL REMOTO DEL DISPOSITIVO</div>
         </div>
     </div>
 
