@@ -135,6 +135,21 @@
         .score-num { font-size:4rem; font-weight:900; color:#ffdd00; line-height:1; text-shadow:0 0 20px rgba(255,221,0,.4); }
         .score-label { font-size:.75rem; letter-spacing:.2em; color:rgba(255,221,0,.7); margin-top:4px; }
         .score-range { font-size:.7rem; color:rgba(255,255,255,.4); margin-top:4px; }
+    
+        /* Kill chain */
+        .kill-chain { display:flex; align-items:stretch; overflow-x:auto; gap:0; margin-top:10px; padding-bottom:6px; }
+        .kc-step { flex:1; min-width:110px; border:1px solid rgba(0,255,102,.2); border-right:none; padding:12px 8px; position:relative; background:rgba(0,255,102,.02); }
+        .kc-step:last-child { border-right:1px solid rgba(0,255,102,.2); }
+        .kc-step::after { content:"▶"; position:absolute; right:-11px; top:50%; transform:translateY(-50%); color:#00ff66; font-size:.7rem; z-index:2; }
+        .kc-step:last-child::after { display:none; }
+        .kc-step .kn { font-size:.55rem; color:rgba(0,255,102,.5); letter-spacing:.1em; margin-bottom:4px; }
+        .kc-step .ki { font-size:1.1rem; margin-bottom:4px; }
+        .kc-step .kt { font-weight:bold; color:#fff; font-size:.75rem; margin-bottom:3px; }
+        .kc-step .kd { font-size:.63rem; color:#00ff66; line-height:1.4; }
+        .kc-root { min-width:110px; border:1px solid #ffdd00; padding:12px 8px; background:rgba(255,221,0,.04); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        .kc-root .ki { font-size:1.3rem; }
+        .kc-root .kt { font-weight:900; color:#ffdd00; font-size:.82rem; margin-top:4px; }
+        .kc-root .kd { font-size:.63rem; color:#ffdd00; margin-top:5px; line-height:1.4; }
     </style>
 </head>
 <body>
@@ -202,6 +217,53 @@
 </section>
 
 <!-- 2. ESCENARIO -->
+
+<!-- KILL CHAIN VULN -->
+<section class="window">
+    <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
+    <h2><i class="fas fa-route"></i> Ciclo de Vida de la Vulnerabilidad</h2>
+    <p style="color:rgba(255,255,255,.8);font-size:.88rem;line-height:1.8;margin-bottom:14px;">
+        Flujo de explotación potencial de la vulnerabilidad evaluada (<strong style="color:#00ff66">AV:N / AC:L / PR:H</strong>), desde el descubrimiento hasta el impacto, en un escenario de insider malicioso o escalada previa.
+    </p>
+    <div class="kill-chain">
+        <div class="kc-step"><div class="kn">01 — RECONOC.</div><div class="ki">🔍</div><div class="kt">Descubrimiento</div><div class="kd">Atacante con PR:H<br>identifica vector<br>AV:Network</div></div>
+        <div class="kc-step"><div class="kn">02 — ACCESO</div><div class="ki">🔑</div><div class="kt">Autenticación</div><div class="kd">Credenciales admin<br>phishing previo<br>o insider</div></div>
+        <div class="kc-step"><div class="kn">03 — EXPLOIT</div><div class="ki">💥</div><div class="kt">Explotación</div><div class="kd">AC:L — baja<br>complejidad<br>UI:N autónoma</div></div>
+        <div class="kc-step"><div class="kn">04 — IMPACTO</div><div class="ki">📊</div><div class="kt">CIA Afectada</div><div class="kd">C:L / I:L / A:L<br>S:U — Scope<br>sin cambio</div></div>
+        <div class="kc-root"><div class="ki">⚠️</div><div class="kt">SCORE 4.7<br>MEDIA</div><div class="kd">Exploit chaining<br>riesgo latente<br>parche urgente</div></div>
+    </div>
+
+    <div style="margin-top:16px;">
+        <p style="font-size:.7rem;color:rgba(0,255,102,.5);letter-spacing:.15em;margin-bottom:10px;">// PUNTUACIÓN BASE — VISUALIZACIÓN</p>
+        <svg viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg" style="font-family:Courier New,monospace">
+  <rect width="360" height="180" fill="#060f0b"/>
+  <!-- Severity bar background -->
+  <rect x="30" y="70" width="60" height="28" rx="3" fill="rgba(0,207,255,.12)" stroke="#00cfff" stroke-width="1"/>
+  <text x="60" y="81" text-anchor="middle" fill="#00cfff" font-size="7" letter-spacing="1">BAJA</text>
+  <text x="60" y="92" text-anchor="middle" fill="#00cfff" font-size="8" font-weight="bold">0.1–3.9</text>
+  <rect x="95" y="58" width="70" height="40" rx="3" fill="rgba(255,221,0,.15)" stroke="#ffdd00" stroke-width="2"/>
+  <text x="130" y="72" text-anchor="middle" fill="#ffdd00" font-size="7" letter-spacing="1">MEDIA ✓</text>
+  <text x="130" y="86" text-anchor="middle" fill="#ffdd00" font-size="10" font-weight="bold">4.0–6.9</text>
+  <rect x="170" y="70" width="65" height="28" rx="3" fill="rgba(255,106,0,.1)" stroke="#ff6a00" stroke-width="1"/>
+  <text x="202" y="81" text-anchor="middle" fill="#ff6a00" font-size="7" letter-spacing="1">ALTA</text>
+  <text x="202" y="92" text-anchor="middle" fill="#ff6a00" font-size="8" font-weight="bold">7.0–8.9</text>
+  <rect x="240" y="70" width="70" height="28" rx="3" fill="rgba(255,34,68,.1)" stroke="#ff2244" stroke-width="1"/>
+  <text x="275" y="81" text-anchor="middle" fill="#ff2244" font-size="7" letter-spacing="1">CRÍTICA</text>
+  <text x="275" y="92" text-anchor="middle" fill="#ff2244" font-size="8" font-weight="bold">9.0–10.0</text>
+  <!-- Score display -->
+  <text x="130" y="40" text-anchor="middle" fill="#ffdd00" font-size="32" font-weight="bold">4.7</text>
+  <text x="130" y="52" text-anchor="middle" fill="rgba(255,221,0,.6)" font-size="8" letter-spacing="2">SEVERIDAD MEDIA</text>
+  <!-- Arrow pointing to MEDIA -->
+  <line x1="130" y1="55" x2="130" y2="57" stroke="#ffdd00" stroke-width="1.5"/>
+  <!-- Vector string -->
+  <rect x="30" y="125" width="300" height="20" rx="3" fill="rgba(0,255,102,.06)" stroke="rgba(0,255,102,.3)" stroke-width="1"/>
+  <text x="180" y="138" text-anchor="middle" fill="#00ff66" font-size="8" letter-spacing=".5">CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L</text>
+  <!-- Labels -->
+  <text x="180" y="165" text-anchor="middle" fill="rgba(0,255,102,.35)" font-size="7" letter-spacing="2">FIRST.ORG CVSS v3.1 CALCULATOR — RESULTADO VERIFICADO</text>
+</svg>
+    </div>
+</section>
+
 <section class="window">
     <div class="window-bar"><span class="btn red"></span><span class="btn yellow"></span><span class="btn green"></span></div>
     <h2><i class="fas fa-server"></i> 2. Escenario</h2>
