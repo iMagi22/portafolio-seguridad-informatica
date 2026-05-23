@@ -190,7 +190,6 @@ footer span{color:var(--gd);}
   .mini-stats{grid-template-columns:repeat(3,1fr);}
 }
 </style>
-<base target="_blank">
 </head>
 <body>
 <<canvas id="mc"></canvas>
@@ -200,7 +199,7 @@ footer span{color:var(--gd);}
   <h1>PROYECTOS</h1>
   <div class="h-sub" style="margin-top:4px;">Magdalena Yesenia Tristán Rivera — 174702 · Grupo T46B</div>
   <div class="h-blink">_</div>
-  <nav><a href="../index.html">⌂ Inicio</a></nav>
+  <nav><a href="javascript:void(0)">⌂ Inicio</a></nav>
 
   <div class="stat-bar">
     <div class="stat-item"><div class="stat-val">03</div><div class="stat-lbl">Proyectos Totales</div></div>
@@ -214,25 +213,25 @@ footer span{color:var(--gd);}
 <<main>
   <div class="section-label">// Repositorio de Proyectos Técnicos · CNO V</div>
 
-  <!-- ══════════════════════════════ PROYECTO 1 ══════════════════════════════ -->
+  <!-- ══════════════════════════════ PROYECTO 1 (ROJO) ══════════════════════════════ -->
   <div class="proj-card">
     <div class="proj-band">
       <div class="proj-num-blk">
-        <div class="big-num">01</div>
+        <div class="big-num" style="color:rgba(255,95,86,.25);">01</div>
         <div class="parcial">Parcial 1</div>
       </div>
       <div class="proj-header">
-        <div class="proj-eyebrow">Proyecto 01 · Parcial 1 · Pentesting Web</div>
-        <div class="proj-title">De la Teoría a la Práctica:<br>Walkthrough en Acción</div>
-        <div class="proj-subtitle">Pentesting completo sobre máquina virtual — Metodología + Video</div>
+        <div class="proj-eyebrow" style="color:rgba(255,95,86,.5);">Proyecto 01 · Parcial 1 · Pentesting Web</div>
+        <div class="proj-title" style="color:var(--alert);text-shadow:0 0 12px rgba(255,95,86,.25);">De la Teoría a la Práctica:<br>Walkthrough en Acción</div>
+        <div class="proj-subtitle" style="color:rgba(255,95,86,.5);">Pentesting completo sobre máquina virtual — Metodología + Video</div>
         <div class="proj-tags">
-          <span class="tag">Pentesting</span>
-          <span class="tag">Walkthrough</span>
-          <span class="tag">Burp Suite</span>
+          <span class="tag red">Pentesting</span>
+          <span class="tag red">Walkthrough</span>
+          <span class="tag red">Burp Suite</span>
           <span class="tag blue">Nmap</span>
           <span class="tag blue">Metasploit</span>
           <span class="tag orange">SnakeOil VulnHub</span>
-          <span class="tag">Privilege Escalation</span>
+          <span class="tag red">Privilege Escalation</span>
         </div>
       </div>
     </div>
@@ -250,7 +249,6 @@ footer span{color:var(--gd);}
         </ul>
       </div>
       <div class="proj-visual">
-        <!-- Terminal screen -->
         <div class="visual-screen">
           <div class="screen-bar">
             <span class="s-dot s-r"></span><span class="s-dot s-y"></span><span class="s-dot s-g"></span>
@@ -267,20 +265,18 @@ footer span{color:var(--gd);}
             <div class="terminal-line"><span class="out">/backup (Status: 301) [→ /backup/]</span></div>
           </div>
         </div>
-        <!-- Stats -->
         <div class="mini-stats">
-          <div class="mini-stat"><div class="mv">7h</div><div class="ml">Duración</div></div>
-          <div class="mini-stat"><div class="mv">P+V</div><div class="ml">Doc+Video</div></div>
-          <div class="mini-stat"><div class="mv">ROOT</div><div class="ml">Obtenido</div></div>
+          <div class="mini-stat" style="border-color:rgba(255,95,86,.2);"><div class="mv" style="color:var(--alert);">7h</div><div class="ml">Duración</div></div>
+          <div class="mini-stat" style="border-color:rgba(255,95,86,.2);"><div class="mv" style="color:var(--alert);">P+V</div><div class="ml">Doc+Video</div></div>
+          <div class="mini-stat" style="border-color:rgba(255,95,86,.2);"><div class="mv" style="color:var(--alert);">ROOT</div><div class="ml">Obtenido</div></div>
         </div>
-        <!-- Phase indicators -->
         <div style="border:1px solid var(--bdr);border-radius:2px;padding:10px 12px;">
           <div style="font-size:8.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;">FASES DE PENTESTING</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;">
-            <span class="tag" style="font-size:8.5px;">01 Reconocimiento</span>
-            <span class="tag" style="font-size:8.5px;">02 Enumeración</span>
-            <span class="tag" style="font-size:8.5px;">03 Explotación</span>
-            <span class="tag" style="font-size:8.5px;">04 Post-Exploit</span>
+            <span class="tag red" style="font-size:8.5px;">01 Reconocimiento</span>
+            <span class="tag red" style="font-size:8.5px;">02 Enumeración</span>
+            <span class="tag red" style="font-size:8.5px;">03 Explotación</span>
+            <span class="tag red" style="font-size:8.5px;">04 Post-Exploit</span>
           </div>
         </div>
       </div>
@@ -291,34 +287,34 @@ footer span{color:var(--gd);}
         <strong>Herramientas:</strong> Nmap · Burp Suite · Metasploit · Gobuster · Linpeas<br>
         <strong>Entorno:</strong> Kali Linux · VirtualBox · SnakeOil (VulnHub)
       </div>
-      <a href="walkthrough.html" class="cta-btn">→ &nbsp; Ver Proyecto Completo</a>
+      <a href="javascript:void(0)" class="cta-btn" style="background:var(--alert);box-shadow:0 0 18px rgba(255,95,86,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
     </div>
     <div class="proj-status">
-      <span class="status-dot sd-ok"></span>
-      <span class="st-ok">ACCESO CONCEDIDO — Proyecto disponible · Parcial 1 · Completado</span>
+      <span class="status-dot" style="background:var(--alert);box-shadow:0 0 5px var(--alert);"></span>
+      <span style="color:var(--alert);">ACCESO CONCEDIDO — Proyecto disponible · Parcial 1 · Completado</span>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════ PROYECTO 2 ══════════════════════════════ -->
+  <!-- ══════════════════════════════ PROYECTO 2 (AZUL) ══════════════════════════════ -->
   <div class="proj-card">
     <div class="proj-band">
       <div class="proj-num-blk">
-        <div class="big-num">02</div>
+        <div class="big-num" style="color:rgba(0,207,255,.25);">02</div>
         <div class="parcial">Parcial 2</div>
       </div>
       <div class="proj-header">
-        <div class="proj-eyebrow">Proyecto 02 · Parcial 2 · Ingeniería Social</div>
-        <div class="proj-title">El Eslabón Más Débil:<br>Campaña Ética de Phishing</div>
-        <div class="proj-subtitle">Simulación educativa de ingeniería social · Quiz interactivo · Score global</div>
+        <div class="proj-eyebrow" style="color:rgba(0,207,255,.5);">Proyecto 02 · Parcial 2 · Ingeniería Social</div>
+        <div class="proj-title" style="color:var(--info);text-shadow:0 0 12px rgba(0,207,255,.25);">El Eslabón Más Débil:<br>Campaña Ética de Phishing</div>
+        <div class="proj-subtitle" style="color:rgba(0,207,255,.5);">Simulación educativa de ingeniería social · Quiz interactivo · Score global</div>
         <div class="proj-tags">
-          <span class="tag">Ingeniería Social</span>
-          <span class="tag">Phishing</span>
+          <span class="tag blue">Ingeniería Social</span>
+          <span class="tag blue">Phishing</span>
           <span class="tag blue">BEC Simulation</span>
           <span class="tag blue">OSINT</span>
           <span class="tag orange">OWASP</span>
-          <span class="tag">Quiz Interactivo</span>
-          <span class="tag">Score Global</span>
+          <span class="tag blue">Quiz Interactivo</span>
+          <span class="tag blue">Score Global</span>
         </div>
       </div>
     </div>
@@ -336,7 +332,6 @@ footer span{color:var(--gd);}
         </ul>
       </div>
       <div class="proj-visual">
-        <!-- Phishing email mock -->
         <div class="visual-screen">
           <div class="screen-bar">
             <span class="s-dot s-r"></span><span class="s-dot s-y"></span><span class="s-dot s-g"></span>
@@ -356,21 +351,19 @@ footer span{color:var(--gd);}
             </div>
           </div>
         </div>
-        <!-- Score display -->
         <div class="mini-stats">
-          <div class="mini-stat"><div class="mv">10</div><div class="ml">Preguntas</div></div>
-          <div class="mini-stat"><div class="mv">🏆</div><div class="ml">Ranking</div></div>
-          <div class="mini-stat"><div class="mv">PDF</div><div class="ml">Reporte</div></div>
+          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">10</div><div class="ml">Preguntas</div></div>
+          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">🏆</div><div class="ml">Ranking</div></div>
+          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">PDF</div><div class="ml">Reporte</div></div>
         </div>
-        <!-- Vectores -->
         <div style="border:1px solid var(--bdr);border-radius:2px;padding:10px 12px;">
           <div style="font-size:8.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;">VECTORES ESTUDIADOS</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;">
-            <span class="tag red" style="font-size:8.5px;">Phishing</span>
-            <span class="tag red" style="font-size:8.5px;">Spear-Phishing</span>
-            <span class="tag red" style="font-size:8.5px;">BEC</span>
-            <span class="tag red" style="font-size:8.5px;">Vishing</span>
-            <span class="tag red" style="font-size:8.5px;">Smishing</span>
+            <span class="tag blue" style="font-size:8.5px;">Phishing</span>
+            <span class="tag blue" style="font-size:8.5px;">Spear-Phishing</span>
+            <span class="tag blue" style="font-size:8.5px;">BEC</span>
+            <span class="tag blue" style="font-size:8.5px;">Vishing</span>
+            <span class="tag blue" style="font-size:8.5px;">Smishing</span>
           </div>
         </div>
       </div>
@@ -381,41 +374,41 @@ footer span{color:var(--gd);}
         <strong>Tecnologías:</strong> HTML · CSS · JavaScript · JSONBin.io API · jsPDF<br>
         <strong>Estándares:</strong> OWASP · NIST SP 800-115 · ISO 27032
       </div>
-      <a href="EslabonDebil.html" class="cta-btn">→ &nbsp; Ver Proyecto Completo</a>
+      <a href="javascript:void(0)" class="cta-btn" style="background:var(--info);box-shadow:0 0 18px rgba(0,207,255,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
     </div>
     <div class="proj-status">
-      <span class="status-dot sd-ok"></span>
-      <span class="st-ok">ACCESO CONCEDIDO — Proyecto disponible · Parcial 2 · Completado</span>
+      <span class="status-dot" style="background:var(--info);box-shadow:0 0 5px var(--info);"></span>
+      <span style="color:var(--info);">ACCESO CONCEDIDO — Proyecto disponible · Parcial 2 · Completado</span>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════ PROYECTO 3 ══════════════════════════════ -->
+  <!-- ══════════════════════════════ PROYECTO 3 (NARANJA) ══════════════════════════════ -->
   <div class="proj-card">
     <div class="proj-band">
       <div class="proj-num-blk">
-        <div class="big-num" style="color:rgba(0,207,255,.25);">03</div>
+        <div class="big-num" style="color:rgba(255,140,66,.25);">03</div>
         <div class="parcial">Parcial 3</div>
       </div>
       <div class="proj-header">
-        <div class="proj-eyebrow" style="color:rgba(0,207,255,.5);">Proyecto 03 · Parcial 3 · Gestión de Seguridad</div>
-        <div class="proj-title" style="color:var(--info);text-shadow:0 0 12px rgba(0,207,255,.3);">SGSI Anthropic:<br>ISO/IEC 27001:2022</div>
-        <div class="proj-subtitle" style="color:rgba(0,207,255,.5);">Sistema de Gestión de Seguridad de la Información · Equipo 5</div>
+        <div class="proj-eyebrow" style="color:rgba(255,140,66,.5);">Proyecto 03 · Parcial 3 · Gestión de Seguridad</div>
+        <div class="proj-title" style="color:#ff8c42;text-shadow:0 0 12px rgba(255,140,66,.3);">SGSI Anthropic:<br>ISO/IEC 27001:2022</div>
+        <div class="proj-subtitle" style="color:rgba(255,140,66,.5);">Sistema de Gestión de Seguridad de la Información · Equipo 5</div>
         <div class="proj-tags">
-          <span class="tag blue">ISO 27001:2022</span>
-          <span class="tag blue">SGSI</span>
-          <span class="tag blue">Análisis de Riesgos</span>
-          <span class="tag blue">Matrices RACI</span>
+          <span class="tag orange">ISO 27001:2022</span>
+          <span class="tag orange">SGSI</span>
+          <span class="tag orange">Análisis de Riesgos</span>
+          <span class="tag orange">Matrices RACI</span>
           <span class="tag orange">Anthropic · Claude</span>
           <span class="tag orange">PDCA</span>
-          <span class="tag blue">ISO 42001:2023</span>
+          <span class="tag orange">ISO 42001:2023</span>
         </div>
       </div>
     </div>
 
     <div class="proj-body">
       <div class="proj-desc-area">
-        <p class="proj-desc">Diseño e implementación completa de un Sistema de Gestión de Seguridad de la Información para <strong style="color:var(--info);">Anthropic, PBC</strong> conforme a ISO/IEC 27001:2022. El documento abarca las 10 cláusulas: alcance, contexto organizacional, 20 políticas con matrices RACI, evaluación de riesgos y ciclo PDCA sobre incidente real BEC.</p>
+        <p class="proj-desc">Diseño e implementación completa de un Sistema de Gestión de Seguridad de la Información para <strong style="color:#ff8c42;">Anthropic, PBC</strong> conforme a ISO/IEC 27001:2022. El documento abarca las 10 cláusulas: alcance, contexto organizacional, 20 políticas con matrices RACI, evaluación de riesgos y ciclo PDCA sobre incidente real BEC.</p>
         <ul class="feat-list">
           <li>Análisis de contexto: 20 activos internos + 20 activos externos identificados</li>
           <li>20 políticas de seguridad con Estándar, Directriz, Procedimiento y Línea Base</li>
@@ -426,7 +419,6 @@ footer span{color:var(--gd);}
         </ul>
       </div>
       <div class="proj-visual">
-        <!-- Risk matrix mini -->
         <div class="visual-screen">
           <div class="screen-bar">
             <span class="s-dot s-r"></span><span class="s-dot s-y"></span><span class="s-dot s-g"></span>
@@ -440,15 +432,13 @@ footer span{color:var(--gd);}
             <div class="risk-row"><span class="rbadge rb-alto">ALTO 12</span><span style="font-size:10px;color:var(--dim);">Post-PDCA: riesgo residual</span></div>
           </div>
         </div>
-        <!-- Stats -->
         <div class="mini-stats">
-          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">10</div><div class="ml">Cláusulas</div></div>
-          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">20</div><div class="ml">Políticas</div></div>
-          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">140+</div><div class="ml">Checklist</div></div>
+          <div class="mini-stat" style="border-color:rgba(255,140,66,.2);"><div class="mv" style="color:#ff8c42;">10</div><div class="ml">Cláusulas</div></div>
+          <div class="mini-stat" style="border-color:rgba(255,140,66,.2);"><div class="mv" style="color:#ff8c42;">20</div><div class="ml">Políticas</div></div>
+          <div class="mini-stat" style="border-color:rgba(255,140,66,.2);"><div class="mv" style="color:#ff8c42;">140+</div><div class="ml">Checklist</div></div>
         </div>
-        <!-- PDCA mini -->
         <div class="pdca-mini">
-          <div class="pm p"><div class="pm-lbl">PLAN</div><p>Identificar riesgos y controles preventivos</p></div>
+          <div class="pm p" style="border-left-color:#ff8c42;"><div class="pm-lbl" style="color:#ff8c42;">PLAN</div><p>Identificar riesgos y controles preventivos</p></div>
           <div class="pm d"><div class="pm-lbl">DO</div><p>Implementar controles + respuesta 0–2h</p></div>
           <div class="pm c"><div class="pm-lbl">CHECK</div><p>KPIs: MTTD 47→8 min, clics 8.3%→1.4%</p></div>
           <div class="pm a"><div class="pm-lbl">ACT</div><p>7 AC correctivas · NC-2024-017 cerrada</p></div>
@@ -461,11 +451,11 @@ footer span{color:var(--gd);}
         <strong>Normas:</strong> ISO 27001 · 27002 · 27005 · 27017 · 27018 · 27032 · 42001 · NIST AI RMF<br>
         <strong>Equipo 5:</strong> 181700 · 182033 · 182217 · 174702
       </div>
-      <a href="proyecto3.html" class="cta-btn" style="background:var(--info);box-shadow:0 0 18px rgba(0,207,255,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
+      <a href="javascript:void(0)" class="cta-btn" style="background:#ff8c42;box-shadow:0 0 18px rgba(255,140,66,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
     </div>
     <div class="proj-status">
-      <span class="status-dot" style="background:var(--info);box-shadow:0 0 5px var(--info);"></span>
-      <span style="color:var(--info);">ACCESO CONCEDIDO — Proyecto disponible · Parcial 3 · Completado · Equipo 5 · ISO 27001:2022</span>
+      <span class="status-dot" style="background:#ff8c42;box-shadow:0 0 5px #ff8c42;"></span>
+      <span style="color:#ff8c42;">ACCESO CONCEDIDO — Proyecto disponible · Parcial 3 · Completado · Equipo 5 · ISO 27001:2022</span>
     </div>
   </div>
 
