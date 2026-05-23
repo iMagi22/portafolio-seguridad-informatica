@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR03 — SGSI Anthropic · ISO 27001:2022</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#00ff88;--gd:#00cc66;--gdim:#5aac80;
+  --bg:#050d0a;--cbg:#060f0b;
+  --bdr:#00ff8830;--bdrb:#00ff88aa;
+  --txt:#b0ffd6;--dim:#5aac80;
+  --alert:#ff5f56;--warn:#ffaa00;--info:#00cfff;
+  --purple:#c084fc;--orange:#ff8c42;
+  /* Anthropic Official Brand Colors */
+  --ao:#d97757;   /* Anthropic Orange — primary accent */
+  --ab:#6a9bcc;   /* Anthropic Blue — secondary accent */
+  --aog:#788c5d;  /* Anthropic Olive Green */
+  --at:#d4a27f;   /* Anthropic Tan */
+  --amid:#b0aea5; /* Anthropic Mid Gray */
+  --ao-glow: rgba(217,119,87,0.35);
+  --ao-dim: rgba(217,119,87,0.12);
+  --ab-dim: rgba(106,155,204,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;line-height:1.7;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);z-index:1;pointer-events:none;}
+#mc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.045;pointer-events:none;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--ao);border-radius:3px;opacity:.7;}
+
+/* ── HEADER ── */
+header{position:relative;z-index:2;text-align:center;padding:52px 20px 42px;border-bottom:1px solid rgba(217,119,87,.4);background:linear-gradient(180deg,rgba(217,119,87,.07) 0%,rgba(106,155,204,.03) 60%,transparent 100%);overflow:hidden;}
+header::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--ao),transparent);animation:scan 3s linear infinite;}
+header::after{content:'';position:absolute;bottom:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--ab),transparent);animation:scan 5s linear infinite reverse;}
+@keyframes scan{0%{left:-100%;}100%{left:100%;}}
+@keyframes flicker{0%,95%,100%{opacity:1;}96%{opacity:.7;}98%{opacity:.5;}99%{opacity:1;}}
+@keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes glow{0%,100%{text-shadow:0 0 10px var(--g),0 0 30px rgba(0,255,136,.4);}50%{text-shadow:0 0 20px var(--g),0 0 60px rgba(0,255,136,.6),0 0 100px rgba(0,255,136,.2);}}
+
+.h-eyebrow{font-size:10px;color:var(--dim);letter-spacing:5px;text-transform:uppercase;margin-bottom:12px;animation:fadeUp .6s ease both;}
+header h1{font-family:'Orbitron',sans-serif;font-size:clamp(22px,4.5vw,52px);font-weight:900;color:var(--ao);letter-spacing:6px;animation:glow-ao 4s ease-in-out infinite,fadeUp .7s ease both;margin-bottom:8px;}
+@keyframes glow-ao{0%,100%{text-shadow:0 0 10px var(--ao),0 0 30px rgba(217,119,87,.4);}50%{text-shadow:0 0 20px var(--ao),0 0 60px rgba(217,119,87,.6),0 0 100px rgba(217,119,87,.2);}}
+.h-tag{font-family:'Orbitron',sans-serif;font-size:clamp(9px,1.2vw,13px);color:var(--gd);letter-spacing:4px;animation:fadeUp .8s ease both;}
+.h-blink{animation:blink 1s infinite;color:var(--g);margin-top:8px;font-size:14px;}
+
+/* HEADER STATS */
+.h-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:0;margin:28px auto 0;max-width:780px;border:1px solid rgba(217,119,87,.5);border-radius:3px;overflow:hidden;animation:fadeUp 1s ease both;}
+.hs-item{flex:1;min-width:100px;padding:14px 8px;text-align:center;border-right:1px solid var(--bdr);background:var(--cbg);}
+.hs-item:last-child{border-right:none;}
+.hs-val{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--g);}
+.hs-lbl{font-size:8.5px;color:var(--dim);letter-spacing:1.5px;margin-top:3px;}
+
+/* ACTIONS */
+.actions{position:relative;z-index:2;display:flex;gap:10px;flex-wrap:wrap;max-width:1140px;margin:26px auto 0;padding:0 20px;}
+.btn-back{display:inline-flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:9px 16px;border-radius:2px;transition:all .22s;color:var(--dim);border:1px solid var(--bdr);}
+.btn-back:hover{color:var(--g);border-color:var(--g);}
+.pdf-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;font-weight:700;color:#fff;background:var(--ao);padding:11px 22px;border-radius:2px;text-decoration:none;box-shadow:0 0 16px var(--ao-glow);transition:all .25s;text-transform:uppercase;}
+.pdf-btn:hover{background:#e88860;box-shadow:0 0 28px var(--ao);transform:translateY(-2px);}
+
+/* TABS */
+.nav-wrap{position:relative;z-index:2;max-width:1140px;margin:24px auto 0;display:flex;flex-wrap:wrap;gap:6px;padding:0 20px;}
+.nb{background:var(--cbg);border:1px solid var(--bdr);color:var(--dim);padding:9px 14px;border-radius:2px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:1.5px;transition:all .22s;}
+.nb:hover,.nb.active{color:#fff;background:var(--ao);border-color:var(--ao);box-shadow:0 0 12px var(--ao-glow);}
+
+/* MAIN */
+main{position:relative;z-index:2;max-width:1140px;margin:0 auto;padding:28px 20px 100px;}
+.sec{display:none;}
+.sec.active{display:block;animation:fadeUp .4s ease;}
+
+/* ── WINDOW ── */
+.win{background:var(--cbg);border:1px solid var(--bdr);border-radius:4px;margin-bottom:24px;overflow:hidden;position:relative;transition:border-color .3s,box-shadow .3s;}
+.win::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ao),transparent);opacity:.4;}
+.win::after{content:'';position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid var(--ao);border-right:2px solid var(--ao);}
+.win:hover{border-color:var(--bdrb);box-shadow:0 0 24px rgba(0,255,136,.07);}
+.wbar{background:rgba(0,15,8,.98);padding:9px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--bdr);}
+.wd{width:11px;height:11px;border-radius:50%;}
+.wr{background:#ff5f56;box-shadow:0 0 4px #ff5f56;}.wy{background:#ffbd2e;box-shadow:0 0 4px #ffbd2e;}.wg{background:#27c93f;box-shadow:0 0 4px #27c93f;}
+.wt{font-size:9px;color:var(--dim);letter-spacing:2px;margin-left:6px;font-family:'Orbitron',sans-serif;}
+.cnt{padding:26px;}
+
+/* ── TYPOGRAPHY ── */
+h2{font-family:'Orbitron',sans-serif;color:var(--ao);font-size:clamp(12px,1.5vw,15px);font-weight:700;letter-spacing:2px;margin-bottom:18px;display:flex;align-items:center;gap:10px;border-left:3px solid var(--ao);padding-left:13px;text-transform:uppercase;}
+h3{color:var(--gd);margin:22px 0 10px;font-size:11px;font-family:'Orbitron',sans-serif;letter-spacing:1.5px;}
+p{font-size:12.5px;color:var(--txt);line-height:1.9;margin-bottom:10px;}
+strong{color:#dff;}
+code{background:rgba(0,255,136,.08);color:var(--g);padding:1px 6px;border-radius:2px;font-size:11px;border:1px solid var(--bdr);}
+
+/* ── 2-COL LAYOUT ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0;}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}
+
+/* ── CARDS ── */
+.card{background:rgba(0,20,10,.5);border:1px solid var(--bdr);border-radius:3px;padding:16px;transition:all .25s;position:relative;overflow:hidden;}
+.card::after{content:'';position:absolute;top:-1px;right:-1px;width:10px;height:10px;border-top:1px solid var(--ao);border-right:1px solid var(--ao);}
+.card:hover{border-color:var(--bdrb);box-shadow:0 0 14px rgba(0,255,136,.08);transform:translateY(-2px);}
+.card-n{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:rgba(0,255,136,.1);position:absolute;top:8px;right:12px;}
+.card h4{font-family:'Orbitron',sans-serif;color:var(--g);font-size:10px;letter-spacing:1.5px;margin-bottom:7px;text-transform:uppercase;}
+.card p{font-size:11px;color:var(--dim);line-height:1.75;margin:0;}
+.card-info h4{color:var(--info);}
+.card-warn h4{color:var(--warn);}
+.card-alert h4{color:var(--alert);}
+
+/* ── HIGHLIGHT BOXES ── */
+.hbox{background:rgba(217,119,87,.04);border-left:3px solid var(--ao);padding:14px 18px;margin:12px 0;border-radius:0 3px 3px 0;}
+.ibox{background:rgba(0,207,255,.04);border:1px solid rgba(0,207,255,.2);border-radius:3px;padding:14px 18px;margin:12px 0;}
+.ibox h4{color:var(--info);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;margin-bottom:6px;}
+.wbox{background:rgba(255,170,0,.04);border:1px solid rgba(255,170,0,.25);border-radius:3px;padding:14px 18px;margin:12px 0;}
+.wbox h4{color:var(--warn);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;margin-bottom:6px;}
+.abox{background:rgba(255,95,86,.04);border:1px solid rgba(255,95,86,.3);border-radius:3px;padding:14px 18px;margin:12px 0;}
+.abox h4{color:var(--alert);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;margin-bottom:6px;}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:11.5px;border:1px solid var(--bdr);}
+th,td{border:1px solid var(--bdr);padding:10px 12px;text-align:left;vertical-align:top;}
+th{background:rgba(60,30,15,.8);color:var(--ao);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;}
+tr:nth-child(even){background:rgba(0,255,136,.02);}
+tr:hover{background:rgba(0,255,136,.05);}
+
+/* ── LIST ── */
+ul.cl{margin:10px 0 10px 18px;}
+ul.cl li{font-size:12px;color:var(--txt);padding:4px 0 4px 14px;position:relative;line-height:1.8;}
+ul.cl li::before{content:'▸';position:absolute;left:0;color:var(--g);}
+
+/* ── RISK BADGES ── */
+.rb{display:inline-block;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;padding:3px 9px;border-radius:2px;font-weight:700;white-space:nowrap;}
+.rb-ex{background:rgba(255,50,50,.15);color:#ff5f56;border:1px solid rgba(255,95,86,.4);}
+.rb-ma{background:rgba(255,140,0,.1);color:var(--warn);border:1px solid rgba(255,170,0,.3);}
+.rb-al{background:rgba(255,215,0,.08);color:#ffd700;border:1px solid rgba(255,215,0,.25);}
+.rb-me{background:rgba(0,255,136,.06);color:var(--g);border:1px solid var(--bdr);}
+.rb-ba{background:rgba(0,207,255,.06);color:var(--info);border:1px solid rgba(0,207,255,.2);}
+
+/* ── RACI CELLS ── */
+.rc-r{background:rgba(255,95,86,.18);color:#ff5f56;font-weight:900;text-align:center;font-size:12px;}
+.rc-a{background:rgba(0,207,255,.14);color:var(--info);font-weight:900;text-align:center;font-size:12px;}
+.rc-c{background:rgba(255,170,0,.1);color:var(--warn);font-weight:900;text-align:center;font-size:12px;}
+.rc-i{background:rgba(0,255,136,.06);color:var(--gdim);font-weight:900;text-align:center;font-size:12px;}
+.rc-x{color:var(--dim);text-align:center;font-size:11px;}
+
+/* ── HEAT MAP MATRIX ── */
+.heat-grid{display:grid;grid-template-columns:auto repeat(5,1fr);gap:3px;margin:14px 0;font-size:10px;}
+.hg-label{display:flex;align-items:center;justify-content:flex-end;padding:0 8px;color:var(--dim);font-size:9px;white-space:nowrap;}
+.hg-cell{border-radius:2px;padding:10px 4px;text-align:center;font-family:'Orbitron',sans-serif;font-size:9.5px;font-weight:700;position:relative;transition:transform .2s,box-shadow .2s;cursor:default;}
+.hg-cell:hover{transform:scale(1.08);z-index:5;}
+.hg-header{background:transparent;color:var(--dim);font-size:8px;letter-spacing:1px;display:flex;align-items:center;justify-content:center;}
+.hc-1{background:rgba(0,255,136,.12);color:var(--gdim);}
+.hc-2{background:rgba(0,255,136,.18);color:var(--gd);}
+.hc-3{background:rgba(255,200,0,.15);color:#ffd700;}
+.hc-4{background:rgba(255,140,0,.2);color:var(--warn);}
+.hc-5{background:rgba(255,50,50,.25);color:var(--alert);}
+.hc-ex{background:rgba(255,20,20,.35);color:#ff2222;box-shadow:0 0 8px rgba(255,50,50,.3);}
+.risk-dot{position:absolute;top:2px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--g);box-shadow:0 0 4px var(--g);}
+
+/* ── TERMINAL SCREENS ── */
+.term{background:#020b05;border:1px solid var(--bdrb);border-radius:3px;overflow:hidden;margin:12px 0;}
+.term-bar{display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(0,25,12,.95);border-bottom:1px solid var(--bdr);}
+.td{width:9px;height:9px;border-radius:50%;}
+.td-r{background:#ff5f56;}.td-y{background:#ffbd2e;}.td-g{background:#27c93f;}
+.term-title{font-size:9px;color:var(--dim);margin-left:4px;letter-spacing:1.5px;}
+.term-body{padding:12px 14px;font-size:11px;font-family:'Share Tech Mono',monospace;line-height:1.9;}
+.t-prompt{color:var(--gdim);}
+.t-cmd{color:#fff;}
+.t-ok{color:var(--g);}
+.t-warn{color:var(--warn);}
+.t-err{color:var(--alert);}
+.t-info{color:var(--info);}
+.t-dim{color:var(--dim);}
+.term-body::after{content:'';display:block;}
+
+/* ── PROGRESS BARS ── */
+.prog-row{display:flex;align-items:center;gap:12px;margin:8px 0;}
+.prog-label{font-size:10.5px;color:var(--dim);min-width:160px;flex-shrink:0;}
+.prog-bar-bg{flex:1;height:6px;background:rgba(0,255,136,.08);border-radius:3px;overflow:hidden;border:1px solid var(--bdr);}
+.prog-bar-fill{height:100%;border-radius:3px;transition:width 1.2s ease;}
+.prog-val{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;min-width:38px;text-align:right;}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:30px;margin:14px 0;}
+.tl::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--ao),transparent);}
+.tl-item{position:relative;margin-bottom:18px;}
+.tl-item::before{content:'';position:absolute;left:-25px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--cbg);border:2px solid var(--ao);box-shadow:0 0 7px var(--ao-glow);}
+.tl-item h4{font-family:'Orbitron',sans-serif;color:var(--ao);font-size:10.5px;letter-spacing:1px;margin-bottom:4px;}
+.tl-item p{font-size:11px;color:var(--dim);margin:0;line-height:1.7;}
+.tl-item .tl-time{font-size:9px;color:var(--gdim);letter-spacing:1px;}
+
+/* ── PDCA ── */
+.pdca-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0;}
+.pdca{border:1px solid var(--bdr);border-radius:3px;padding:18px;position:relative;overflow:hidden;}
+.pdca::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;}
+.pdca-p::before{background:var(--info);}
+.pdca-d::before{background:var(--g);}
+.pdca-c::before{background:var(--warn);}
+.pdca-a::before{background:var(--alert);}
+.pdca-n{font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;position:absolute;bottom:-4px;right:10px;opacity:.08;}
+.pdca-p .pdca-n{color:var(--info);}
+.pdca-d .pdca-n{color:var(--g);}
+.pdca-c .pdca-n{color:var(--warn);}
+.pdca-a .pdca-n{color:var(--alert);}
+.pdca-label{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;margin-bottom:6px;}
+.pdca-p .pdca-label{color:var(--info);}
+.pdca-d .pdca-label{color:var(--g);}
+.pdca-c .pdca-label{color:var(--warn);}
+.pdca-a .pdca-label{color:var(--alert);}
+.pdca h4{font-size:11px;color:var(--txt);margin-bottom:8px;font-family:'Orbitron',sans-serif;letter-spacing:.5px;}
+.pdca ul{margin-left:14px;}
+.pdca ul li{font-size:10.5px;color:var(--dim);padding:2px 0 2px 12px;position:relative;line-height:1.7;}
+.pdca ul li::before{content:'›';position:absolute;left:0;color:var(--g);}
+
+/* ── KPI ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0;}
+.kpi{background:rgba(0,20,10,.5);border:1px solid var(--bdr);border-radius:3px;padding:16px;text-align:center;transition:all .25s;}
+.kpi:hover{border-color:var(--g);box-shadow:0 0 12px rgba(0,255,136,.08);}
+.kpi-val{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:var(--g);text-shadow:0 0 10px rgba(0,255,136,.3);}
+.kpi-old{font-size:13px;color:var(--dim);text-decoration:line-through;margin-bottom:2px;}
+.kpi-new{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;color:var(--g);}
+.kpi-label{font-size:10px;color:var(--dim);letter-spacing:1.5px;margin-top:6px;}
+.kpi-ok{font-size:9px;color:var(--g);letter-spacing:1px;margin-top:4px;}
+
+/* ── POLICY GRID ── */
+.policy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;}
+.pol{background:rgba(0,15,8,.6);border:1px solid var(--bdr);border-radius:3px;padding:13px;transition:all .22s;cursor:default;}
+.pol:hover{border-color:var(--ao);background:rgba(217,119,87,.04);}
+.pol-num{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--gdim);letter-spacing:1px;margin-bottom:4px;}
+.pol-name{font-size:11px;color:var(--txt);line-height:1.6;margin-bottom:6px;}
+.pol-risk{display:inline-block;font-size:8.5px;padding:2px 6px;border-radius:2px;}
+
+/* ── NORMA LIST ── */
+.norma-list{border:1px solid var(--bdr);border-radius:3px;overflow:hidden;}
+.norma-item{display:grid;grid-template-columns:130px 1fr;border-bottom:1px solid var(--bdr);}
+.norma-item:last-child{border-bottom:none;}
+.norma-code{padding:12px 14px;background:rgba(0,30,15,.6);border-right:1px solid var(--bdr);display:flex;align-items:center;}
+.norma-code span{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--g);letter-spacing:1px;}
+.norma-desc{padding:12px 16px;font-size:11.5px;color:var(--dim);line-height:1.7;}
+.norma-desc strong{color:var(--txt);}
+
+/* ── SECTION DIVIDER ── */
+.sec-div{display:flex;align-items:center;gap:14px;margin:28px 0 20px;}
+.sec-div-num{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:rgba(217,119,87,.18);line-height:1;flex-shrink:0;}
+.sec-div h2{border-left:none;padding-left:0;font-size:clamp(12px,1.8vw,16px);margin:0;}
+
+/* ── MINI DASHBOARD ── */
+.dash-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0;}
+.dash-item{background:rgba(0,20,10,.5);border:1px solid var(--bdr);border-radius:3px;padding:14px 10px;text-align:center;}
+.dash-item:hover{border-color:var(--g);}
+.dash-val{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--g);}
+.dash-lbl{font-size:8.5px;color:var(--dim);letter-spacing:1px;margin-top:4px;}
+
+/* ── TEAM CARDS ── */
+.team-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;}
+.tm{background:rgba(20,10,5,.6);border:1px solid rgba(217,119,87,.4);border-radius:3px;padding:14px;text-align:center;position:relative;overflow:hidden;}
+.tm::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ao),transparent);}
+.tm-num{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--ao);letter-spacing:1.5px;margin-bottom:5px;}
+.tm-name{font-size:11px;color:var(--txt);line-height:1.6;}
+.tm-role{font-size:9px;color:var(--dim);margin-top:4px;letter-spacing:1px;}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:2;text-align:center;padding:22px;border-top:1px solid rgba(217,119,87,.25);color:var(--amid);font-size:11px;letter-spacing:2px;background:linear-gradient(0deg,rgba(217,119,87,.04) 0%,transparent 100%);}
+footer span{color:var(--ao);}
+
+/* ── META BOX ── */
+.meta-box{position:relative;z-index:2;max-width:1140px;margin:14px auto 0;padding:0 20px;}
+.meta-inner{background:var(--cbg);border:1px solid rgba(217,119,87,.4);border-radius:4px;padding:18px 26px;display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative;}
+.meta-inner::after{content:'';position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid var(--ao);border-right:2px solid var(--ao);}
+.meta-col{padding:6px 16px 6px 0;border-right:1px solid var(--bdr);}
+.meta-col:last-child{border-right:none;padding-left:20px;padding-right:0;}
+.meta-row-item{font-size:11.5px;color:var(--dim);line-height:2.2;border-bottom:1px solid var(--bdr);padding-bottom:3px;margin-bottom:3px;}
+.meta-row-item:last-child{border-bottom:none;margin-bottom:0;}
+.meta-row-item strong{color:var(--ao);}
+
+/* ── IMG CARDS ── */
+.img-card{border:1px solid rgba(217,119,87,.4);border-radius:3px;overflow:hidden;position:relative;}
+.img-card img{width:100%;height:200px;object-fit:cover;display:block;filter:brightness(.85) saturate(.7) hue-rotate(80deg);mix-blend-mode:normal;}
+.img-card:hover img{filter:brightness(.95) saturate(.9) hue-rotate(60deg);}
+.img-card-caption{padding:8px 12px;background:rgba(15,8,4,.95);border-top:1px solid rgba(217,119,87,.2);font-size:9.5px;color:var(--amid);letter-spacing:1.5px;}
+.img-card-caption strong{color:var(--ao);}
+.img-card::after{content:'';position:absolute;top:-1px;right:-1px;width:12px;height:12px;border-top:2px solid var(--ao);border-right:2px solid var(--ao);}
+
+.img-card-sm img{height:150px;}
+.img-card-lg img{height:260px;}
+
+/* ── IMG SECTION STRIP ── */
+.img-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0;}
+.img-strip-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
+
+@media(max-width:750px){
+  .two-col,.pdca-grid,.three-col,.four-col,.dash-row,.team-row,.img-strip,.img-strip-2,.meta-inner{grid-template-columns:1fr 1fr;}
+  .heat-grid{font-size:8px;}
+  .cnt{padding:16px;}
+  .meta-col{border-right:none;padding-left:0;}
+}
+</style>
+</head>
+<body>
+<canvas id="mc"></canvas>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <div class="h-eyebrow">CNO V · Seguridad Informática · Proyecto 03 · Parcial 3 · Equipo 5</div>
+  <h1>SGSI ANTHROPIC</h1>
+  <div class="h-tag" style="color:var(--amid);">Sistema de Gestión de Seguridad de la Información</div>
+  <div class="h-tag" style="color:var(--ao);margin-top:4px;font-weight:700;">ISO / IEC 27001 : 2022</div>
+  <div class="h-blink">_</div>
+
+  <div class="h-stats">
+    <div class="hs-item"><div class="hs-val" style="color:var(--info);">10</div><div class="hs-lbl">Cláusulas ISO</div></div>
+    <div class="hs-item"><div class="hs-val" style="color:var(--g);">20</div><div class="hs-lbl">Políticas SGSI</div></div>
+    <div class="hs-item"><div class="hs-val" style="color:var(--warn);">40</div><div class="hs-lbl">Activos (int+ext)</div></div>
+    <div class="hs-item"><div class="hs-val" style="color:var(--alert);">3</div><div class="hs-lbl">Riesgos Extremo·25</div></div>
+    <div class="hs-item"><div class="hs-val" style="color:var(--purple);">140+</div><div class="hs-lbl">Ítems Checklist</div></div>
+    <div class="hs-item"><div class="hs-val" style="color:var(--orange);">4</div><div class="hs-lbl">Integrantes Eq. 5</div></div>
+  </div>
+</header>
+
+<!-- ANTHROPIC BRAND STRIP -->
+<div style="position:relative;z-index:2;background:linear-gradient(90deg,rgba(217,119,87,.08) 0%,rgba(106,155,204,.05) 50%,rgba(217,119,87,.08) 100%);border-bottom:1px solid rgba(217,119,87,.2);padding:10px 20px;text-align:center;">
+  <div style="max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+    <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--ao);letter-spacing:3px;">ANTHROPIC</div>
+    <div style="width:1px;height:16px;background:rgba(217,119,87,.3);"></div>
+    <div style="font-size:10px;color:var(--amid);letter-spacing:2px;">Public Benefit Corporation · Founded 2021 · San Francisco, CA</div>
+    <div style="width:1px;height:16px;background:rgba(217,119,87,.3);"></div>
+    <div style="font-size:10px;color:var(--ab);">ISO 42001:2023 ✓ &nbsp;·&nbsp; SOC 2 Tipo II ✓ &nbsp;·&nbsp; ISO 27001:2022 — En proceso</div>
+  </div>
+</div>
+
+<!-- META BOX -->
+<div class="meta-box">
+  <div class="meta-inner">
+    <div class="meta-col">
+      <div class="meta-row-item"><strong>Asignatura:</strong> CNO V — Seguridad Informática</div>
+      <div class="meta-row-item"><strong>Proyecto:</strong> PR03 — SGSI Anthropic · ISO/IEC 27001:2022</div>
+      <div class="meta-row-item"><strong>Docente:</strong> Mtro. Servando López Contreras</div>
+      <div class="meta-row-item"><strong>Universidad:</strong> Universidad Politécnica de San Luis Potosí</div>
+      <div class="meta-row-item"><strong>Organización:</strong> Anthropic, PBC — San Francisco, CA</div>
+    </div>
+    <div class="meta-col">
+      <div class="meta-row-item"><strong>Parcial:</strong> 3 &nbsp;·&nbsp; <strong>Grupo:</strong> T46B &nbsp;·&nbsp; <strong>Equipo:</strong> 5</div>
+      <div class="meta-row-item"><strong>181700</strong> &nbsp;Castillo Gómez Edwin Admael</div>
+      <div class="meta-row-item"><strong>182033</strong> &nbsp;Castillo Olvera Carlos René</div>
+      <div class="meta-row-item"><strong>182217</strong> &nbsp;Hernández Fernández Diego Osvaldo</div>
+      <div class="meta-row-item"><strong>174702</strong> &nbsp;Tristán Rivera Magdalena Yesenia</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions" style="margin-top:16px;">
+  <a class="btn-back" href="../index.html">⌂ Inicio</a>
+  <a class="btn-back" href="proyectos.html">◈ Proyectos</a>
+  <a class="pdf-btn" href="../pdf/proyecto3.pdf" download>📄 Descargar PDF Completo</a>
+</div>
+
+<!-- TABS -->
+<div class="nav-wrap">
+  <button class="nb active" onclick="show('overview',this)">◈ Resumen</button>
+  <button class="nb" onclick="show('alcance',this)">01 Alcance</button>
+  <button class="nb" onclick="show('normas',this)">02–03 Normas</button>
+  <button class="nb" onclick="show('contexto',this)">04 Contexto</button>
+  <button class="nb" onclick="show('liderazgo',this)">05 Liderazgo</button>
+  <button class="nb" onclick="show('riesgos',this)">06 Riesgos</button>
+  <button class="nb" onclick="show('soporte',this)">07 Soporte</button>
+  <button class="nb" onclick="show('operacion',this)">08 Operación</button>
+  <button class="nb" onclick="show('evaluacion',this)">09–10 Mejora</button>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════ OVERVIEW ══════════════════════════════ -->
+<div id="sec-overview" class="sec active">
+
+  <!-- WHY SGSI -->
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt" style="color:#d97757;">// ¿POR QUÉ ANTHROPIC NECESITA UN SGSI?</span></div>
+    <div class="cnt">
+      <div class="two-col">
+        <div>
+          <h2>▦ Justificación del SGSI</h2>
+          <p>Anthropic opera modelos de lenguaje a escala global procesados por millones de usuarios. Sus activos más críticos — los <strong>pesos de Claude</strong> — representan años de investigación e inversiones valoradas en <strong>$18B</strong>. Sin un SGSI formal certificado, no existe evidencia auditada de que los controles se apliquen correctamente.</p>
+          <div class="hbox"><p><strong>Misión PBC:</strong> Construir IA en la que las personas puedan confiar. El mandato como Public Benefit Corporation eleva la seguridad de la información a un <strong>compromiso ético y legal</strong>, no solo técnico.</p></div>
+          <div class="ibox"><h4>Certificaciones vigentes</h4><p>SOC 2 Tipo II · ISO 42001:2023 (IA) · En proceso: ISO 27001:2022</p></div>
+        </div>
+        <!-- Terminal justificación -->
+        <div>
+          <div class="term">
+            <div class="term-bar"><span class="td td-r"></span><span class="td td-y"></span><span class="td td-g"></span><span class="term-title">SGSI-ANTHROPIC — audit.log</span></div>
+            <div class="term-body">
+              <div><span class="t-prompt">[INFO] </span><span class="t-ok">SGSI scope loaded → Claude LLM lifecycle</span></div>
+              <div><span class="t-prompt">[INFO] </span><span class="t-info">Infrastructure: GCP + AWS multi-cloud</span></div>
+              <div><span class="t-prompt">[INFO] </span><span class="t-ok">Users protected: 10,000,000+</span></div>
+              <div><span class="t-prompt">[INFO] </span><span class="t-info">Countries in scope: 180+</span></div>
+              <div><span class="t-prompt">[WARN] </span><span class="t-warn">Regulations: GDPR · CCPA · HIPAA · EU AI Act</span></div>
+              <div><span class="t-prompt">[INFO] </span><span class="t-ok">Model weights value: $18,000,000,000</span></div>
+              <div><span class="t-prompt">[INFO] </span><span class="t-ok">Employees in scope: ~1,100</span></div>
+              <div><span class="t-prompt">[SCAN] </span><span class="t-info">Assets identified: 40 (20 int + 20 ext)</span></div>
+              <div><span class="t-prompt">[SCAN] </span><span class="t-err">Risks detected: 20 · Extreme: 6 · Critical</span></div>
+              <div><span class="t-prompt">[OK]   </span><span class="t-ok">SGSI-MIN-2026-001 · Status: ACTIVE ✓</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 razones -->
+      <div class="four-col" style="margin-top:6px;">
+        <div class="card"><span class="card-n">10M</span><h4>Datos Reales</h4><p>Millones de conversaciones y claves API. Una brecha afecta personas reales y destruye confianza.</p></div>
+        <div class="card card-info"><span class="card-n">180+</span><h4>Cumplimiento</h4><p>GDPR · CCPA · EU AI Act · HIPAA simultáneamente. Incumplimiento = multas millonarias.</p></div>
+        <div class="card card-warn"><span class="card-n">$18B</span><h4>Activos en Riesgo</h4><p>Pesos de Claude son el corazón de Anthropic. Exfiltración borra años de I+D e inversión.</p></div>
+        <div class="card"><span class="card-n">SOC2</span><h4>Siguiente Nivel</h4><p>Clientes Enterprise exigen ISO 27001. Demuestra madurez y abre puertas a nuevos mercados.</p></div>
+      </div>
+
+      <!-- IMAGE STRIP -->
+      <div class="img-strip" style="margin-top:18px;">
+        <div class="img-card">
+  <div style="background:linear-gradient(160deg,#0d0a08 0%,#1a0e08 40%,#100c0a 100%);height:200px;position:relative;overflow:hidden;">
+    <svg width="100%" height="100%" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="aoglow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a100a"/><stop offset="100%" stop-color="#0d0704"/></linearGradient>
+        <linearGradient id="aomain" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a1610"/><stop offset="100%" stop-color="#180d08"/></linearGradient>
+      </defs>
+      <!-- Sky gradient -->
+      <rect x="0" y="0" width="340" height="200" fill="url(#sky)"/>
+      <!-- Ground -->
+      <rect x="0" y="155" width="340" height="45" fill="#0d0805"/>
+      <!-- Subtle street lines -->
+      <line x1="0" y1="155" x2="340" y2="155" stroke="#d9775715" stroke-width="1"/>
+      <!-- Background buildings -->
+      <rect x="0" y="90" width="35" height="110" fill="#150e09"/>
+      <rect x="40" y="70" width="45" height="130" fill="#180f0a"/>
+      <rect x="260" y="80" width="40" height="120" fill="#160e09"/>
+      <rect x="305" y="100" width="35" height="100" fill="#130c08"/>
+      <!-- ANTHROPIC MAIN BUILDING - center, warm lit -->
+      <rect x="110" y="25" width="120" height="175" fill="url(#aomain)" filter="url(#aoglow)"/>
+      <rect x="110" y="25" width="120" height="175" fill="none" stroke="#d9775730" stroke-width="1.5"/>
+      <!-- Anthropic orange facade line top -->
+      <rect x="110" y="25" width="120" height="4" fill="#d97757" opacity="0.7"/>
+      <!-- Building grid lines -->
+      <line x1="150" y1="25" x2="150" y2="155" stroke="#d9775708" stroke-width="1"/>
+      <line x1="190" y1="25" x2="190" y2="155" stroke="#d9775708" stroke-width="1"/>
+      <line x1="230" y1="25" x2="230" y2="155" stroke="#d9775708" stroke-width="1"/>
+      <line x1="110" y1="65" x2="230" y2="65" stroke="#d9775708" stroke-width="1"/>
+      <line x1="110" y1="105" x2="230" y2="105" stroke="#d9775708" stroke-width="1"/>
+      <!-- Windows — orange warm glow -->
+      <g fill="#d9775718">
+        <rect x="118" y="35" width="10" height="12" rx="1"/><rect x="133" y="35" width="10" height="12" rx="1"/><rect x="148" y="35" width="10" height="12" rx="1"/><rect x="163" y="35" width="10" height="12" rx="1"/><rect x="178" y="35" width="10" height="12" rx="1"/><rect x="193" y="35" width="10" height="12" rx="1"/><rect x="208" y="35" width="10" height="12" rx="1"/>
+        <rect x="118" y="55" width="10" height="12" rx="1"/><rect x="148" y="55" width="10" height="12" rx="1"/><rect x="163" y="55" width="10" height="12" rx="1"/><rect x="193" y="55" width="10" height="12" rx="1"/><rect x="208" y="55" width="10" height="12" rx="1"/>
+        <rect x="118" y="75" width="10" height="12" rx="1"/><rect x="133" y="75" width="10" height="12" rx="1"/><rect x="163" y="75" width="10" height="12" rx="1"/><rect x="178" y="75" width="10" height="12" rx="1"/><rect x="208" y="75" width="10" height="12" rx="1"/>
+        <rect x="118" y="95" width="10" height="12" rx="1"/><rect x="148" y="95" width="10" height="12" rx="1"/><rect x="178" y="95" width="10" height="12" rx="1"/><rect x="193" y="95" width="10" height="12" rx="1"/>
+      </g>
+      <!-- Bright lit windows — orange -->
+      <g fill="#d9775745">
+        <rect x="133" y="55" width="10" height="12" rx="1" filter="url(#aoglow)"/>
+        <rect x="178" y="75" width="10" height="12" rx="1" filter="url(#aoglow)"/>
+        <rect x="163" y="95" width="10" height="12" rx="1" filter="url(#aoglow)"/>
+      </g>
+      <!-- Side wings -->
+      <rect x="85" y="70" width="28" height="130" fill="#1a1008" stroke="#d9775710" stroke-width="1"/>
+      <rect x="228" y="60" width="32" height="140" fill="#1c1109" stroke="#d9775710" stroke-width="1"/>
+      <!-- Ground level: entrance -->
+      <rect x="150" y="145" width="40" height="30" rx="2" fill="#d9775715" stroke="#d9775730" stroke-width="1"/>
+      <text x="170" y="164" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="5" fill="#d97757" letter-spacing="1">ENTRADA</text>
+      <!-- Label -->
+      <rect x="80" y="172" width="180" height="20" rx="2" fill="#0d0805" opacity="0.8"/>
+      <text x="170" y="183" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="8" fill="#d97757" font-weight="900" letter-spacing="3">ANTHROPIC</text>
+      <text x="170" y="191" text-anchor="middle" font-family="monospace" font-size="6" fill="#b0aea5">500 Howard St · San Francisco · CA</text>
+      <!-- Animated beacon -->
+      <circle cx="170" cy="22" r="2.5" fill="#d97757"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>Sede Central Anthropic</strong> · 500 Howard St, San Francisco, CA · 2,500 empleados · Valuación $380B (2026)</div>
+</div>
+        <div class="img-card">
+  <div style="background:linear-gradient(135deg,#050d0a 0%,#071510 50%,#050d0a 100%);height:200px;display:flex;align-items:center;justify-content:center;">
+    <svg width="200" height="180" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="g2"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <!-- Outer ring -->
+      <circle cx="100" cy="90" r="80" fill="none" stroke="#00ff8840" stroke-width="1.5"/>
+      <circle cx="100" cy="90" r="72" fill="none" stroke="#00ff8828" stroke-width="1"/>
+      <!-- Shield shape -->
+      <path d="M100 18 L148 38 L148 88 Q148 130 100 155 Q52 130 52 88 L52 38 Z" fill="#0a1f14" stroke="#00ff8866" stroke-width="1.5" filter="url(#g2)"/>
+      <!-- ISO text -->
+      <text x="100" y="62" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="20" font-weight="900" fill="#00ff88" letter-spacing="2" filter="url(#g2)">ISO</text>
+      <text x="100" y="82" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#00cc66" letter-spacing="1">IEC 27001</text>
+      <!-- Year -->
+      <rect x="72" y="88" width="56" height="18" rx="2" fill="#00ff8815" stroke="#00ff8840" stroke-width="1"/>
+      <text x="100" y="100" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="12" font-weight="700" fill="#00ff88">2022</text>
+      <!-- CERTIFIED -->
+      <text x="100" y="120" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7.5" fill="#5aac80" letter-spacing="3">CERTIFIED</text>
+      <!-- 93 controls note -->
+      <text x="100" y="136" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a7a52">93 Controles · Anexo A</text>
+      <!-- Checkmarks -->
+      <text x="65" y="115" font-family="monospace" font-size="10" fill="#00ff88">✓</text>
+      <text x="125" y="115" font-family="monospace" font-size="10" fill="#00ff88">✓</text>
+      <!-- Rotating dots -->
+      <circle cx="100" cy="14" r="3" fill="#00ff88"><animateTransform attributeName="transform" type="rotate" from="0 100 90" to="360 100 90" dur="8s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>ISO/IEC 27001:2022</strong> · Norma principal de certificación SGSI · 93 controles Anexo A</div>
+</div>
+        <div class="img-card">
+  <div style="background:linear-gradient(135deg,#050d0a,#070f14,#050d0a);height:200px;padding:12px;display:flex;align-items:center;justify-content:center;">
+    <svg width="300" height="170" viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="g3"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <!-- Title -->
+      <text x="150" y="14" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="8" fill="#5aac80" letter-spacing="2">MULTI-CLOUD INFRASTRUCTURE</text>
+      <!-- GCP Box -->
+      <rect x="10" y="25" width="120" height="65" rx="3" fill="#0a1a10" stroke="#00ff8840" stroke-width="1"/>
+      <text x="70" y="40" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="8" fill="#00ff88" font-weight="700">GCP</text>
+      <rect x="18" y="46" width="48" height="14" rx="2" fill="#00ff8810" stroke="#00ff8830" stroke-width="1"/>
+      <text x="42" y="56" text-anchor="middle" font-family="monospace" font-size="7" fill="#5aac80">Vertex AI</text>
+      <rect x="72" y="46" width="50" height="14" rx="2" fill="#00ff8810" stroke="#00ff8830" stroke-width="1"/>
+      <text x="97" y="56" text-anchor="middle" font-family="monospace" font-size="7" fill="#5aac80">TPU v4/v5</text>
+      <rect x="18" y="66" width="104" height="14" rx="2" fill="#00ff8806" stroke="#00ff8820" stroke-width="1"/>
+      <text x="70" y="76" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#3a7a52">us-central1 · us-east1 · failover</text>
+      <!-- AWS Box -->
+      <rect x="170" y="25" width="120" height="65" rx="3" fill="#0a100a" stroke="#ffaa0040" stroke-width="1"/>
+      <text x="230" y="40" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="8" fill="#ffaa00" font-weight="700">AWS</text>
+      <rect x="178" y="46" width="48" height="14" rx="2" fill="#ffaa0010" stroke="#ffaa0030" stroke-width="1"/>
+      <text x="202" y="56" text-anchor="middle" font-family="monospace" font-size="7" fill="#cc8800">Bedrock</text>
+      <rect x="232" y="46" width="50" height="14" rx="2" fill="#ffaa0010" stroke="#ffaa0030" stroke-width="1"/>
+      <text x="257" y="56" text-anchor="middle" font-family="monospace" font-size="7" fill="#cc8800">Trainium2</text>
+      <rect x="178" y="66" width="104" height="14" rx="2" fill="#ffaa0006" stroke="#ffaa0020" stroke-width="1"/>
+      <text x="230" y="76" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#996600">us-east-1 · us-west-2 · enterprise</text>
+      <!-- Central Claude -->
+      <rect x="105" y="105" width="90" height="40" rx="4" fill="#0d2018" stroke="#00ff88" stroke-width="1.5" filter="url(#g3)"/>
+      <text x="150" y="121" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="9" fill="#00ff88" font-weight="900">CLAUDE</text>
+      <text x="150" y="135" text-anchor="middle" font-family="monospace" font-size="7" fill="#5aac80">SLA ≥ 99.9% · AES-256</text>
+      <!-- Arrows GCP→Claude -->
+      <line x1="70" y1="90" x2="120" y2="108" stroke="#00ff8860" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- Arrows AWS→Claude -->
+      <line x1="230" y1="90" x2="180" y2="108" stroke="#ffaa0060" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- Users -->
+      <text x="150" y="160" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a6a50">10M+ usuarios · 180+ países</text>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>Infraestructura Multi-Cloud</strong> · GCP (Vertex AI + TPUs) + AWS (Bedrock + Trainium2)</div>
+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRUCTURE OVERVIEW -->
+  <!-- ANTHROPIC COMPANY PHOTO STRIP -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:0 0 24px;">
+    <!-- PHOTO 1: Office interior simulation -->
+    <div style="border:1px solid rgba(217,119,87,.35);border-radius:3px;overflow:hidden;position:relative;">
+      <div style="background:linear-gradient(160deg,#120d08,#1e1208,#120d08);height:160px;position:relative;overflow:hidden;">
+        <svg width="100%" height="100%" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg">
+          <defs><filter id="sf1"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <!-- Office floor perspective -->
+          <polygon points="0,80 300,80 260,160 40,160" fill="#160e08" opacity="0.6"/>
+          <!-- Desks -->
+          <rect x="20" y="70" width="60" height="10" rx="2" fill="#2a1a0e"/>
+          <rect x="100" y="65" width="60" height="10" rx="2" fill="#2a1a0e"/>
+          <rect x="180" y="68" width="55" height="10" rx="2" fill="#2a1a0e"/>
+          <!-- Monitors warm glow -->
+          <rect x="25" y="48" width="30" height="22" rx="2" fill="#1a0f06" stroke="#d9775740" stroke-width="1"/>
+          <rect x="27" y="50" width="26" height="18" rx="1" fill="#d9775710"><animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/></rect>
+          <rect x="108" y="44" width="30" height="21" rx="2" fill="#1a0f06" stroke="#6a9bcc40" stroke-width="1"/>
+          <rect x="110" y="46" width="26" height="17" rx="1" fill="#6a9bcc12"><animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite"/></rect>
+          <rect x="190" y="46" width="28" height="22" rx="2" fill="#1a0f06" stroke="#d9775740" stroke-width="1"/>
+          <rect x="192" y="48" width="24" height="18" rx="1" fill="#d9775710"/>
+          <!-- People silhouettes -->
+          <ellipse cx="40" cy="48" rx="6" ry="8" fill="#2a1a0e"/>
+          <rect x="35" y="55" width="10" height="15" rx="3" fill="#2a1a0e"/>
+          <ellipse cx="123" cy="44" rx="6" ry="8" fill="#2a1a0e"/>
+          <rect x="118" y="51" width="10" height="15" rx="3" fill="#2a1a0e"/>
+          <ellipse cx="205" cy="46" rx="6" ry="8" fill="#2a1a0e"/>
+          <!-- Background wall with Anthropic branding -->
+          <rect x="0" y="0" width="300" height="42" fill="#0f0906"/>
+          <rect x="0" y="38" width="300" height="3" fill="#d9775720"/>
+          <text x="150" y="22" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#d97757" letter-spacing="4" font-weight="700" filter="url(#sf1)">ANTHROPIC</text>
+          <text x="150" y="34" text-anchor="middle" font-family="monospace" font-size="7" fill="#b0aea5" letter-spacing="2">Building the future of safe AI</text>
+          <!-- Ambient particles -->
+          <circle cx="80" cy="30" r="1.5" fill="#d97757" opacity="0.5"><animate attributeName="opacity" values="0.5;0.1;0.5" dur="3s" repeatCount="indefinite"/></circle>
+          <circle cx="220" cy="20" r="1" fill="#6a9bcc" opacity="0.4"><animate attributeName="opacity" values="0.4;0.1;0.4" dur="4s" repeatCount="indefinite"/></circle>
+        </svg>
+      </div>
+      <div style="padding:7px 10px;background:rgba(15,8,4,.95);border-top:1px solid rgba(217,119,87,.2);font-size:9px;color:#b0aea5;letter-spacing:1.5px;"><strong style="color:#d97757;">Open workspace</strong> · San Francisco HQ · Equipos de Safety e Investigación</div>
+    </div>
+
+    <!-- PHOTO 2: Data Center / Training cluster -->
+    <div style="border:1px solid rgba(106,155,204,.35);border-radius:3px;overflow:hidden;position:relative;">
+      <div style="background:linear-gradient(160deg,#080d14,#0a1220,#080d14);height:160px;position:relative;">
+        <svg width="100%" height="100%" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg">
+          <defs><filter id="sf2"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <!-- Server racks perspective -->
+          <g transform="translate(0,0)">
+            <!-- Left rack -->
+            <rect x="15" y="20" width="50" height="120" rx="2" fill="#0c1520" stroke="#6a9bcc25" stroke-width="1"/>
+            <rect x="17" y="22" width="46" height="3" rx="1" fill="#6a9bcc30"/><rect x="17" y="28" width="46" height="3" rx="1" fill="#d9775730"/><rect x="17" y="34" width="46" height="3" rx="1" fill="#6a9bcc30"/><rect x="17" y="40" width="46" height="3" rx="1" fill="#6a9bcc15"/>
+            <rect x="17" y="46" width="46" height="3" rx="1" fill="#6a9bcc30"/><rect x="17" y="52" width="46" height="3" rx="1" fill="#d9775720"/><rect x="17" y="58" width="46" height="3" rx="1" fill="#6a9bcc25"/>
+            <rect x="17" y="64" width="46" height="3" rx="1" fill="#6a9bcc30"/><rect x="17" y="70" width="46" height="3" rx="1" fill="#6a9bcc15"/><rect x="17" y="76" width="46" height="3" rx="1" fill="#d9775730"/>
+            <circle cx="55" cy="23" r="1.5" fill="#6a9bcc"><animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/></circle>
+            <circle cx="55" cy="29" r="1.5" fill="#d97757"><animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite"/></circle>
+            <!-- Center rack (Trainium2 - highlighted) -->
+            <rect x="90" y="10" width="120" height="140" rx="2" fill="#0e1828" stroke="#6a9bcc50" stroke-width="1.5" filter="url(#sf2)"/>
+            <rect x="90" y="10" width="120" height="4" fill="#6a9bcc" opacity="0.6"/>
+            <text x="150" y="24" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7" fill="#6a9bcc" letter-spacing="2">TRAINIUM2</text>
+            <text x="150" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#6a9bcc80">Project Rainier · AWS</text>
+            <!-- TPU rows -->
+            <g fill="#6a9bcc20" stroke="#6a9bcc30" stroke-width="0.5">
+              <rect x="96" y="38" width="24" height="14" rx="1"/><rect x="124" y="38" width="24" height="14" rx="1"/><rect x="152" y="38" width="24" height="14" rx="1"/><rect x="180" y="38" width="24" height="14" rx="1"/>
+              <rect x="96" y="56" width="24" height="14" rx="1"/><rect x="124" y="56" width="24" height="14" rx="1"/><rect x="152" y="56" width="24" height="14" rx="1"/><rect x="180" y="56" width="24" height="14" rx="1"/>
+              <rect x="96" y="74" width="24" height="14" rx="1"/><rect x="124" y="74" width="24" height="14" rx="1"/><rect x="152" y="74" width="24" height="14" rx="1"/><rect x="180" y="74" width="24" height="14" rx="1"/>
+              <rect x="96" y="92" width="24" height="14" rx="1"/><rect x="124" y="92" width="24" height="14" rx="1"/><rect x="152" y="92" width="24" height="14" rx="1"/><rect x="180" y="92" width="24" height="14" rx="1"/>
+            </g>
+            <!-- Active indicator on one TPU -->
+            <rect x="96" y="38" width="24" height="14" rx="1" fill="#6a9bcc30"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></rect>
+            <rect x="152" y="74" width="24" height="14" rx="1" fill="#d9775720"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite"/></rect>
+            <!-- Stats at bottom -->
+            <rect x="95" y="112" width="110" height="32" rx="2" fill="#0c1520"/>
+            <text x="150" y="123" text-anchor="middle" font-family="monospace" font-size="6" fill="#6a9bcc">500K chips Trainium2</text>
+            <text x="150" y="133" text-anchor="middle" font-family="monospace" font-size="6" fill="#b0aea5">A100/H100 GPUs · TPU v4/v5</text>
+            <text x="150" y="143" text-anchor="middle" font-family="monospace" font-size="6" fill="#d97757">Project Rainier · Entrenamiento Claude</text>
+            <!-- Right rack -->
+            <rect x="235" y="20" width="50" height="120" rx="2" fill="#0c1520" stroke="#6a9bcc25" stroke-width="1"/>
+            <rect x="237" y="22" width="46" height="3" rx="1" fill="#6a9bcc30"/><rect x="237" y="28" width="46" height="3" rx="1" fill="#6a9bcc15"/><rect x="237" y="34" width="46" height="3" rx="1" fill="#d9775725"/>
+            <rect x="237" y="40" width="46" height="3" rx="1" fill="#6a9bcc30"/><rect x="237" y="46" width="46" height="3" rx="1" fill="#6a9bcc25"/>
+          </g>
+        </svg>
+      </div>
+      <div style="padding:7px 10px;background:rgba(4,8,15,.95);border-top:1px solid rgba(106,155,204,.2);font-size:9px;color:#b0aea5;letter-spacing:1.5px;"><strong style="color:#6a9bcc;">Project Rainier</strong> · 500K chips Trainium2 · AWS · Entrenamiento de modelos Claude</div>
+    </div>
+
+    <!-- PHOTO 3: Claude AI interface mockup -->
+    <div style="border:1px solid rgba(212,162,127,.3);border-radius:3px;overflow:hidden;position:relative;">
+      <div style="background:linear-gradient(160deg,#100e0a,#181210,#100e0a);height:160px;position:relative;">
+        <svg width="100%" height="100%" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg">
+          <!-- Browser chrome -->
+          <rect x="0" y="0" width="300" height="28" fill="#1a120a"/>
+          <circle cx="12" cy="14" r="4" fill="#ff5f56"/><circle cx="24" cy="14" r="4" fill="#ffbd2e"/><circle cx="36" cy="14" r="4" fill="#27c93f"/>
+          <rect x="48" y="8" width="200" height="12" rx="6" fill="#251808"/>
+          <text x="148" y="18" text-anchor="middle" font-family="monospace" font-size="7" fill="#b0aea5">claude.ai — Chat</text>
+          <!-- Chat interface body -->
+          <rect x="0" y="28" width="300" height="132" fill="#130e08"/>
+          <!-- User message -->
+          <rect x="120" y="36" width="168" height="28" rx="3" fill="#2a1a0e" stroke="#d9775730" stroke-width="1"/>
+          <text x="130" y="47" font-family="monospace" font-size="6.5" fill="#d4a27f">¿Cómo funciona el</text>
+          <text x="130" y="57" font-family="monospace" font-size="6.5" fill="#d4a27f">Constitutional AI?</text>
+          <!-- Claude avatar -->
+          <circle cx="22" cy="82" r="10" fill="#2a1a0e" stroke="#d9775740" stroke-width="1.5"/>
+          <text x="22" y="86" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="8" fill="#d97757" font-weight="900">C</text>
+          <!-- Claude response -->
+          <rect x="38" y="70" width="200" height="50" rx="3" fill="#1e1410" stroke="#d9775720" stroke-width="1"/>
+          <text x="46" y="82" font-family="monospace" font-size="6" fill="#d4a27f">Constitutional AI entrena modelos</text>
+          <text x="46" y="91" font-family="monospace" font-size="6" fill="#d4a27f">usando principios éticos explícitos</text>
+          <text x="46" y="100" font-family="monospace" font-size="6" fill="#d4a27f">para guiar el comportamiento...</text>
+          <!-- Cursor blink -->
+          <rect x="46" y="108" width="5" height="8" rx="1" fill="#d97757"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></rect>
+          <!-- Bottom input -->
+          <rect x="8" y="134" width="280" height="18" rx="4" fill="#1e1410" stroke="#d9775730" stroke-width="1"/>
+          <text x="20" y="145" font-family="monospace" font-size="7" fill="#b0aea580">Escribe tu mensaje a Claude...</text>
+          <rect x="272" y="136" width="12" height="14" rx="2" fill="#d97757" opacity="0.8"/>
+        </svg>
+      </div>
+      <div style="padding:7px 10px;background:rgba(15,10,5,.95);border-top:1px solid rgba(212,162,127,.2);font-size:9px;color:#b0aea5;letter-spacing:1.5px;"><strong style="color:#d4a27f;">Claude.ai</strong> · Interfaz conversacional · Constitutional AI · 10M+ usuarios activos</div>
+    </div>
+  </div>
+
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// ESTRUCTURA DEL DOCUMENTO — 10 CLÁUSULAS</span></div>
+    <div class="cnt">
+      <h2>◈ Mapa del SGSI</h2>
+      <div class="policy-grid">
+        <div class="pol"><div class="pol-num">CLÁUSULA 01</div><div class="pol-name">Alcance — Ciclo de vida Claude, infra GCP+AWS, sistemas corp.</div><span class="pol-risk rb rb-me">Base</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 02</div><div class="pol-name">Referencias — 11 normas ISO, NIST AI RMF, GDPR, EU AI Act</div><span class="pol-risk rb rb-me">Normativa</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 03</div><div class="pol-name">Términos — 22 definiciones aplicadas al contexto IA de Anthropic</div><span class="pol-risk rb rb-me">Glosario</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 04</div><div class="pol-name">Contexto — 20 activos internos + 20 externos + partes interesadas</div><span class="pol-risk rb rb-al">Crítico</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 05</div><div class="pol-name">Liderazgo — PSI + 20 políticas + RACI por activo (CEO/CISO)</div><span class="pol-risk rb rb-ex">Extremo</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 06</div><div class="pol-name">Planificación — Matriz 5×5, 20 riesgos, 3 Extremo·25</div><span class="pol-risk rb rb-ex">Extremo</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 07</div><div class="pol-name">Soporte — Minuta SGSI-MIN-2026-001, 6 acuerdos, cronograma</div><span class="pol-risk rb rb-me">Activo</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 08</div><div class="pol-name">Operación — PDCA BEC/Phishing, NC-2024-017, 7 AC</div><span class="pol-risk rb rb-ex">Extremo</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 09</div><div class="pol-name">Evaluación — Checklist 140+ ítems Sí/No, 20 políticas auditadas</div><span class="pol-risk rb rb-ma">Alto</span></div>
+        <div class="pol"><div class="pol-num">CLÁUSULA 10</div><div class="pol-name">Mejora — NC cerrada, riesgo Extremo 20 → Alto 12, KPIs ✓</div><span class="pol-risk rb rb-al">Mejorado</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════ ALCANCE ══════════════════════════════ -->
+<div id="sec-alcance" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 1 — ALCANCE DEL SGSI</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">01</div><h2>Declaración Formal del Alcance</h2></div>
+      <div class="hbox"><p>El SGSI de Anthropic cubre el <strong>ciclo de vida completo de los modelos Claude</strong> — desde el entrenamiento hasta la entrega al usuario final — incluyendo la infraestructura multi-cloud (GCP + AWS), los sistemas corporativos de soporte y los procesos de seguridad operativa, en todas las ubicaciones y entornos bajo gestión directa de Anthropic.</p></div>
+
+      <div class="two-col">
+        <div>
+          <h3>▸ Estructura Organizacional</h3>
+          <table>
+            <tr><th>Nombre</th><th>Cargo</th><th>Equipo</th></tr>
+            <tr><td><strong>Dario Amodei</strong></td><td>CEO / Cofundador</td><td>577</td></tr>
+            <tr><td>Daniela Amodei</td><td>Presidenta</td><td>4</td></tr>
+            <tr><td><strong>Rahul Patil</strong></td><td>CTO — Responsable SGSI</td><td>280</td></tr>
+            <tr><td>Mike Krieger</td><td>Director de Producto</td><td>141</td></tr>
+            <tr><td>Pablo Smith</td><td>Director Comercial</td><td>67</td></tr>
+            <tr><td>Krishna Rao</td><td>CFO</td><td>42</td></tr>
+            <tr><td>Hannah Pritchett</td><td>Jefe de Personal</td><td>35</td></tr>
+          </table>
+        </div>
+        <div>
+          <h3>▸ Entornos en Alcance</h3>
+          <div class="card" style="margin-bottom:10px;"><h4>🔴 Producción</h4><p>Inferencia en tiempo real. GCP TPUs + AWS Inferentia2. SLA ≥ 99.9%. RTO 4h / RPO 1h.</p></div>
+          <div class="card" style="margin-bottom:10px;"><h4>🟡 Entrenamiento</h4><p>TPUs v4/v5 + GPUs A100/H100. Project Rainier (Trainium2). Fine-tuning de Claude.</p></div>
+          <div class="card" style="margin-bottom:10px;"><h4>🟢 Red-Teaming</h4><p>Evaluación adversarial antes de cada lanzamiento. Benchmarks de seguridad y alineación.</p></div>
+          <div class="card"><h4>🔵 Corporativo</h4><p>GitHub · Slack · Okta · SIEM · Herramientas de productividad para ~1,100 empleados.</p></div>
+        </div>
+      </div>
+
+      <h3>▸ Tres Pilares del Propósito PBC</h3>
+      <div class="three-col">
+        <div class="card card-info"><h4>01 — Sistemas más Seguros</h4><p>IA confiable, interpretable y dirigible que pueda ser auditada y corregida en todo momento.</p></div>
+        <div class="card"><h4>02 — Seguridad como Ciencia</h4><p>Investigación sistemática y reproducible sobre riesgos de IA, publicada abiertamente.</p></div>
+        <div class="card card-warn"><h4>03 — Interdisciplinariedad</h4><p>Investigadores, ingenieros y expertos en política pública y ética trabajando en conjunto.</p></div>
+      </div>
+
+      <!-- IMAGE: Anthropic founders + cloud -->
+      <div class="img-strip-2" style="margin-top:16px;">
+        <div class="img-card img-card-lg">
+  <div style="background:linear-gradient(135deg,#050d0a 0%,#0a1a14 60%,#050d0a 100%);min-height:260px;padding:18px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:8.5px;color:var(--dim);letter-spacing:3px;margin-bottom:14px;text-align:center;">// EQUIPO DIRECTIVO — ANTHROPIC PBC</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="text-align:center;border:1px solid #00ff8830;border-radius:3px;padding:12px 6px;background:rgba(0,255,136,.03);">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2a1408,#3d1e0d);border:2px solid #d9775760;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:14px;color:#d97757;font-weight:900;">DA</div>
+        <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00ff88;letter-spacing:1px;margin-bottom:3px;">Dario Amodei</div>
+        <div style="font-size:9px;color:var(--dim);">CEO · Cofundador</div>
+        <div style="font-size:8px;color:#3a7a52;margin-top:4px;">PhD Princeton · ex-VP OpenAI</div>
+        <div style="margin-top:6px;"><span style="background:rgba(255,95,86,.15);color:#ff5f56;font-size:7.5px;padding:2px 6px;border-radius:2px;font-family:Orbitron,sans-serif;">CEO</span></div>
+      </div>
+      <div style="text-align:center;border:1px solid #00cfff30;border-radius:3px;padding:12px 6px;background:rgba(0,207,255,.02);">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#081520,#103040);border:2px solid #00cfff60;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:14px;color:#00cfff;font-weight:900;">DA</div>
+        <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00cfff;letter-spacing:1px;margin-bottom:3px;">Daniela Amodei</div>
+        <div style="font-size:9px;color:var(--dim);">Presidenta · Cofundadora</div>
+        <div style="font-size:8px;color:#3a7a52;margin-top:4px;">ex-VP Safety · OpenAI</div>
+        <div style="margin-top:6px;"><span style="background:rgba(0,207,255,.15);color:#00cfff;font-size:7.5px;padding:2px 6px;border-radius:2px;font-family:Orbitron,sans-serif;">Presidenta</span></div>
+      </div>
+      <div style="text-align:center;border:1px solid #ffaa0030;border-radius:3px;padding:12px 6px;background:rgba(255,170,0,.02);">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#141008,#302010);border:2px solid #ffaa0060;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:14px;color:#ffaa00;font-weight:900;">RP</div>
+        <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ffaa00;letter-spacing:1px;margin-bottom:3px;">Rahul Patil</div>
+        <div style="font-size:9px;color:var(--dim);">CTO · 280 reportes</div>
+        <div style="font-size:8px;color:#3a7a52;margin-top:4px;">Responsable técnico SGSI</div>
+        <div style="margin-top:6px;"><span style="background:rgba(255,170,0,.15);color:#ffaa00;font-size:7.5px;padding:2px 6px;border-radius:2px;font-family:Orbitron,sans-serif;">CTO</span></div>
+      </div>
+      <div style="text-align:center;border:1px solid #c084fc30;border-radius:3px;padding:12px 6px;background:rgba(192,132,252,.02);">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#120818,#281030);border:2px solid #c084fc60;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:14px;color:#c084fc;font-weight:900;">JC</div>
+        <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#c084fc;letter-spacing:1px;margin-bottom:3px;">Jack Clark</div>
+        <div style="font-size:9px;color:var(--dim);">Cofundador</div>
+        <div style="font-size:8px;color:#3a7a52;margin-top:4px;">ex-Policy Lead · OpenAI</div>
+        <div style="margin-top:6px;"><span style="background:rgba(192,132,252,.15);color:#c084fc;font-size:7.5px;padding:2px 6px;border-radius:2px;font-family:Orbitron,sans-serif;">Fundador</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;border:1px solid #00ff8818;border-radius:2px;padding:8px 12px;background:rgba(0,255,136,.02);">
+      <div style="font-size:9px;color:var(--dim);line-height:1.8;text-align:center;">Fundada en 2021 · 7 ex-empleados de OpenAI · 2,500 empleados (2026) · Valoración $380B · Amazon $4B + Google $2.3B inversión</div>
+    </div>
+  </div>
+  <div class="img-card-caption"><strong>Alta Dirección Anthropic</strong> · Dario Amodei (CEO) · Daniela Amodei (Presidenta) · Rahul Patil (CTO/Resp. SGSI)</div>
+</div>
+        <div class="img-card img-card-lg">
+  <div style="background:linear-gradient(135deg,#050d0a,#070f14,#050d0a);min-height:260px;padding:14px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:8px;color:var(--dim);letter-spacing:3px;margin-bottom:12px;text-align:center;">// ENTORNOS LÓGICOS EN ALCANCE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <div style="border:1px solid #00ff8840;border-radius:3px;padding:10px;background:#0a1810;">
+        <div style="font-family:Orbitron,sans-serif;font-size:9px;color:#00ff88;margin-bottom:6px;">🔴 PRODUCCIÓN</div>
+        <div style="font-size:10px;color:var(--dim);line-height:1.7;">GCP TPUs + AWS Inferentia2<br>SLA ≥ 99.9% · RTO 4h / RPO 1h<br>Inferencia en tiempo real</div>
+      </div>
+      <div style="border:1px solid #ffaa0040;border-radius:3px;padding:10px;background:#100f08;">
+        <div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ffaa00;margin-bottom:6px;">🟡 ENTRENAMIENTO</div>
+        <div style="font-size:10px;color:var(--dim);line-height:1.7;">Project Rainier · Trainium2<br>TPUs v4/v5 + A100/H100<br>Fine-tuning de Claude</div>
+      </div>
+      <div style="border:1px solid #ff5f5640;border-radius:3px;padding:10px;background:#100808;">
+        <div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff5f56;margin-bottom:6px;">🔴 RED-TEAMING</div>
+        <div style="font-size:10px;color:var(--dim);line-height:1.7;">Evaluación adversarial<br>Benchmarks de seguridad<br>Antes de cada lanzamiento</div>
+      </div>
+      <div style="border:1px solid #00cfff40;border-radius:3px;padding:10px;background:#080e14;">
+        <div style="font-family:Orbitron,sans-serif;font-size:9px;color:#00cfff;margin-bottom:6px;">🔵 CORPORATIVO</div>
+        <div style="font-size:10px;color:var(--dim);line-height:1.7;">GitHub · Slack · Okta · SIEM<br>~1,100 empleados<br>VPN + LAN + Correo</div>
+      </div>
+    </div>
+    <div style="border:1px solid #00ff8820;border-radius:2px;padding:8px 10px;background:rgba(0,255,136,.02);text-align:center;">
+      <span style="font-size:9px;color:#3a7a52;letter-spacing:1px;">Sin instalaciones físicas propias · Todo cloud bajo Shared-Security GCP/AWS</span>
+    </div>
+  </div>
+  <div class="img-card-caption"><strong>Entornos Lógicos</strong> · Producción (TPUs+Inferentia2) · Entrenamiento (Rainier) · Red-Team · Corporativo</div>
+</div>
+      </div>
+
+      <!-- Ubicaciones -->
+      <div class="term" style="margin-top:8px;">
+        <div class="term-bar"><span class="td td-r"></span><span class="td td-y"></span><span class="td td-g"></span><span class="term-title">infra-scope.cfg — Ubicaciones Físicas y Lógicas</span></div>
+        <div class="term-body">
+          <div><span class="t-prompt">HQ:   </span><span class="t-ok">San Francisco, CA — 548 Market St (oficinas + sistemas)</span></div>
+          <div><span class="t-prompt">GCP:  </span><span class="t-info">us-central1 · us-east1 · regiones failover + residencia de datos</span></div>
+          <div><span class="t-prompt">AWS:  </span><span class="t-info">us-east-1 · us-west-2 · regiones enterprise según cliente</span></div>
+          <div><span class="t-prompt">NOTE: </span><span class="t-warn">Sin instalaciones físicas propias · Todo cloud bajo shared-security</span></div>
+          <div><span class="t-prompt">EXCL: </span><span class="t-err">Infra física cloud (GCP/AWS) · BYOD no gestionados · Apps 3rd party sin eval</span></div>
+          <div><span class="t-prompt">REV:  </span><span class="t-ok">Revisión anual del alcance o ante cambio organizacional significativo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ NORMAS ══════════════════════════════ -->
+<div id="sec-normas" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 2 — REFERENCIAS NORMATIVAS</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">02</div><h2>Marco Normativo Aplicable</h2></div>
+
+      <!-- ISO image -->
+      <div class="img-strip-2" style="margin-bottom:18px;">
+        <div class="img-card">
+  <div style="background:linear-gradient(135deg,#050d0a 0%,#071510 50%,#050d0a 100%);height:200px;display:flex;align-items:center;justify-content:center;">
+    <svg width="200" height="180" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="g2"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <!-- Outer ring -->
+      <circle cx="100" cy="90" r="80" fill="none" stroke="#00ff8840" stroke-width="1.5"/>
+      <circle cx="100" cy="90" r="72" fill="none" stroke="#00ff8828" stroke-width="1"/>
+      <!-- Shield shape -->
+      <path d="M100 18 L148 38 L148 88 Q148 130 100 155 Q52 130 52 88 L52 38 Z" fill="#0a1f14" stroke="#00ff8866" stroke-width="1.5" filter="url(#g2)"/>
+      <!-- ISO text -->
+      <text x="100" y="62" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="20" font-weight="900" fill="#00ff88" letter-spacing="2" filter="url(#g2)">ISO</text>
+      <text x="100" y="82" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#00cc66" letter-spacing="1">IEC 27001</text>
+      <!-- Year -->
+      <rect x="72" y="88" width="56" height="18" rx="2" fill="#00ff8815" stroke="#00ff8840" stroke-width="1"/>
+      <text x="100" y="100" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="12" font-weight="700" fill="#00ff88">2022</text>
+      <!-- CERTIFIED -->
+      <text x="100" y="120" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7.5" fill="#5aac80" letter-spacing="3">CERTIFIED</text>
+      <!-- 93 controls note -->
+      <text x="100" y="136" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a7a52">93 Controles · Anexo A</text>
+      <!-- Checkmarks -->
+      <text x="65" y="115" font-family="monospace" font-size="10" fill="#00ff88">✓</text>
+      <text x="125" y="115" font-family="monospace" font-size="10" fill="#00ff88">✓</text>
+      <!-- Rotating dots -->
+      <circle cx="100" cy="14" r="3" fill="#00ff88"><animateTransform attributeName="transform" type="rotate" from="0 100 90" to="360 100 90" dur="8s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>ISO/IEC 27001:2022</strong> · Norma principal de certificación SGSI · 93 controles Anexo A</div>
+</div>
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#050d0a,#0a1510,#050d0a);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">ISO 27000 FAMILY</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;">
+      <div style="background:#00ff8815;border:1px solid #00ff8835;border-radius:2px;padding:4px;text-align:center;"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00ff88;font-weight:700;">27001</div><div style="font-size:7px;color:var(--dim);">SGSI Core</div></div>
+      <div style="background:#00ff8812;border:1px solid #00ff8828;border-radius:2px;padding:4px;text-align:center;"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00cc66;font-weight:700;">27002</div><div style="font-size:7px;color:var(--dim);">Controles</div></div>
+      <div style="background:#00cfff12;border:1px solid #00cfff28;border-radius:2px;padding:4px;text-align:center;"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00cfff;font-weight:700;">27005</div><div style="font-size:7px;color:var(--dim);">Riesgos</div></div>
+      <div style="background:#ffaa0012;border:1px solid #ffaa0028;border-radius:2px;padding:4px;text-align:center;"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ffaa00;font-weight:700;">27017</div><div style="font-size:7px;color:var(--dim);">Cloud</div></div>
+      <div style="background:#ffaa0010;border:1px solid #ffaa0022;border-radius:2px;padding:4px;text-align:center;"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#cc8800;font-weight:700;">27018</div><div style="font-size:7px;color:var(--dim);">PII Cloud</div></div>
+      <div style="background:#ff5f5610;border:1px solid #ff5f5622;border-radius:2px;padding:4px;text-align:center;"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ff5f56;font-weight:700;">42001</div><div style="font-size:7px;color:var(--dim);">IA/AIMS</div></div>
+    </div>
+    <div style="margin-top:7px;border:1px solid #00ff8818;border-radius:2px;padding:5px;text-align:center;"><div style="font-size:8px;color:#3a7a52;">+ NIST AI RMF · GDPR · CCPA · EU AI Act · HIPAA</div></div>
+  </div>
+  <div class="img-card-caption"><strong>Familia ISO 27000</strong> · 11 normas aplicadas al contexto de Anthropic</div>
+</div>
+      </div>
+      <div class="norma-list">
+        <div class="norma-item"><div class="norma-code"><span>ISO 27001:2022</span></div><div class="norma-desc"><strong>Norma principal · 10 cláusulas + 93 controles (Anexo A)</strong>. Anthropic con certificación vigente. Base del SGSI completo.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 27002:2022</span></div><div class="norma-desc">Código de buenas prácticas. <strong>Guía de implementación de los 93 controles</strong>. La más referenciada en el diseño de controles de Anthropic.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 27005:2022</span></div><div class="norma-desc">Gestión de riesgos de seguridad. Metodología para <strong>identificar, analizar, evaluar y tratar riesgos</strong> del SGSI.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 27017:2015</span></div><div class="norma-desc">Controles de seguridad en servicios cloud. <strong>Altamente relevante:</strong> toda la infraestructura de Anthropic opera en GCP y AWS.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 27018:2019</span></div><div class="norma-desc">Protección de PII en la nube pública. Aplica al tratamiento de <strong>datos personales de usuarios de Claude.ai</strong> y clientes API.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 27032:2023</span></div><div class="norma-desc">Ciberseguridad. Cubre <strong>jailbreaking, prompt injection, exfiltración de datos</strong> y ataques a la cadena de suministro de IA.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 27035:2023</span></div><div class="norma-desc">Gestión de incidentes: detección, clasificación, contención, erradicación y recuperación. Aplicado en la Sección 8.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>ISO 42001:2023</span></div><div class="norma-desc"><strong>Sistema de Gestión de IA (AIMS).</strong> Primer estándar de gobernanza de IA. Anthropic certificado. Cubre ética, sesgo y ciclo de vida de Claude.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>NIST AI RMF</span></div><div class="norma-desc">Gestión de riesgos específicos de sistemas de inteligencia artificial. Complementa ISO en el contexto IA.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>GDPR/CCPA/HIPAA</span></div><div class="norma-desc">Regulaciones de privacidad aplicables en los <strong>180+ países</strong> donde opera Claude.</div></div>
+        <div class="norma-item"><div class="norma-code"><span>EU AI Act 2024</span></div><div class="norma-desc">Obligaciones de transparencia para <strong>modelos GPAI de uso general</strong> como Claude. Anthropic bajo observación regulatoria.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 3 — TÉRMINOS Y DEFINICIONES (22 TÉRMINOS)</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">03</div><h2>Glosario Aplicado al Contexto IA</h2></div>
+      <div class="two-col">
+        <div>
+          <h3 style="color:var(--info);">▸ Conceptos Base</h3>
+          <table>
+            <tr><th>Término</th><th>En Anthropic</th></tr>
+            <tr><td><strong>Activo de Información</strong></td><td>Pesos de Claude, conversaciones, claves API, código fuente</td></tr>
+            <tr><td><strong>Alta Dirección</strong></td><td>Dario Amodei (CEO) · Daniela Amodei · Board of Directors</td></tr>
+            <tr><td><strong>Política</strong></td><td>PSI que rige desarrollo y operación de Claude</td></tr>
+            <tr><td><strong>Datos Personales</strong></td><td>Conversaciones, correos, IDs de API, metadatos de sesión</td></tr>
+            <tr><td><strong>Consentimiento</strong></td><td>Aceptación explícita de términos de uso y privacidad</td></tr>
+          </table>
+          <h3 style="color:var(--g);margin-top:16px;">▸ Propiedades de Seguridad</h3>
+          <table>
+            <tr><th>Propiedad</th><th>Aplicación</th></tr>
+            <tr><td><strong>Confidencialidad</strong></td><td>Info no revelada a entidades no autorizadas</td></tr>
+            <tr><td><strong>Integridad</strong></td><td>Exactitud de pesos del modelo, logs y respuestas</td></tr>
+            <tr><td><strong>Disponibilidad</strong></td><td>API ≥99.9% SLA · RTO 4h / RPO 1h</td></tr>
+            <tr><td><strong>No Repudio</strong></td><td>Registros de auditoría firmados (uso API + accesos)</td></tr>
+            <tr><td><strong>Privacidad</strong></td><td>Principio rector del diseño de Claude</td></tr>
+          </table>
+        </div>
+        <div>
+          <h3 style="color:var(--alert);">▸ Riesgos y Controles</h3>
+          <table>
+            <tr><th>Término</th><th>En Anthropic</th></tr>
+            <tr><td><strong>Amenaza</strong></td><td>Jailbreaking · Prompt injection · Exfiltración · Abuso API</td></tr>
+            <tr><td><strong>Vulnerabilidad</strong></td><td>Fallas en filtros CAI · Validación API · Configs cloud</td></tr>
+            <tr><td><strong>Riesgo</strong></td><td>Jailbreaking · Extracción datos · No disponibilidad</td></tr>
+            <tr><td><strong>Tratamiento</strong></td><td>Mitigación técnica + red-teaming + respuesta a incidentes</td></tr>
+          </table>
+          <h3 style="color:var(--warn);margin-top:16px;">▸ Mecanismos</h3>
+          <table>
+            <tr><th>Mecanismo</th><th>Implementación</th></tr>
+            <tr><td><strong>Autenticación</strong></td><td>MFA empleados · FIDO2 ejecutivos · Claves API firmadas</td></tr>
+            <tr><td><strong>Autorización</strong></td><td>Mínimo privilegio · IAM · Scopes por clave API</td></tr>
+            <tr><td><strong>Cifrado</strong></td><td>TLS 1.3 en tránsito · AES-256 en reposo</td></tr>
+            <tr><td><strong>Incidente</strong></td><td>Jailbreaks exitosos · Vulneraciones de cuentas</td></tr>
+            <tr><td><strong>Brecha</strong></td><td>Exposición de conversaciones · Extracción de pesos</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ CONTEXTO ══════════════════════════════ -->
+<div id="sec-contexto" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 4 — CONTEXTO DE LA ORGANIZACIÓN · 40 ACTIVOS</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">04</div><h2>Activos Identificados</h2></div>
+
+      <div class="dash-row">
+        <div class="dash-item"><div class="dash-val">20</div><div class="dash-lbl">Activos Internos</div></div>
+        <div class="dash-item"><div class="dash-val">20</div><div class="dash-lbl">Activos Externos</div></div>
+        <div class="dash-item"><div class="dash-val">1,100</div><div class="dash-lbl">Empleados</div></div>
+        <div class="dash-item"><div class="dash-val">6+</div><div class="dash-lbl">Partes Interesadas</div></div>
+        <div class="dash-item"><div class="dash-val">$6.3B</div><div class="dash-lbl">Inversión (Amazon+Google)</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h3>▸ Activos Internos — Top 10 Críticos</h3>
+          <table>
+            <tr><th>#</th><th>Activo</th><th>Criticidad</th></tr>
+            <tr><td>01</td><td><strong>Pesos y checkpoints de Claude</strong></td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>02</td><td>Datasets de entrenamiento</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>03</td><td>Repositorios internos de código</td><td><span class="rb rb-ma">MUY ALTO</span></td></tr>
+            <tr><td>04</td><td>BBDDs internas de investigación</td><td><span class="rb rb-ma">MUY ALTO</span></td></tr>
+            <tr><td>05</td><td>Registros SIEM y auditoría</td><td><span class="rb rb-al">ALTO</span></td></tr>
+            <tr><td>06</td><td>Gestor de secretos y credenciales</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>07</td><td>Pipeline de entrenamiento</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>08</td><td>Plataforma red-teaming y evals</td><td><span class="rb rb-ma">MUY ALTO</span></td></tr>
+            <tr><td>09</td><td>Sistema IAM corporativo</td><td><span class="rb rb-al">ALTO</span></td></tr>
+            <tr><td>14</td><td>Sistema de correo corporativo</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+          </table>
+        </div>
+        <div>
+          <h3>▸ Activos Externos — Top 10</h3>
+          <table>
+            <tr><th>#</th><th>Activo Externo</th><th>Tipo</th></tr>
+            <tr><td>01</td><td><strong>Amazon S3</strong> (pesos + checkpoints)</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>02</td><td>Google Cloud Storage (GCS)</td><td><span class="rb rb-ma">MUY ALTO</span></td></tr>
+            <tr><td>03</td><td>Amazon Bedrock (inferencia)</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>04</td><td>Cloudflare AI Gateway</td><td><span class="rb rb-al">ALTO</span></td></tr>
+            <tr><td>05</td><td>API pública Claude</td><td><span class="rb rb-ex">EXTREMO</span></td></tr>
+            <tr><td>06</td><td>Snowflake (datos enterprise)</td><td><span class="rb rb-ma">MUY ALTO</span></td></tr>
+            <tr><td>11</td><td>GitHub (repos públicos SDKs)</td><td><span class="rb rb-al">ALTO</span></td></tr>
+            <tr><td>12</td><td>Datadog (observabilidad)</td><td><span class="rb rb-me">MEDIO</span></td></tr>
+            <tr><td>15</td><td>Okta (identidad federada)</td><td><span class="rb rb-ma">MUY ALTO</span></td></tr>
+            <tr><td>17</td><td>Google Workspace</td><td><span class="rb rb-al">ALTO</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Progreso barras criticidad -->
+      <h3>▸ Distribución de Criticidad — Activos Internos</h3>
+      <div class="prog-row"><span class="prog-label">Extremo</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:25%;background:linear-gradient(90deg,#ff5f56,#ff2222);box-shadow:0 0 6px #ff5f5640;"></div></div><span class="prog-val" style="color:var(--alert);">5</span></div>
+      <div class="prog-row"><span class="prog-label">Muy Alto</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:20%;background:linear-gradient(90deg,var(--warn),#ff8800);box-shadow:0 0 6px #ffaa0040;"></div></div><span class="prog-val" style="color:var(--warn);">4</span></div>
+      <div class="prog-row"><span class="prog-label">Alto</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:35%;background:linear-gradient(90deg,#ffd700,#ffaa00);"></div></div><span class="prog-val" style="color:#ffd700;">7</span></div>
+      <div class="prog-row"><span class="prog-label">Medio / Bajo</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:20%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">4</span></div>
+
+      <!-- Asset distribution -->
+      <div class="img-strip-2" style="margin-top:14px;">
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#050d0a,#080a10,#050d0a);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">DISTRIBUCIÓN DE ACTIVOS — 40 TOTAL</div>
+    <svg width="100%" height="110" viewBox="0 0 280 110" xmlns="http://www.w3.org/2000/svg">
+      <!-- Internal Assets bar chart -->
+      <text x="70" y="12" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7" fill="#00ff88">INTERNOS (20)</text>
+      <rect x="5" y="18" width="130" height="10" rx="2" fill="#00ff8808" stroke="#00ff8825" stroke-width="1"/>
+      <rect x="5" y="18" width="26" height="10" rx="2" fill="#ff5f5640"/><text x="18" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ff5f56">5 EX</text>
+      <rect x="31" y="18" width="22" height="10" rx="2" fill="#ffaa0030"/><text x="42" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffaa00">4 MA</text>
+      <rect x="53" y="18" width="36" height="10" rx="2" fill="#ffd70020"/><text x="71" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffd700">7 AL</text>
+      <rect x="89" y="18" width="46" height="10" rx="2" fill="#00ff8815"/><text x="112" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#00ff88">4 ME/BA</text>
+
+      <text x="210" y="12" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7" fill="#00cfff">EXTERNOS (20)</text>
+      <rect x="145" y="18" width="130" height="10" rx="2" fill="#00cfff08" stroke="#00cfff25" stroke-width="1"/>
+      <rect x="145" y="18" width="26" height="10" rx="2" fill="#ff5f5640"/><text x="158" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ff5f56">5 EX</text>
+      <rect x="171" y="18" width="22" height="10" rx="2" fill="#ffaa0030"/><text x="182" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffaa00">4 MA</text>
+      <rect x="193" y="18" width="36" height="10" rx="2" fill="#ffd70020"/><text x="211" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffd700">7 AL</text>
+      <rect x="229" y="18" width="46" height="10" rx="2" fill="#00cfff10"/><text x="252" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#00cfff">4 ME/BA</text>
+
+      <!-- Key assets -->
+      <text x="5" y="44" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="14" y="44" font-family="monospace" font-size="7.5" fill="#ff5f56">Pesos Claude (EXTREMO)</text>
+      <text x="5" y="55" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="14" y="55" font-family="monospace" font-size="7.5" fill="#ff5f56">Pipeline Trainium2 (EXTREMO)</text>
+      <text x="5" y="66" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ffaa00">● </text><text x="14" y="66" font-family="monospace" font-size="7.5" fill="#ffaa00">Repos código (MUY ALTO)</text>
+      <text x="145" y="44" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="154" y="44" font-family="monospace" font-size="7.5" fill="#ff5f56">Amazon S3 (EXTREMO)</text>
+      <text x="145" y="55" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="154" y="55" font-family="monospace" font-size="7.5" fill="#ff5f56">API Pública Claude (EXTREMO)</text>
+      <text x="145" y="66" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ffaa00">● </text><text x="154" y="66" font-family="monospace" font-size="7.5" fill="#ffaa00">Snowflake (MUY ALTO)</text>
+
+      <line x1="0" y1="74" x2="280" y2="74" stroke="#00ff8820" stroke-width="1"/>
+      <text x="140" y="85" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a7a52">Partes interesadas: usuarios · inversores · reguladores · sociedad</text>
+      <text x="140" y="97" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a6a50">Amazon $4B + Google $2.3B · Reguladores UE/EEUU · 180+ países</text>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>Distribución Activos</strong> · 20 internos + 20 externos · 10 clasificados como Extremo o Muy Alto</div>
+</div>
+        <div class="img-card img-card-sm">
+          <div style="background:linear-gradient(135deg,#050d0a,#080a10,#050d0a);height:150px;padding:10px;">
+            <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">PARTES INTERESADAS</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="padding:6px 10px;border:1px solid #00ff8825;border-radius:2px;background:rgba(0,255,136,.03);display:flex;align-items:center;gap:8px;"><span style="font-size:12px;">👥</span><div><div style="font-size:8.5px;color:var(--g);">Usuarios Finales</div><div style="font-size:7px;color:var(--dim);">10M+ · Claude.ai · API directa</div></div></div>
+              <div style="padding:6px 10px;border:1px solid #00cfff25;border-radius:2px;background:rgba(0,207,255,.03);display:flex;align-items:center;gap:8px;"><span style="font-size:12px;">🏢</span><div><div style="font-size:8.5px;color:var(--info);">Inversores</div><div style="font-size:7px;color:var(--dim);">Amazon $4B · Google $2.3B</div></div></div>
+              <div style="padding:6px 10px;border:1px solid #ffaa0025;border-radius:2px;background:rgba(255,170,0,.03);display:flex;align-items:center;gap:8px;"><span style="font-size:12px;">⚖️</span><div><div style="font-size:8.5px;color:var(--warn);">Reguladores</div><div style="font-size:7px;color:var(--dim);">UE · EEUU · 180+ países</div></div></div>
+              <div style="padding:6px 10px;border:1px solid #c084fc25;border-radius:2px;background:rgba(192,132,252,.03);display:flex;align-items:center;gap:8px;"><span style="font-size:12px;">🔬</span><div><div style="font-size:8.5px;color:var(--purple);">Investigadores IA</div><div style="font-size:7px;color:var(--dim);">Seguridad · Alineación · Ética</div></div></div>
+            </div>
+          </div>
+          <div class="img-card-caption"><strong>Partes Interesadas</strong> · Usuarios · Inversores · Reguladores · Investigadores · Sociedad</div>
+        </div>
+      </div>
+
+      <div class="ibox" style="margin-top:14px;"><h4>Partes Interesadas Identificadas</h4><p>Usuarios finales · Empresas API · Inversores (Amazon $4B + Google $2.3B) · Reguladores UE/EEUU · Investigadores de IA · Sociedad en general</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ LIDERAZGO ══════════════════════════════ -->
+<div id="sec-liderazgo" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 5 — LIDERAZGO · 20 POLÍTICAS + RACI</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">05</div><h2>Política de Seguridad de la Información</h2></div>
+      <div class="hbox"><p><strong>PSI formal:</strong> Anthropic se compromete a proteger la <strong>confidencialidad, integridad y disponibilidad</strong> de todos sus activos mediante un SGSI alineado con ISO 27001:2022. Aplica a todos los empleados, contratistas y proveedores que accedan a sistemas o datos de la organización. Firmada por CEO Dario Amodei.</p></div>
+
+      <div class="two-col">
+        <div>
+          <h3>▸ Estructura de Cada Política</h3>
+          <div class="card" style="margin-bottom:10px;"><h4>Estándar</h4><p>Requisito técnico mínimo obligatorio sin excepción. Ej: MFA para TODAS las cuentas IAM.</p></div>
+          <div class="card card-info" style="margin-bottom:10px;"><h4>Directriz</h4><p>Guía de implementación recomendada con periodicidad. Ej: auditorías trimestrales de permisos.</p></div>
+          <div class="card card-warn" style="margin-bottom:10px;"><h4>Procedimiento</h4><p>Pasos operativos formales. Ej: Solicitud → Aprobación CISO → Documentación en tickets.</p></div>
+          <div class="card card-alert"><h4>Línea Base</h4><p>Requisitos mínimos de configuración. Ej: Rotación de credenciales cada 90 días. Contraseñas ≥16 chars.</p></div>
+        </div>
+        <div>
+          <h3>▸ RACI — Política 17 · Correo Corporativo</h3>
+          <table>
+            <tr><th>Actividad</th><th>User</th><th>TI</th><th>CISO</th><th>Líder</th><th>RRHH</th></tr>
+            <tr><td style="font-size:10.5px;">Crear cuenta</td><td class="rc-x">—</td><td class="rc-r">R</td><td class="rc-a">A</td><td class="rc-i">I</td><td class="rc-c">C</td></tr>
+            <tr><td style="font-size:10.5px;">Dar de baja</td><td class="rc-x">—</td><td class="rc-r">R</td><td class="rc-a">A</td><td class="rc-i">I</td><td class="rc-c">C</td></tr>
+            <tr><td style="font-size:10.5px;">Auditoría trim.</td><td class="rc-x">—</td><td class="rc-r">R</td><td class="rc-a">A</td><td class="rc-c">C</td><td class="rc-i">I</td></tr>
+            <tr><td style="font-size:10.5px;">Configurar MFA</td><td class="rc-r">R</td><td class="rc-c">C</td><td class="rc-a">A</td><td class="rc-i">I</td><td class="rc-x">—</td></tr>
+            <tr><td style="font-size:10.5px;">Deshabilitar reenvío</td><td class="rc-x">—</td><td class="rc-r">R</td><td class="rc-a">A</td><td class="rc-c">C</td><td class="rc-i">I</td></tr>
+          </table>
+          <p style="font-size:10px;color:var(--dim);margin-top:6px;"><span style="color:var(--alert);">R=Responsible</span> · <span style="color:var(--info);">A=Accountable</span> · <span style="color:var(--warn);">C=Consulted</span> · <span style="color:var(--g);">I=Informed</span></p>
+<div class="img-card img-card-sm" style="margin-top:12px;">
+  <div style="background:linear-gradient(135deg,#050d0a,#080f10,#050d0a);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">MFA / FIDO2 AUTHENTICATION FLOW</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:4px;">
+      <div style="text-align:center;flex:1;">
+        <div style="width:36px;height:36px;border-radius:50%;background:#0a1a10;border:2px solid #00ff8860;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:16px;">👤</div>
+        <div style="font-size:8px;color:var(--dim);">Usuario</div>
+      </div>
+      <div style="font-size:10px;color:var(--g);">→</div>
+      <div style="text-align:center;flex:1;">
+        <div style="width:36px;height:36px;border-radius:3px;background:#0a1810;border:2px solid #00ff8850;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:14px;">🔑</div>
+        <div style="font-size:8px;color:#00ff88;">Contraseña</div>
+      </div>
+      <div style="font-size:10px;color:var(--g);">+</div>
+      <div style="text-align:center;flex:1;">
+        <div style="width:36px;height:36px;border-radius:3px;background:#081020;border:2px solid #00cfff50;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:14px;">📱</div>
+        <div style="font-size:8px;color:#00cfff;">FIDO2/OTP</div>
+      </div>
+      <div style="font-size:10px;color:var(--g);">→</div>
+      <div style="text-align:center;flex:1;">
+        <div style="width:36px;height:36px;border-radius:50%;background:#0d2018;border:2px solid #00ff88;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:14px;">✓</div>
+        <div style="font-size:8px;color:var(--g);">Acceso</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;border:1px solid #00ff8818;border-radius:2px;padding:5px 8px;background:rgba(0,255,136,.02);display:flex;justify-content:space-around;flex-wrap:wrap;gap:4px;">
+      <span style="font-size:8px;color:var(--g);">✓ 100% cobertura</span>
+      <span style="font-size:8px;color:#00cfff;">✓ FIDO2 ejecutivos</span>
+      <span style="font-size:8px;color:var(--warn);">✓ Rotación 90d</span>
+    </div>
+  </div>
+  <div class="img-card-caption"><strong>MFA + FIDO2</strong> · Estándar en las 20 políticas · Bloqueó el incidente NC-2024-017</div>
+</div>
+        </div>
+      </div>
+
+      <h3>▸ Las 20 Políticas del SGSI</h3>
+      <div class="policy-grid">
+        <div class="pol"><div class="pol-num">01 AWS IAM</div><div class="pol-name">MFA + auditorías trimestrales + rotación 90d</div><span class="pol-risk rb rb-ex">Extremo 25</span></div>
+        <div class="pol"><div class="pol-num">02 GCP IAM</div><div class="pol-name">Revisión mensual · mínimo privilegio · cuentas servicio</div><span class="pol-risk rb rb-ex">Extremo 20</span></div>
+        <div class="pol"><div class="pol-num">03 Azure AD</div><div class="pol-name">Auditorías bimestrales · suspensión 30d inactivos</div><span class="pol-risk rb rb-ma">Muy Alto 16</span></div>
+        <div class="pol"><div class="pol-num">04 Trainium2</div><div class="pol-name">Acceso exclusivo equipo entrenamiento · auditoría semanal</div><span class="pol-risk rb rb-ex">Extremo 25</span></div>
+        <div class="pol"><div class="pol-num">05 Cloudflare GW</div><div class="pol-name">Revisión mensual reglas enrutamiento · secretos gestionados</div><span class="pol-risk rb rb-al">Alto 12</span></div>
+        <div class="pol"><div class="pol-num">06 API Claude</div><div class="pol-name">Permisos mínimos · revocación &lt;2h · rotación 90d</div><span class="pol-risk rb rb-ex">Extremo 20</span></div>
+        <div class="pol"><div class="pol-num">07 Snowflake</div><div class="pol-name">Revisión bimestral roles · cuentas servicio certificado</div><span class="pol-risk rb rb-ma">Muy Alto 16</span></div>
+        <div class="pol"><div class="pol-num">08 Red Broadcom</div><div class="pol-name">RBAC + auditoría mensual · sin reutilización credenciales</div><span class="pol-risk rb rb-al">Alto 10</span></div>
+        <div class="pol"><div class="pol-num">09 DNS / CDN</div><div class="pol-name">MFA panel · alertas modificación registros críticos</div><span class="pol-risk rb rb-ex">Extremo 20</span></div>
+        <div class="pol"><div class="pol-num">10 Intel. Cyber</div><div class="pol-name">Solo equipo seg. · revisión semestral CISO</div><span class="pol-risk rb rb-al">Alto 12</span></div>
+        <div class="pol"><div class="pol-num">11 Dispositivos</div><div class="pol-name">Bloqueo 5min · formateo &lt;24h al dar de baja</div><span class="pol-risk rb rb-me">Medio 5</span></div>
+        <div class="pol"><div class="pol-num">12 Dev / Staging</div><div class="pol-name">Root solo supervisado · tickets con vencimiento</div><span class="pol-risk rb rb-ma">Muy Alto 15</span></div>
+        <div class="pol"><div class="pol-num">13 LAN Corp.</div><div class="pol-name">Cert. dispositivo + MFA · retiro automático 15d</div><span class="pol-risk rb rb-ma">Muy Alto 15</span></div>
+        <div class="pol"><div class="pol-num">14 VPN</div><div class="pol-name">MFA + OTP · sesiones cerradas 30min inactividad</div><span class="pol-risk rb rb-al">Alto 20</span></div>
+        <div class="pol"><div class="pol-num">15 Repos Código</div><div class="pol-name">Tokens 90d · revocación ex-empleados &lt;2h</div><span class="pol-risk rb rb-me">Medio 8</span></div>
+        <div class="pol"><div class="pol-num">16 Docs Técnicos</div><div class="pol-name">Acceso justificado · descargas auditadas · sem. revision</div><span class="pol-risk rb rb-me">Medio 4</span></div>
+        <div class="pol"><div class="pol-num">17 Correo Corp.</div><div class="pol-name">MFA sin excepción · baja mismo día salida</div><span class="pol-risk rb rb-ex">Extremo 20</span></div>
+        <div class="pol"><div class="pol-num">18 Mensajería</div><div class="pol-name">Bots con MFA · revocación &lt;4h · sin externos sensibles</div><span class="pol-risk rb rb-ba">Bajo 3</span></div>
+        <div class="pol"><div class="pol-num">19 BBDDs Invest.</div><div class="pol-name">Solo equipo · entorno controlado · fecha vencimiento</div><span class="pol-risk rb rb-me">Medio 9</span></div>
+        <div class="pol"><div class="pol-num">20 Backups</div><div class="pol-name">Restauración aprobada CISO · supervisión ≥2 admins</div><span class="pol-risk rb rb-ba">Bajo 15</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ RIESGOS ══════════════════════════════ -->
+<div id="sec-riesgos" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 6 — PLANIFICACIÓN · MATRIZ DE RIESGO 5×5</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">06</div><h2>Identificación y Análisis de Riesgos</h2></div>
+
+      <div class="img-strip-2" style="margin-bottom:16px;">
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#050d0a,#0a0805,#050d0a);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">METODOLOGÍA — PROBABILIDAD × IMPACTO</div>
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;">
+      <div style="text-align:center;">
+        <div style="font-family:Orbitron,sans-serif;font-size:11px;color:var(--g);font-weight:900;">P</div>
+        <div style="font-size:8px;color:var(--dim);">Probabilidad</div>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:2px;">
+          <div style="background:#00ff8815;border-left:2px solid #00ff88;padding:2px 5px;font-size:7.5px;color:#00ff88;">5 — Casi Seguro</div>
+          <div style="background:#ffaa0012;border-left:2px solid #ffaa00;padding:2px 5px;font-size:7.5px;color:#ffaa00;">4 — Probable</div>
+          <div style="background:#ffd70010;border-left:2px solid #ffd700;padding:2px 5px;font-size:7.5px;color:#ffd700;">3 — Moderado</div>
+          <div style="background:#00cfff10;border-left:2px solid #00cfff;padding:2px 5px;font-size:7.5px;color:#00cfff;">2 — Poco Probable</div>
+          <div style="background:#3a7a5210;border-left:2px solid #3a7a52;padding:2px 5px;font-size:7.5px;color:#3a7a52;">1 — Raro</div>
+        </div>
+      </div>
+      <div style="font-family:Orbitron,sans-serif;font-size:18px;color:var(--g);">×</div>
+      <div style="text-align:center;">
+        <div style="font-family:Orbitron,sans-serif;font-size:11px;color:var(--warn);font-weight:900;">I</div>
+        <div style="font-size:8px;color:var(--dim);">Impacto</div>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:2px;">
+          <div style="background:rgba(255,50,50,.15);border-left:2px solid #ff5f56;padding:2px 5px;font-size:7.5px;color:#ff5f56;">5 — Severo</div>
+          <div style="background:#ffaa0012;border-left:2px solid #ffaa00;padding:2px 5px;font-size:7.5px;color:#ffaa00;">4 — Mayor</div>
+          <div style="background:#ffd70010;border-left:2px solid #ffd700;padding:2px 5px;font-size:7.5px;color:#ffd700;">3 — Significativo</div>
+          <div style="background:#00cfff10;border-left:2px solid #00cfff;padding:2px 5px;font-size:7.5px;color:#00cfff;">2 — Menor</div>
+          <div style="background:#3a7a5210;border-left:2px solid #3a7a52;padding:2px 5px;font-size:7.5px;color:#3a7a52;">1 — Insignificante</div>
+        </div>
+      </div>
+      <div style="font-family:Orbitron,sans-serif;font-size:18px;color:var(--alert);">=</div>
+      <div style="text-align:center;">
+        <div style="font-family:Orbitron,sans-serif;font-size:11px;color:var(--alert);font-weight:900;">N</div>
+        <div style="font-size:8px;color:var(--dim);">Nivel</div>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:2px;">
+          <div style="padding:2px 5px;"><span style="font-size:8px;font-family:Orbitron,sans-serif;color:#ff2222;background:rgba(255,50,50,.15);padding:1px 5px;border-radius:2px;">25 — EXTREMO</span></div>
+          <div style="padding:2px 5px;"><span style="font-size:8px;font-family:Orbitron,sans-serif;color:#ffaa00;background:rgba(255,170,0,.12);padding:1px 5px;border-radius:2px;">20 — EXTREMO</span></div>
+          <div style="padding:2px 5px;"><span style="font-size:8px;font-family:Orbitron,sans-serif;color:#ffd700;background:rgba(255,215,0,.08);padding:1px 5px;border-radius:2px;">12 — ALTO</span></div>
+          <div style="padding:2px 5px;"><span style="font-size:8px;font-family:Orbitron,sans-serif;color:#00ff88;background:rgba(0,255,136,.06);padding:1px 5px;border-radius:2px;">6-9 — MEDIO</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="img-card-caption"><strong>Metodología ISO 27005</strong> · Probabilidad (1–5) × Impacto (1–5) = Nivel de riesgo</div>
+</div>
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#050d0a,#080a10,#050d0a);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">DISTRIBUCIÓN DE ACTIVOS — 40 TOTAL</div>
+    <svg width="100%" height="110" viewBox="0 0 280 110" xmlns="http://www.w3.org/2000/svg">
+      <!-- Internal Assets bar chart -->
+      <text x="70" y="12" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7" fill="#00ff88">INTERNOS (20)</text>
+      <rect x="5" y="18" width="130" height="10" rx="2" fill="#00ff8808" stroke="#00ff8825" stroke-width="1"/>
+      <rect x="5" y="18" width="26" height="10" rx="2" fill="#ff5f5640"/><text x="18" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ff5f56">5 EX</text>
+      <rect x="31" y="18" width="22" height="10" rx="2" fill="#ffaa0030"/><text x="42" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffaa00">4 MA</text>
+      <rect x="53" y="18" width="36" height="10" rx="2" fill="#ffd70020"/><text x="71" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffd700">7 AL</text>
+      <rect x="89" y="18" width="46" height="10" rx="2" fill="#00ff8815"/><text x="112" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#00ff88">4 ME/BA</text>
+
+      <text x="210" y="12" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7" fill="#00cfff">EXTERNOS (20)</text>
+      <rect x="145" y="18" width="130" height="10" rx="2" fill="#00cfff08" stroke="#00cfff25" stroke-width="1"/>
+      <rect x="145" y="18" width="26" height="10" rx="2" fill="#ff5f5640"/><text x="158" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ff5f56">5 EX</text>
+      <rect x="171" y="18" width="22" height="10" rx="2" fill="#ffaa0030"/><text x="182" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffaa00">4 MA</text>
+      <rect x="193" y="18" width="36" height="10" rx="2" fill="#ffd70020"/><text x="211" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#ffd700">7 AL</text>
+      <rect x="229" y="18" width="46" height="10" rx="2" fill="#00cfff10"/><text x="252" y="26" text-anchor="middle" font-family="monospace" font-size="6" fill="#00cfff">4 ME/BA</text>
+
+      <!-- Key assets -->
+      <text x="5" y="44" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="14" y="44" font-family="monospace" font-size="7.5" fill="#ff5f56">Pesos Claude (EXTREMO)</text>
+      <text x="5" y="55" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="14" y="55" font-family="monospace" font-size="7.5" fill="#ff5f56">Pipeline Trainium2 (EXTREMO)</text>
+      <text x="5" y="66" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ffaa00">● </text><text x="14" y="66" font-family="monospace" font-size="7.5" fill="#ffaa00">Repos código (MUY ALTO)</text>
+      <text x="145" y="44" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="154" y="44" font-family="monospace" font-size="7.5" fill="#ff5f56">Amazon S3 (EXTREMO)</text>
+      <text x="145" y="55" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ff5f56">● </text><text x="154" y="55" font-family="monospace" font-size="7.5" fill="#ff5f56">API Pública Claude (EXTREMO)</text>
+      <text x="145" y="66" font-family="Orbitron,sans-serif" font-size="7.5" fill="#ffaa00">● </text><text x="154" y="66" font-family="monospace" font-size="7.5" fill="#ffaa00">Snowflake (MUY ALTO)</text>
+
+      <line x1="0" y1="74" x2="280" y2="74" stroke="#00ff8820" stroke-width="1"/>
+      <text x="140" y="85" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a7a52">Partes interesadas: usuarios · inversores · reguladores · sociedad</text>
+      <text x="140" y="97" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a6a50">Amazon $4B + Google $2.3B · Reguladores UE/EEUU · 180+ países</text>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>Distribución Activos</strong> · 20 internos + 20 externos · 10 clasificados como Extremo o Muy Alto</div>
+</div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h3>▸ Heat Map — Matriz 5×5</h3>
+          <div class="heat-grid">
+            <!-- Headers columnas -->
+            <div></div>
+            <div class="hg-header">I:1<br>INSIG.</div>
+            <div class="hg-header">I:2<br>MENOR</div>
+            <div class="hg-header">I:3<br>SIGNIF.</div>
+            <div class="hg-header">I:4<br>MAYOR</div>
+            <div class="hg-header">I:5<br>SEVERO</div>
+            <!-- P5 -->
+            <div class="hg-label">P:5 CASI SEG.</div>
+            <div class="hg-cell hc-3">05</div>
+            <div class="hg-cell hc-4">10</div>
+            <div class="hg-cell hc-5">15</div>
+            <div class="hg-cell hc-ex">20<div class="risk-dot" style="background:var(--alert);box-shadow:0 0 4px var(--alert);"></div></div>
+            <div class="hg-cell hc-ex">25<div class="risk-dot" style="background:var(--alert);box-shadow:0 0 4px var(--alert);"></div></div>
+            <!-- P4 -->
+            <div class="hg-label">P:4 PROBABLE</div>
+            <div class="hg-cell hc-3">04</div>
+            <div class="hg-cell hc-3">08</div>
+            <div class="hg-cell hc-4">12</div>
+            <div class="hg-cell hc-5">16<div class="risk-dot" style="background:var(--warn);box-shadow:0 0 4px var(--warn);"></div></div>
+            <div class="hg-cell hc-ex">20<div class="risk-dot" style="background:var(--alert);box-shadow:0 0 4px var(--alert);"></div></div>
+            <!-- P3 -->
+            <div class="hg-label">P:3 MODERADO</div>
+            <div class="hg-cell hc-2">03</div>
+            <div class="hg-cell hc-3">06</div>
+            <div class="hg-cell hc-3">09<div class="risk-dot" style="background:#88ff88;box-shadow:0 0 3px var(--g);"></div></div>
+            <div class="hg-cell hc-4">12</div>
+            <div class="hg-cell hc-5">15<div class="risk-dot" style="background:var(--warn);box-shadow:0 0 4px var(--warn);"></div></div>
+            <!-- P2 -->
+            <div class="hg-label">P:2 POCO PROB.</div>
+            <div class="hg-cell hc-1">02</div>
+            <div class="hg-cell hc-2">04</div>
+            <div class="hg-cell hc-3">06</div>
+            <div class="hg-cell hc-3">08<div class="risk-dot" style="background:#88ff88;box-shadow:0 0 3px var(--g);"></div></div>
+            <div class="hg-cell hc-4">10</div>
+            <!-- P1 -->
+            <div class="hg-label">P:1 RARO</div>
+            <div class="hg-cell hc-1">01</div>
+            <div class="hg-cell hc-1">02</div>
+            <div class="hg-cell hc-2">03<div class="risk-dot" style="background:var(--info);box-shadow:0 0 3px var(--info);"></div></div>
+            <div class="hg-cell hc-2">04<div class="risk-dot" style="background:#88ff88;box-shadow:0 0 3px var(--g);"></div></div>
+            <div class="hg-cell hc-3">05</div>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:6px;line-height:1.8;">
+            <span style="color:var(--alert);">● Extremo (20–25)</span> &nbsp;·&nbsp; <span style="color:var(--warn);">● Muy Alto (15–16)</span> &nbsp;·&nbsp; <span style="color:#ffd700;">● Alto (10–12)</span><br>
+            <span style="color:var(--g);">● Medio (6–9)</span> &nbsp;·&nbsp; <span style="color:var(--info);">● Bajo (3)</span>
+          </div>
+        </div>
+        <div>
+          <h3>▸ Resumen de los 20 Riesgos</h3>
+          <div class="prog-row"><span class="prog-label">Extremo (20–25)</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:30%;background:linear-gradient(90deg,#ff5f56,#ff2222);"></div></div><span class="prog-val" style="color:var(--alert);">6</span></div>
+          <div class="prog-row"><span class="prog-label">Muy Alto (15–16)</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:20%;background:linear-gradient(90deg,var(--warn),#ff8800);"></div></div><span class="prog-val" style="color:var(--warn);">4</span></div>
+          <div class="prog-row"><span class="prog-label">Alto (10–12)</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:15%;background:linear-gradient(90deg,#ffd700,#ffaa00);"></div></div><span class="prog-val" style="color:#ffd700;">3</span></div>
+          <div class="prog-row"><span class="prog-label">Medio (5–9)</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:25%;background:linear-gradient(90deg,var(--g),var(--gd));"></div></div><span class="prog-val" style="color:var(--g);">5</span></div>
+          <div class="prog-row"><span class="prog-label">Bajo (3–4)</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:10%;background:linear-gradient(90deg,var(--info),#0088aa);"></div></div><span class="prog-val" style="color:var(--info);">2</span></div>
+
+          <h3 style="margin-top:18px;">▸ Top Riesgos Extremos</h3>
+          <table>
+            <tr><th>Activo</th><th>Amenaza</th><th>Nivel</th></tr>
+            <tr><td style="font-size:10px;">AWS IAM</td><td style="font-size:10px;">Escalada de privilegios → clusters</td><td><span class="rb rb-ex">25</span></td></tr>
+            <tr><td style="font-size:10px;">Trainium2</td><td style="font-size:10px;">Robo pesos / Data poisoning</td><td><span class="rb rb-ex">25</span></td></tr>
+            <tr><td style="font-size:10px;">API Claude</td><td style="font-size:10px;">Key leakage + prompt injection</td><td><span class="rb rb-ex">20</span></td></tr>
+            <tr><td style="font-size:10px;">GCP IAM</td><td style="font-size:10px;">Cuentas servicio filtradas</td><td><span class="rb rb-ex">20</span></td></tr>
+            <tr><td style="font-size:10px;">DNS / CDN</td><td style="font-size:10px;">DNS hijacking</td><td><span class="rb rb-ex">20</span></td></tr>
+            <tr><td style="font-size:10px;">Correo Corp.</td><td style="font-size:10px;">BEC / Phishing ejecutivo</td><td><span class="rb rb-ex">20</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tabla completa -->
+      <h3>▸ Todos los Riesgos Identificados</h3>
+      <table>
+        <tr><th>#</th><th>Activo</th><th>Amenaza</th><th>Tipo</th><th>P</th><th>I</th><th>Nivel</th></tr>
+        <tr><td>01</td><td>AWS IAM</td><td>Escalada de privilegios a clusters S3</td><td style="font-size:9px;color:var(--dim);">Privilege Escalation</td><td>5</td><td>5</td><td><span class="rb rb-ex">EXT 25</span></td></tr>
+        <tr><td>04</td><td>Trainium2</td><td>Robo modelo / Data poisoning</td><td style="font-size:9px;color:var(--dim);">Model Theft</td><td>5</td><td>5</td><td><span class="rb rb-ex">EXT 25</span></td></tr>
+        <tr><td>06</td><td>API Claude</td><td>Claves expuestas en repos públicos</td><td style="font-size:9px;color:var(--dim);">API Key Leakage</td><td>5</td><td>4</td><td><span class="rb rb-ex">EXT 20</span></td></tr>
+        <tr><td>02</td><td>GCP IAM</td><td>Cuentas de servicio filtradas</td><td style="font-size:9px;color:var(--dim);">IAM Misconfiguration</td><td>4</td><td>5</td><td><span class="rb rb-ex">EXT 20</span></td></tr>
+        <tr><td>09</td><td>DNS / CDN</td><td>Credenciales panel comprometidas</td><td style="font-size:9px;color:var(--dim);">DNS Hijacking</td><td>4</td><td>5</td><td><span class="rb rb-ex">EXT 20</span></td></tr>
+        <tr><td>17</td><td>Correo Corp.</td><td>Suplantación ejecutiva + BEC</td><td style="font-size:9px;color:var(--dim);">Phishing / BEC</td><td>5</td><td>4</td><td><span class="rb rb-ex">EXT 20</span></td></tr>
+        <tr><td>14</td><td>VPN Corp.</td><td>Credential stuffing sin MFA</td><td style="font-size:9px;color:var(--dim);">Acceso No Auth.</td><td>5</td><td>4</td><td><span class="rb rb-ma">MUY A 20</span></td></tr>
+        <tr><td>03</td><td>Azure AD</td><td>Identidades huérfanas de ex-empleados</td><td style="font-size:9px;color:var(--dim);">Orphan Identity</td><td>4</td><td>4</td><td><span class="rb rb-ma">MUY A 16</span></td></tr>
+        <tr><td>07</td><td>Snowflake</td><td>Exfiltración datasets vía SQL</td><td style="font-size:9px;color:var(--dim);">Data Exfil.</td><td>4</td><td>4</td><td><span class="rb rb-ma">MUY A 16</span></td></tr>
+        <tr><td>12</td><td>Dev/Staging</td><td>Pivoting desde entorno de desarrollo</td><td style="font-size:9px;color:var(--dim);">Lateral Movement</td><td>3</td><td>5</td><td><span class="rb rb-ma">MUY A 15</span></td></tr>
+        <tr><td>13</td><td>LAN Corp.</td><td>Rogue device → movimiento lateral</td><td style="font-size:9px;color:var(--dim);">Rogue Device</td><td>3</td><td>5</td><td><span class="rb rb-ma">MUY A 15</span></td></tr>
+        <tr><td>05</td><td>Cloudflare GW</td><td>Hijacking de tráfico API</td><td style="font-size:9px;color:var(--dim);">Traffic Hijacking</td><td>3</td><td>4</td><td><span class="rb rb-al">ALT 12</span></td></tr>
+        <tr><td>10</td><td>Intel. Cyber</td><td>Fuga de IOCs defensivos</td><td style="font-size:9px;color:var(--dim);">Intel Leak</td><td>3</td><td>4</td><td><span class="rb rb-al">ALT 12</span></td></tr>
+        <tr><td>08</td><td>Red Broadcom</td><td>MitM interno entre datacenters</td><td style="font-size:9px;color:var(--dim);">MitM / Routing</td><td>2</td><td>5</td><td><span class="rb rb-al">ALT 10</span></td></tr>
+        <tr><td>19</td><td>BBDDs Invest.</td><td>Exfiltración prop. intelectual</td><td style="font-size:9px;color:var(--dim);">IP Theft</td><td>3</td><td>3</td><td><span class="rb rb-me">MED 9</span></td></tr>
+        <tr><td>15</td><td>Repos Código</td><td>Supply chain attack / secret leak</td><td style="font-size:9px;color:var(--dim);">Supply Chain</td><td>2</td><td>4</td><td><span class="rb rb-me">MED 8</span></td></tr>
+        <tr><td>11</td><td>Dispositivos</td><td>Robo físico → credenciales expuestas</td><td style="font-size:9px;color:var(--dim);">Physical Access</td><td>1</td><td>5</td><td><span class="rb rb-me">MED 5</span></td></tr>
+        <tr><td>16</td><td>Docs Técnicos</td><td>Mapa completo superficie de ataque</td><td style="font-size:9px;color:var(--dim);">Reconocimiento</td><td>1</td><td>4</td><td><span class="rb rb-me">MED 4</span></td></tr>
+        <tr><td>20</td><td>Backups</td><td>Ransomware / destrucción respaldos</td><td style="font-size:9px;color:var(--dim);">Ransomware</td><td>3</td><td>5</td><td><span class="rb rb-ba">BAJ 15</span></td></tr>
+        <tr><td>18</td><td>Mensajería</td><td>Insider threat / acceso indebido</td><td style="font-size:9px;color:var(--dim);">Insider Threat</td><td>1</td><td>3</td><td><span class="rb rb-ba">BAJ 3</span></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ SOPORTE ══════════════════════════════ -->
+<div id="sec-soporte" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 7 — SOPORTE · MINUTA SGSI-MIN-2026-001</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">07</div><h2>Competencia, Concienciación y Comunicación</h2></div>
+
+      <div class="two-col">
+        <div>
+          <div class="ibox">
+            <h4>Ficha de la Reunión</h4>
+            <table style="margin:0;">
+              <tr><td style="color:var(--dim);font-size:11px;">Código</td><td style="font-size:11px;"><strong>SGSI-MIN-2026-001</strong></td></tr>
+              <tr><td style="color:var(--dim);font-size:11px;">Fecha</td><td style="font-size:11px;">Martes 18 de Mayo de 2026</td></tr>
+              <tr><td style="color:var(--dim);font-size:11px;">Horario</td><td style="font-size:11px;">09:00 – 09:45 hrs (45 min)</td></tr>
+              <tr><td style="color:var(--dim);font-size:11px;">Modalidad</td><td style="font-size:11px;">Presencial / Videoconferencia</td></tr>
+              <tr><td style="color:var(--dim);font-size:11px;">Lugar</td><td style="font-size:11px;">548 Market St, San Francisco</td></tr>
+              <tr><td style="color:var(--dim);font-size:11px;">Facilitador</td><td style="font-size:11px;">CISO / Líder del Proyecto SGSI</td></tr>
+            </table>
+          </div>
+
+          <h3>▸ Agenda (45 min)</h3>
+          <table>
+            <tr><th>#</th><th>Tema</th><th>Tiempo</th></tr>
+            <tr><td>1</td><td style="font-size:11px;">Bienvenida y quórum</td><td>5 min</td></tr>
+            <tr><td>2</td><td style="font-size:11px;">Cláusulas 1–3 (Alcance + Refs.)</td><td>8 min</td></tr>
+            <tr><td>3</td><td style="font-size:11px;">Cláusula 4 (Contexto)</td><td>8 min</td></tr>
+            <tr><td>4</td><td style="font-size:11px;">Cláusula 5 (Liderazgo)</td><td>8 min</td></tr>
+            <tr><td>5</td><td style="font-size:11px;">Cláusula 6 (Riesgos)</td><td>10 min</td></tr>
+            <tr><td>6</td><td style="font-size:11px;">Compromisos y cierre</td><td>6 min</td></tr>
+          </table>
+        </div>
+        <div>
+          <h3>▸ Acuerdos y Compromisos</h3>
+          <div class="tl">
+            <div class="tl-item"><h4>AC-1 — Revisar y aprobar alcance SGSI (Cláusula 4.3)</h4><p>Responsable: CISO · Fecha límite: 30-Jun-2026</p></div>
+            <div class="tl-item"><h4>AC-2 — Confirmar partes interesadas internas/externas</h4><p>Responsable: CISO / Dirección · Fecha: 15-Jun-2026</p></div>
+            <div class="tl-item"><h4>AC-3 — Validar PSI (Cláusula 5.2)</h4><p>Responsable: Alta Dirección · Fecha: 15-Jun-2026</p></div>
+            <div class="tl-item"><h4>AC-4 — Actualizar registro de riesgos (Cláusula 6.1)</h4><p>Responsable: CISO / Analista SI · Fecha: 30-Jun-2026</p></div>
+            <div class="tl-item"><h4>AC-5 — Definir objetivos SI por área (Cláusula 6.2)</h4><p>Responsable: Líderes de área · Fecha: 15-Jul-2026</p></div>
+            <div class="tl-item"><h4>AC-6 — Programar siguiente sesión de revisión SGSI</h4><p>Responsable: Facilitador · Próxima: 23-Jun-2026 09:00</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meeting visual -->
+      <div class="img-strip-2" style="margin-top:16px;">
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#050d0a,#0a0e14,#050d0a);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--info);letter-spacing:2px;margin-bottom:8px;text-align:center;">SGSI-MIN-2026-001 · 18 MAY 2026</div>
+    <div style="display:flex;flex-direction:column;gap:5px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border:1px solid #00cfff25;border-radius:2px;background:rgba(0,207,255,.03);">
+        <span style="font-size:8px;color:var(--info);font-family:Orbitron,sans-serif;">09:00–09:05</span>
+        <span style="font-size:8px;color:var(--dim);">Bienvenida y quórum</span>
+        <span style="font-size:8px;color:var(--g);">✓</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border:1px solid #00ff8825;border-radius:2px;background:rgba(0,255,136,.03);">
+        <span style="font-size:8px;color:var(--g);font-family:Orbitron,sans-serif;">09:05–09:21</span>
+        <span style="font-size:8px;color:var(--dim);">Cláusulas 1–4</span>
+        <span style="font-size:8px;color:var(--g);">✓</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border:1px solid #ffaa0025;border-radius:2px;background:rgba(255,170,0,.03);">
+        <span style="font-size:8px;color:var(--warn);font-family:Orbitron,sans-serif;">09:21–09:29</span>
+        <span style="font-size:8px;color:var(--dim);">Liderazgo + PSI</span>
+        <span style="font-size:8px;color:var(--g);">✓</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border:1px solid #ff5f5625;border-radius:2px;background:rgba(255,95,86,.03);">
+        <span style="font-size:8px;color:var(--alert);font-family:Orbitron,sans-serif;">09:29–09:39</span>
+        <span style="font-size:8px;color:var(--dim);">Planificación · Riesgos</span>
+        <span style="font-size:8px;color:var(--g);">✓</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border:1px solid #00ff8820;border-radius:2px;background:rgba(0,255,136,.02);">
+        <span style="font-size:8px;color:var(--g);font-family:Orbitron,sans-serif;">09:39–09:45</span>
+        <span style="font-size:8px;color:var(--dim);">6 Acuerdos y cierre</span>
+        <span style="font-size:8px;color:var(--g);">✓</span>
+      </div>
+    </div>
+  </div>
+  <div class="img-card-caption"><strong>Minuta SGSI-MIN-2026-001</strong> · 45 min · Híbrida · 548 Market St SF · 6 acuerdos</div>
+</div>
+        <div class="img-card img-card-sm">
+          <div style="background:linear-gradient(135deg,#050d0a,#080e14,#050d0a);height:150px;padding:10px;">
+            <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;text-align:center;">COMPROMISOS ADQUIRIDOS</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border:1px solid #00ff8820;border-radius:2px;"><span style="color:var(--g);font-size:9px;flex-shrink:0;">AC1</span><div style="font-size:8px;color:var(--dim);line-height:1.5;">Revisar alcance formal SGSI · CISO · 30-Jun</div></div>
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border:1px solid #00cfff20;border-radius:2px;"><span style="color:var(--info);font-size:9px;flex-shrink:0;">AC2</span><div style="font-size:8px;color:var(--dim);line-height:1.5;">Confirmar partes interesadas · 15-Jun</div></div>
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border:1px solid #ffaa0020;border-radius:2px;"><span style="color:var(--warn);font-size:9px;flex-shrink:0;">AC3</span><div style="font-size:8px;color:var(--dim);line-height:1.5;">Validar PSI (Cláusula 5.2) · Alta Dir. · 15-Jun</div></div>
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border:1px solid #ff5f5620;border-radius:2px;"><span style="color:var(--alert);font-size:9px;flex-shrink:0;">AC4</span><div style="font-size:8px;color:var(--dim);line-height:1.5;">Actualizar registro riesgos · CISO · 30-Jun</div></div>
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border:1px solid #c084fc20;border-radius:2px;"><span style="color:var(--purple);font-size:9px;flex-shrink:0;">AC5</span><div style="font-size:8px;color:var(--dim);line-height:1.5;">Objetivos SI por área · Líderes · 15-Jul</div></div>
+            </div>
+          </div>
+          <div class="img-card-caption"><strong>6 Acuerdos</strong> · Distribuidos entre CISO · Alta Dirección · Líderes de área</div>
+        </div>
+      </div>
+
+      <!-- Terminal minuta -->
+      <div class="term">
+        <div class="term-bar"><span class="td td-r"></span><span class="td td-y"></span><span class="td td-g"></span><span class="term-title">SGSI-MIN-2026-001 — decisions.log</span></div>
+        <div class="term-body">
+          <div><span class="t-prompt">[CONFIRM] </span><span class="t-ok">Alcance SGSI confirmado: infraestructura TI + datos clientes + procesos críticos</span></div>
+          <div><span class="t-prompt">[CONFIRM] </span><span class="t-ok">Partes interesadas: reguladores + clientes enterprise + socios + empleados</span></div>
+          <div><span class="t-prompt">[CONFIRM] </span><span class="t-warn">Pendiente: actualizar análisis FODA de seguridad</span></div>
+          <div><span class="t-prompt">[COMMIT]  </span><span class="t-ok">Alta Dirección reafirma compromiso con PSI</span></div>
+          <div><span class="t-prompt">[COMMIT]  </span><span class="t-info">Comunicar política actualizada a toda la org antes del 15-Jun-2026</span></div>
+          <div><span class="t-prompt">[COMMIT]  </span><span class="t-ok">Objetivos SI medibles establecidos para Q3-2026 por unidad funcional</span></div>
+          <div><span class="t-prompt">[NEXT]    </span><span class="t-info">Próxima sesión: 23-Jun-2026 09:00 — Sección 7: Soporte</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ OPERACIÓN ══════════════════════════════ -->
+<div id="sec-operacion" class="sec">
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt" style="color:#d97757;">// CLÁUSULA 8 — OPERACIÓN · CASO BEC · NC-2024-017</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">08</div><h2>Plan de Tratamiento — Correo Corporativo</h2></div>
+
+      <div class="abox"><h4>▲ Incidente NC-2024-017 · No Conformidad Mayor · Riesgo Extremo (20)</h4><p><strong>14-Oct-2024 · 09:23 UTC</strong> — Spear-phishing generado con IA suplantando al CISO corporativo. Grupo atacante: <strong>GTG-DPRK-0421</strong> (documentado en Informe Anthropic agosto 2025). El empleado accedió al enlace. El <strong>MFA activo bloqueó el compromiso real</strong>.</p></div>
+
+      <div class="two-col">
+        <div>
+          <h3>▸ Ficha del Incidente</h3>
+          <table>
+            <tr><td style="font-size:11px;color:var(--dim);">Vector</td><td style="font-size:11px;">Spear-phishing IA · suplantación CISO</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Tipo</td><td style="font-size:11px;">Business Email Compromise (BEC)</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Afectados</td><td style="font-size:11px;">3 empleados equipo Safety</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">MTTD inicial</td><td style="font-size:11px;color:var(--warn);">47 minutos</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Detección</td><td style="font-size:11px;">Empleado manual + alerta SIEM</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Impacto real</td><td style="font-size:11px;color:var(--g);">NULO — MFA bloqueó acceso</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Causa raíz #1</td><td style="font-size:11px;">Sin DMARC en dominios secundarios</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Causa raíz #2</td><td style="font-size:11px;">Política correo sin vector BEC-IA</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Causa raíz #3</td><td style="font-size:11px;">Sin botón reporte integrado</td></tr>
+          </table>
+        </div>
+        <div>
+          <!-- Correo mock -->
+          <div style="border:1px solid rgba(255,95,86,.3);border-radius:3px;overflow:hidden;margin-bottom:10px;">
+            <div style="background:rgba(255,95,86,.08);padding:8px 12px;border-bottom:1px solid rgba(255,95,86,.2);font-size:9px;color:var(--alert);letter-spacing:2px;">⚠ CORREO MALICIOSO DETECTADO — NC-2024-017</div>
+            <div style="padding:12px;background:#020b05;">
+              <div style="font-size:10px;line-height:1.9;color:var(--dim);">
+                <div>De: <span style="color:var(--alert);">ciso@anthr0pic.com</span> <span style="color:rgba(255,95,86,.4);font-size:9px;">[SPOOFED]</span></div>
+                <div>Para: <span style="color:var(--txt);">safety-team@anthropic.com</span></div>
+                <div>Asunto: <span style="color:var(--warn);">🔒 Validación urgente de credenciales requerida</span></div>
+                <div style="margin-top:8px;padding:8px;background:rgba(255,95,86,.05);border:1px solid rgba(255,95,86,.15);border-radius:2px;font-size:9.5px;color:var(--dim);">
+                  "Por motivos de seguridad interna, necesito que verifiques tu acceso en el siguiente enlace antes de las 16:00. Responde a la brevedad..."
+                </div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                  <span style="background:rgba(255,95,86,.15);color:var(--alert);font-size:8.5px;padding:3px 8px;border-radius:2px;">DKIM: FAIL</span>
+                  <span style="background:rgba(255,95,86,.15);color:var(--alert);font-size:8.5px;padding:3px 8px;border-radius:2px;">DMARC: MISSING</span>
+                  <span style="background:rgba(0,255,136,.1);color:var(--g);font-size:8.5px;padding:3px 8px;border-radius:2px;">MFA: BLOCKED ✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Tasa de clics -->
+          <div style="border:1px solid var(--bdr);border-radius:3px;padding:12px;">
+            <div style="font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:10px;">EVOLUCIÓN TASA DE CLICS PHISHING</div>
+            <div class="prog-row" style="margin:6px 0;"><span class="prog-label" style="min-width:100px;">Simulacro Q4 2024</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:83%;background:linear-gradient(90deg,var(--alert),#ff2222);"></div></div><span class="prog-val" style="color:var(--alert);">8.3%</span></div>
+            <div class="prog-row" style="margin:6px 0;"><span class="prog-label" style="min-width:100px;">Simulacro Q1 2025</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:21%;background:linear-gradient(90deg,var(--warn),#ff8800);"></div></div><span class="prog-val" style="color:var(--warn);">2.1%</span></div>
+            <div class="prog-row" style="margin:6px 0;"><span class="prog-label" style="min-width:100px;">Simulacro Q2 2025</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:14%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">1.4% ✓</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEC + PDCA visuals -->
+      <div class="img-strip-2" style="margin:16px 0;">
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#0d0505,#100808,#0d0505);height:150px;padding:10px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:7.5px;color:var(--alert);letter-spacing:2px;margin-bottom:8px;text-align:center;">⚠ BEC ATTACK FLOW — NC-2024-017</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:3px;">
+      <div style="text-align:center;flex:1;padding:4px;">
+        <div style="font-size:16px;margin-bottom:3px;">🎭</div>
+        <div style="font-size:8px;color:var(--alert);font-family:Orbitron,sans-serif;">GTG-DPRK</div>
+        <div style="font-size:7px;color:var(--dim);">-0421</div>
+      </div>
+      <div style="flex:0.5;text-align:center;">
+        <div style="font-size:8px;color:var(--alert);">AI→</div>
+        <div style="font-size:6.5px;color:var(--dim);">genera lure</div>
+      </div>
+      <div style="text-align:center;flex:1;padding:4px;border:1px solid rgba(255,95,86,.3);border-radius:3px;background:rgba(255,95,86,.06);">
+        <div style="font-size:16px;margin-bottom:3px;">📧</div>
+        <div style="font-size:7.5px;color:var(--alert);">CISO spoofed</div>
+        <div style="font-size:7px;color:var(--dim);">@anthr0pic.com</div>
+        <div style="font-size:6.5px;color:var(--alert);">DMARC: MISS</div>
+      </div>
+      <div style="flex:0.5;text-align:center;">
+        <div style="font-size:8px;color:var(--warn);">→3</div>
+        <div style="font-size:6.5px;color:var(--dim);">Safety</div>
+      </div>
+      <div style="text-align:center;flex:1;padding:4px;">
+        <div style="font-size:16px;margin-bottom:3px;">🖱️</div>
+        <div style="font-size:7.5px;color:var(--warn);">1 clic</div>
+        <div style="font-size:7px;color:var(--dim);">portal falso</div>
+      </div>
+      <div style="flex:0.5;text-align:center;">
+        <div style="font-size:8px;color:var(--g);">→</div>
+      </div>
+      <div style="text-align:center;flex:1;padding:4px;border:1px solid #00ff8840;border-radius:3px;background:rgba(0,255,136,.06);">
+        <div style="font-size:16px;margin-bottom:3px;">🛡️</div>
+        <div style="font-size:7.5px;color:var(--g);">MFA BLOQUEÓ</div>
+        <div style="font-size:7px;color:var(--g);">✓ sin daño</div>
+      </div>
+    </div>
+    <div style="margin-top:8px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:4px;">
+      <span style="font-size:7.5px;color:var(--dim);">Detección: <span style="color:var(--warn);">47 min</span></span>
+      <span style="font-size:7.5px;color:var(--dim);">14-Oct-2024 09:23 UTC</span>
+      <span style="font-size:7.5px;color:var(--g);">Impacto real: NULO</span>
+    </div>
+  </div>
+  <div class="img-card-caption"><strong>Vector de Ataque BEC</strong> · AI-generated spear-phishing · GTG-DPRK-0421 · MFA bloqueó el compromiso</div>
+</div>
+        <div class="img-card img-card-sm">
+  <div style="background:linear-gradient(135deg,#050d0a,#080c14,#050d0a);height:150px;display:flex;align-items:center;justify-content:center;">
+    <svg width="260" height="130" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
+      <!-- PDCA 4-quadrant cycle -->
+      <circle cx="130" cy="65" r="58" fill="none" stroke="#00ff8820" stroke-width="1"/>
+      <!-- P quadrant -->
+      <path d="M130 65 L130 10 A55 55 0 0 1 185 65 Z" fill="rgba(0,207,255,0.12)" stroke="#00cfff40" stroke-width="1"/>
+      <text x="153" y="38" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#00cfff" font-weight="900">P</text>
+      <text x="153" y="50" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#00cfff80">PLAN</text>
+      <!-- D quadrant -->
+      <path d="M130 65 L185 65 A55 55 0 0 1 130 120 Z" fill="rgba(0,255,136,0.12)" stroke="#00ff8840" stroke-width="1"/>
+      <text x="153" y="93" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#00ff88" font-weight="900">D</text>
+      <text x="153" y="105" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#00ff8880">DO</text>
+      <!-- C quadrant -->
+      <path d="M130 65 L130 120 A55 55 0 0 1 75 65 Z" fill="rgba(255,170,0,0.10)" stroke="#ffaa0040" stroke-width="1"/>
+      <text x="107" y="93" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#ffaa00" font-weight="900">C</text>
+      <text x="107" y="105" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#ffaa0080">CHECK</text>
+      <!-- A quadrant -->
+      <path d="M130 65 L75 65 A55 55 0 0 1 130 10 Z" fill="rgba(255,95,86,0.10)" stroke="#ff5f5640" stroke-width="1"/>
+      <text x="107" y="38" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="#ff5f56" font-weight="900">A</text>
+      <text x="107" y="50" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#ff5f5680">ACT</text>
+      <!-- Center -->
+      <circle cx="130" cy="65" r="18" fill="#0a1810" stroke="#00ff8860" stroke-width="1.5"/>
+      <text x="130" y="62" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="7" fill="#00ff88">PDCA</text>
+      <text x="130" y="72" text-anchor="middle" font-family="monospace" font-size="6" fill="#5aac80">NC-2024-017</text>
+      <!-- Result -->
+      <text x="130" y="125" text-anchor="middle" font-family="monospace" font-size="7" fill="#3a7a52">Riesgo: 20 → 12 · 7 AC implementadas</text>
+    </svg>
+  </div>
+  <div class="img-card-caption"><strong>Ciclo PDCA</strong> · Aplicado al incidente BEC · Riesgo Extremo 20 → Alto 12</div>
+</div>
+      </div>
+
+      <h3 style="margin-top:22px;">▸ Ciclo PDCA Completo</h3>
+      <div class="pdca-grid">
+        <div class="pdca pdca-p">
+          <div class="pdca-label">PLAN — IDENTIFICAR</div>
+          <div class="pdca-n">P</div>
+          <h4>① Controles Preventivos Definidos</h4>
+          <ul>
+            <li>DMARC policy=reject en todos los dominios</li>
+            <li>SPF/DKIM estrictos + banner correos externos</li>
+            <li>MFA obligatorio 100% · FIDO2 para ejecutivos</li>
+            <li>Simulacros trimestrales con escenarios IA</li>
+            <li>Botón de reporte integrado en cliente correo</li>
+            <li>Correlación SIEM + telemetría correo tiempo real</li>
+          </ul>
+        </div>
+        <div class="pdca pdca-d">
+          <div class="pdca-label">DO — EJECUTAR</div>
+          <div class="pdca-n">D</div>
+          <h4>② Respuesta Operacional</h4>
+          <ul>
+            <li>0–30 min: Bloqueo cuenta + revocación sesiones activas</li>
+            <li>0–1h: Aislamiento dominio phishing en DNS corp.</li>
+            <li>0–2h: Forense DKIM/SPF · Alerta interna a 1,100 emp.</li>
+            <li>24h: DMARC activado 3 dominios · MFA 100% verificado</li>
+            <li>72h: Brief al CEO Dario Amodei · Reporte al Board</li>
+            <li>+7 días: Simulacro BEC · tasa inicial 8.3%</li>
+          </ul>
+        </div>
+        <div class="pdca pdca-c">
+          <div class="pdca-label">CHECK — VERIFICAR</div>
+          <div class="pdca-n">C</div>
+          <h4>③ KPIs Medidos (90 días)</h4>
+          <ul>
+            <li>MTTD: 47 min → <strong>8 min</strong> · Meta &lt;10 ✓</li>
+            <li>Cobertura MFA: 98.7% → <strong>100%</strong> ✓</li>
+            <li>FIDO2 ejecutivos: 0% → <strong>100%</strong> ✓</li>
+            <li>Clics phishing: 8.3% → 2.1% → <strong>1.4%</strong> ✓</li>
+            <li>Spoofing @anthropic.com: <strong>0 exitosos</strong> ✓</li>
+            <li>BEC bloqueados por filtro: <strong>4 intentos</strong></li>
+          </ul>
+        </div>
+        <div class="pdca pdca-a">
+          <div class="pdca-label">ACT — MEJORAR</div>
+          <div class="pdca-n">A</div>
+          <h4>④ 7 Acciones Correctivas</h4>
+          <ul>
+            <li>AC-01: DMARC policy=reject completo · 17-Oct</li>
+            <li>AC-02: Filtro anti-BEC display-name · 17-Oct</li>
+            <li>AC-03: MFA/FIDO2 100% cuentas · 21-Oct</li>
+            <li>AC-04: Botón reporte en GWorkspace · 28-Oct</li>
+            <li>AC-05: SIEM + telemetría correo · 4-Nov</li>
+            <li>AC-06: Simulacros trimestrales IA · 21-Oct</li>
+            <li>AC-07: Política 17 actualizada · 31-Oct</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- KPIs grandes -->
+      <h3>▸ Resultado Final del Tratamiento</h3>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-old">47 min</div><div class="kpi-new">8 min</div><div class="kpi-label">Tiempo de Detección (MTTD)</div><div class="kpi-ok">✓ Meta &lt;10 min alcanzada</div></div>
+        <div class="kpi"><div class="kpi-val" style="font-size:22px;">100%</div><div class="kpi-label">Cobertura MFA + FIDO2</div><div class="kpi-ok">✓ 100% verificado</div></div>
+        <div class="kpi"><div class="kpi-old">8.3%</div><div class="kpi-new">1.4%</div><div class="kpi-label">Tasa de Clics Phishing</div><div class="kpi-ok">✓ Meta &lt;2% superada</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--alert);">20</div><div style="font-size:11px;color:var(--dim);">→</div><div class="kpi-val">12</div><div class="kpi-label">Riesgo: Extremo → Alto</div><div class="kpi-ok">✓ Reducción de 8 puntos</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ EVALUACIÓN ══════════════════════════════ -->
+<div id="sec-evaluacion" class="sec">
+
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 9 — EVALUACIÓN DEL DESEMPEÑO · CHECKLIST</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">09</div><h2>Checklist de Supervisión · 140+ Ítems</h2></div>
+      <p>El checklist cubre los cuatro tipos de requerimiento para cada una de las 20 políticas, totalizando más de <strong>140 ítems binarios Sí/No</strong> con espacio para evidencias y observaciones. Firmado por Auditor Interno y CISO.</p>
+
+      <div class="two-col">
+        <div>
+          <h3>▸ Estructura por Política</h3>
+          <table>
+            <tr><th>Tipo</th><th>Descripción</th><th>Periodicidad</th></tr>
+            <tr><td><strong>Estándar</strong></td><td style="font-size:11px;">¿MFA habilitado? ¿Acceso restringido?</td><td style="font-size:10px;">Continuo</td></tr>
+            <tr><td><strong>Directriz</strong></td><td style="font-size:11px;">¿Auditorías en periodicidad definida?</td><td style="font-size:10px;">Según pol.</td></tr>
+            <tr><td><strong>Procedimiento</strong></td><td style="font-size:11px;">¿Solicitudes formalizadas con tickets?</td><td style="font-size:10px;">Por evento</td></tr>
+            <tr><td><strong>Línea Base</strong></td><td style="font-size:11px;">¿Credenciales rotadas cada 90 días?</td><td style="font-size:10px;">90 días</td></tr>
+          </table>
+
+          <h3 style="margin-top:18px;">▸ Ejemplo — Política 17: Correo (7 ítems)</h3>
+          <table>
+            <tr><th>Tipo</th><th>Requerimiento</th><th>Estado</th></tr>
+            <tr><td>STD</td><td style="font-size:10.5px;">MFA para todos sin excepción de rol</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+            <tr><td>DIR</td><td style="font-size:10.5px;">Cuentas auditadas trimestralmente</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+            <tr><td>DIR</td><td style="font-size:10.5px;">Cuentas inactivas desactivadas</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+            <tr><td>PROC</td><td style="font-size:10.5px;">Nuevas cuentas solicitadas por RRHH</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+            <tr><td>PROC</td><td style="font-size:10.5px;">Baja ejecutada mismo día de salida</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+            <tr><td>LB</td><td style="font-size:10.5px;">Contraseñas cambiadas cada 90 días</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+            <tr><td>LB</td><td style="font-size:10.5px;">Reenvío externo deshabilitado</td><td style="color:var(--g);text-align:center;font-size:11px;">✓ Sí</td></tr>
+          </table>
+        </div>
+        <div>
+          <h3>▸ Dashboard de Cumplimiento (Simulado)</h3>
+          <div style="border:1px solid var(--bdrb);border-radius:3px;padding:16px;background:rgba(0,20,10,.4);">
+            <div style="font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:14px;">CUMPLIMIENTO ESTIMADO POR TIPO DE POLÍTICA</div>
+            <div class="prog-row"><span class="prog-label" style="min-width:120px;">Estándares</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:96%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">96%</span></div>
+            <div class="prog-row"><span class="prog-label" style="min-width:120px;">Directrices</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:88%;background:linear-gradient(90deg,var(--g),var(--gd));"></div></div><span class="prog-val" style="color:var(--g);">88%</span></div>
+            <div class="prog-row"><span class="prog-label" style="min-width:120px;">Procedimientos</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:92%;background:linear-gradient(90deg,var(--g),var(--gd));"></div></div><span class="prog-val" style="color:var(--g);">92%</span></div>
+            <div class="prog-row"><span class="prog-label" style="min-width:120px;">Líneas Base</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 8px rgba(0,255,136,.4);"></div></div><span class="prog-val" style="color:var(--g);">100%</span></div>
+
+            <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--bdr);">
+              <div style="font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:10px;">COBERTURA MFA POR SISTEMA</div>
+              <div class="prog-row"><span class="prog-label" style="min-width:120px;">Correo Corp.</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">100%</span></div>
+              <div class="prog-row"><span class="prog-label" style="min-width:120px;">VPN Corp.</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">100%</span></div>
+              <div class="prog-row"><span class="prog-label" style="min-width:120px;">AWS IAM</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">100%</span></div>
+              <div class="prog-row"><span class="prog-label" style="min-width:120px;">Repositorios</span><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--g),var(--gd));box-shadow:0 0 6px rgba(0,255,136,.3);"></div></div><span class="prog-val" style="color:var(--g);">100%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="win">
+    <div class="wbar"><span class="wd wr"></span><span class="wd wy"></span><span class="wd wg"></span><span class="wt">// CLÁUSULA 10 — MEJORA CONTINUA · NC-2024-017</span></div>
+    <div class="cnt">
+      <div class="sec-div"><div class="sec-div-num">10</div><h2>No Conformidad y Acción Correctiva</h2></div>
+
+      <div class="two-col">
+        <div>
+          <table>
+            <tr><td style="font-size:11px;color:var(--dim);">Referencia</td><td><strong style="color:var(--g);">NC-2024-017</strong></td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Clasificación</td><td><span class="rb rb-ex">No Conformidad Mayor</span></td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Cláusula ISO</td><td style="font-size:11px;">8.1 Planificación operacional · 6.1.2 Evaluación riesgos</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Política</td><td style="font-size:11px;">17 — Uso Seguro Correo Corporativo</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Registro</td><td style="font-size:11px;">14 de octubre de 2024</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Estado</td><td style="color:var(--g);font-size:11px;">✓ CERRADA · 15-Ene-2025</td></tr>
+            <tr><td style="font-size:11px;color:var(--dim);">Aprobado por</td><td style="font-size:11px;">CISO + CEO Dario Amodei</td></tr>
+          </table>
+
+          <h3>▸ Causas Raíz (5 Porqués)</h3>
+          <div class="abox" style="margin-bottom:8px;"><h4>Causa #1 — Técnica</h4><p>Sin DMARC policy=reject en dominios secundarios. Correos con dominio falsificado llegaban sin marcarse.</p></div>
+          <div class="wbox" style="margin-bottom:8px;"><h4>Causa #2 — Proceso</h4><p>Política de Correo no actualizada para vector BEC asistido por IA. Simulacros sin ejecutar 6 meses previos.</p></div>
+          <div class="ibox"><h4>Causa #3 — Personas</h4><p>Sin botón de reporte integrado. Notificación manual tardó 23 min adicionales al objetivo.</p></div>
+        </div>
+        <div>
+          <h3>▸ 7 Acciones Correctivas</h3>
+          <div class="tl">
+            <div class="tl-item"><h4>AC-01 · DMARC Completo</h4><p>policy=reject en todos los dominios y subdominios + revisión mensual automatizada. <span class="tl-time">17-Oct-2024</span></p></div>
+            <div class="tl-item"><h4>AC-02 · Filtro Anti-BEC</h4><p>Bloqueo si display name = ejecutivo Anthropic pero dominio es externo o no verificado. <span class="tl-time">17-Oct-2024</span></p></div>
+            <div class="tl-item"><h4>AC-03 · MFA / FIDO2</h4><p>100% cuentas verificadas. Ejecutivos migrados a autenticación FIDO2 (llave física). <span class="tl-time">21-Oct-2024</span></p></div>
+            <div class="tl-item"><h4>AC-04 · Botón de Reporte</h4><p>Integrado en Google Workspace. Ticket automático con captura cabeceras DKIM/SPF. <span class="tl-time">28-Oct-2024</span></p></div>
+            <div class="tl-item"><h4>AC-05 · SIEM + Correo</h4><p>Telemetría Google Workspace → SIEM. Reglas BEC: display name exec + dominio ext + clic + IP anómala. <span class="tl-time">4-Nov-2024</span></p></div>
+            <div class="tl-item"><h4>AC-06 · Simulacros Trimestrales</h4><p>Escenarios IA generativa. Formación diferenciada Research / Safety / Liderazgo. <span class="tl-time">21-Oct-2024</span></p></div>
+            <div class="tl-item"><h4>AC-07 · Política 17 Actualizada</h4><p>Incorpora sección BEC, DMARC, FIDO2 y simulacros. Aprobada por CEO + CISO. <span class="tl-time">31-Oct-2024</span></p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hbox" style="margin-top:8px;">
+        <h4 style="color:var(--g);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;margin-bottom:6px;">▸ Reducción de Riesgo Lograda</h4>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span class="rb rb-ex" style="font-size:12px;padding:6px 14px;">EXTREMO 20</span>
+          <span style="font-family:'Orbitron',sans-serif;font-size:18px;color:var(--g);">→</span>
+          <span class="rb rb-al" style="font-size:12px;padding:6px 14px;">ALTO 12</span>
+          <span style="font-size:11px;color:var(--dim);">Reducción de <strong style="color:var(--g);">8 puntos</strong> · Meta Q2 2025: <strong style="color:var(--g);">Medio 8</strong></span>
+        </div>
+        <p style="margin-top:10px;font-size:11.5px;">Lección clave: La velocidad de evolución de amenazas asistidas por IA exige que la política de correo se revise <strong>semestralmente</strong> y que los simulacros incorporen nuevos vectores <strong>cada trimestre</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</main>
+
+<footer>
+  <span>PR03 — SGSI Anthropic · ISO/IEC 27001:2022</span><br>
+  <span style="color:var(--dim);">CNO V — Seguridad Informática &nbsp;·&nbsp; Docente: Mtro. Servando López Contreras</span><br>
+  <span style="color:var(--dim);">Universidad Politécnica de San Luis Potosí &nbsp;·&nbsp; Grupo T46B &nbsp;·&nbsp; Parcial 3 &nbsp;·&nbsp; Equipo 5 &nbsp;·&nbsp; 2026</span><br>
+  <span style="color:var(--gdim);font-size:10px;margin-top:5px;display:block;">
+    181700 Castillo Gómez Edwin Admael &nbsp;·&nbsp; 182033 Castillo Olvera Carlos René &nbsp;·&nbsp; 182217 Hernández Fernández Diego Osvaldo &nbsp;·&nbsp; 174702 Tristán Rivera Magdalena Yesenia
+  </span>
+</footer>
+
+<script>
+// MATRIX
+(function(){
+  const c=document.getElementById('mc'),ctx=c.getContext('2d');
+  c.width=innerWidth;c.height=innerHeight;
+  const ch='01アイウエオABCDEFGHIJKLMNOP@#$%SECURITISMFATLS27001SGSIISO';
+  const fs=14,cols=Math.floor(c.width/fs);
+  const dr=Array(cols).fill(1);
+  function draw(){
+    ctx.fillStyle='rgba(5,13,10,0.05)';ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#00ff88';ctx.font=fs+'px monospace';
+    dr.forEach((y,i)=>{
+      ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,y*fs);
+      if(y*fs>c.height&&Math.random()>.975)dr[i]=0;
+      dr[i]++;
+    });
+  }
+  setInterval(draw,40);
+  window.addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight;});
+})();
+
+// TABS
+function show(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Animate progress bars on tab switch
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.prog-bar-fill').forEach(b=>{
+        const w=b.style.width;b.style.width='0';
+        setTimeout(()=>b.style.width=w,100);
+      });
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
