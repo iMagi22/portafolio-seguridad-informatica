@@ -487,6 +487,13 @@ footer span{color:var(--gd);}
   setInterval(draw,40);
   window.addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight;});
 })();
+
+// Evita que Inicio y los 3 proyectos hagan salto de página
+document.querySelectorAll('nav a[href="../index.html"], a[href="walkthrough.html"], a[href="EslabonDebil.html"], a[href="proyecto3.html"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+  });
+});
 </script>
 </body>
 </html>
