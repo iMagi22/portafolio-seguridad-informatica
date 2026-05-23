@@ -11,358 +11,491 @@
   --bg:#050d0a;--cbg:#060f0b;
   --bdr:#00ff8830;--bdrb:#00ff88aa;
   --txt:#b0ffd6;--dim:#5aac80;
-  --alert:#ff5f56;--warn:#ffaa00;
+  --alert:#ff5f56;--warn:#ffaa00;--info:#00cfff;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--txt);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);z-index:1;pointer-events:none;}
-#matrix-left,#matrix-right{position:fixed;top:0;width:120px;height:100%;z-index:0;opacity:.07;}
-#matrix-left{left:0;}#matrix-right{right:0;}
+#mc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.04;pointer-events:none;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:3px;}
 
-/* HEADER */
-header{
-  position:relative;z-index:2;text-align:center;
-  padding:48px 20px 36px;border-bottom:1px solid var(--bdrb);
-  background:linear-gradient(180deg,rgba(0,255,136,.05) 0%,transparent 100%);
-  overflow:hidden;
-}
-header::before{
-  content:'';position:absolute;top:0;left:-100%;
-  width:100%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--g),transparent);
-  animation:scan 3s linear infinite;
-}
+/* ── HEADER ── */
+header{position:relative;z-index:2;text-align:center;padding:56px 20px 40px;border-bottom:1px solid var(--bdrb);background:linear-gradient(180deg,rgba(0,255,136,.06) 0%,transparent 100%);overflow:hidden;}
+header::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);animation:scan 3s linear infinite;}
 @keyframes scan{0%{left:-100%;}100%{left:100%;}}
 @keyframes flicker{0%,95%,100%{opacity:1;}96%{opacity:.7;}98%{opacity:.5;}99%{opacity:1;}}
-
-header h1{
-  font-family:'Orbitron',sans-serif;
-  font-size:clamp(22px,4vw,40px);font-weight:900;
-  color:var(--g);letter-spacing:4px;
-  text-shadow:0 0 10px var(--g),0 0 30px rgba(0,255,136,.4);
-  animation:flicker 8s infinite;margin-bottom:8px;
-}
+@keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
+header h1{font-family:'Orbitron',sans-serif;font-size:clamp(26px,5vw,48px);font-weight:900;color:var(--g);letter-spacing:6px;text-shadow:0 0 14px var(--g),0 0 40px rgba(0,255,136,.4);animation:flicker 8s infinite;margin-bottom:10px;}
 .h-sub{font-size:11px;color:var(--dim);letter-spacing:4px;text-transform:uppercase;}
-
-nav{margin-top:20px;}
-nav a{
-  display:inline-flex;align-items:center;gap:7px;
-  font-family:'Share Tech Mono',monospace;font-size:11px;
-  letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;
-  color:var(--dim);border:1px solid var(--bdr);padding:8px 18px;
-  border-radius:2px;transition:all .22s;
-}
+.h-blink{animation:blink 1s infinite;color:var(--g);margin-top:6px;font-size:13px;}
+nav{margin-top:22px;}
+nav a{display:inline-flex;align-items:center;gap:7px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;color:var(--dim);border:1px solid var(--bdr);padding:8px 18px;border-radius:2px;transition:all .22s;}
 nav a:hover{color:var(--g);border-color:var(--g);box-shadow:0 0 10px rgba(0,255,136,.2);}
 
-/* MAIN */
-main{
-  position:relative;z-index:2;
-  max-width:1000px;margin:0 auto;padding:48px 20px 80px;
-}
+/* ── STAT BAR ── */
+.stat-bar{position:relative;z-index:2;display:flex;justify-content:center;gap:0;max-width:900px;margin:32px auto 0;border:1px solid var(--bdrb);border-radius:3px;overflow:hidden;}
+.stat-item{flex:1;padding:16px 10px;text-align:center;border-right:1px solid var(--bdr);background:var(--cbg);transition:background .2s;}
+.stat-item:last-child{border-right:none;}
+.stat-item:hover{background:rgba(0,255,136,.04);}
+.stat-val{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--g);text-shadow:0 0 8px var(--g);}
+.stat-lbl{font-size:9px;color:var(--dim);letter-spacing:2px;margin-top:3px;}
 
-/* SECTION LABEL */
-.section-label{
-  font-family:'Orbitron',sans-serif;font-size:10px;
-  letter-spacing:4px;color:var(--dim);text-transform:uppercase;
-  margin-bottom:28px;display:flex;align-items:center;gap:12px;
-}
-.section-label::after{
-  content:'';flex:1;height:1px;
-  background:linear-gradient(90deg,var(--bdrb),transparent);
-}
+/* ── MAIN ── */
+main{position:relative;z-index:2;max-width:1060px;margin:0 auto;padding:52px 20px 100px;}
+.section-label{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:4px;color:var(--dim);text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:12px;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--bdrb),transparent);}
 
-/* PROJECT CARDS */
-.projects-grid{
-  display:flex;flex-direction:column;gap:22px;
-}
-
+/* ── PROJECT CARD ── */
 .proj-card{
   background:var(--cbg);border:1px solid var(--bdr);
-  border-radius:4px;overflow:hidden;position:relative;
-  transition:all .3s;
+  border-radius:5px;overflow:hidden;position:relative;
+  transition:all .35s;margin-bottom:40px;
 }
-.proj-card::after{
-  content:'';position:absolute;top:-1px;right:-1px;
-  width:14px;height:14px;
-  border-top:2px solid var(--g);border-right:2px solid var(--g);
-  border-radius:0 4px 0 0;
-}
-.proj-card:hover:not(.locked){
-  border-color:var(--bdrb);
-  box-shadow:0 0 30px rgba(0,255,136,.12);
-  transform:translateX(4px);
-}
-.proj-card.locked{cursor:not-allowed;opacity:.7;}
-.proj-card.locked::after{border-color:var(--alert);}
+.proj-card::after{content:'';position:absolute;top:-1px;right:-1px;width:16px;height:16px;border-top:2px solid var(--g);border-right:2px solid var(--g);}
+.proj-card:hover:not(.locked){border-color:var(--bdrb);box-shadow:0 0 40px rgba(0,255,136,.1);}
 
-/* CARD INNER LAYOUT */
-.proj-inner{
-  display:grid;grid-template-columns:80px 1fr auto;
-  align-items:center;gap:0;
+/* TOP BAND */
+.proj-band{
+  display:grid;grid-template-columns:90px 1fr;
+  border-bottom:1px solid var(--bdr);
 }
+.proj-num-blk{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:30px 0;border-right:1px solid var(--bdr);
+  background:rgba(0,255,136,.025);
+}
+.proj-num-blk .big-num{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:rgba(0,255,136,.25);line-height:1;}
+.proj-num-blk .parcial{font-size:8px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-top:5px;}
 
-/* NUMBER BLOCK */
-.proj-num{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:28px 0;
-  border-right:1px solid var(--bdr);
-  background:rgba(0,255,136,.02);
-}
-.proj-num .num{
-  font-family:'Orbitron',sans-serif;font-size:32px;
-  font-weight:900;color:rgba(0,255,136,.2);line-height:1;
-}
-.proj-num .parcial-tag{
-  font-size:8px;letter-spacing:2px;color:var(--dim);
-  text-transform:uppercase;margin-top:4px;
-}
+.proj-header{padding:22px 26px 18px;}
+.proj-eyebrow{font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:8px;}
+.proj-title{font-family:'Orbitron',sans-serif;font-size:clamp(14px,2vw,19px);font-weight:900;color:var(--g);line-height:1.35;text-shadow:0 0 12px rgba(0,255,136,.25);margin-bottom:10px;}
+.proj-subtitle{font-size:11px;color:var(--gdim);letter-spacing:1px;margin-bottom:14px;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{font-size:9px;letter-spacing:1px;padding:3px 9px;border-radius:2px;border:1px solid var(--bdr);color:var(--gdim);background:rgba(0,255,136,.03);}
+.tag.blue{border-color:rgba(0,207,255,.3);color:var(--info);background:rgba(0,207,255,.04);}
+.tag.orange{border-color:rgba(255,140,66,.3);color:#ff8c42;background:rgba(255,140,66,.04);}
+.tag.red{border-color:rgba(255,95,86,.4);color:var(--alert);background:rgba(255,95,86,.04);}
 
-/* CARD CONTENT */
-.proj-content{padding:22px 24px;}
-.proj-eyebrow{
-  font-size:9px;letter-spacing:3px;color:var(--dim);
-  text-transform:uppercase;margin-bottom:8px;
+/* BODY AREA */
+.proj-body{
+  display:grid;grid-template-columns:1fr 340px;
+  border-bottom:1px solid var(--bdr);
 }
-.proj-title{
-  font-family:'Orbitron',sans-serif;font-size:clamp(13px,1.8vw,16px);
-  font-weight:700;color:var(--g);line-height:1.4;
-  text-shadow:0 0 10px rgba(0,255,136,.2);margin-bottom:10px;
-}
-.proj-card.locked .proj-title{color:var(--alert);text-shadow:0 0 10px rgba(255,95,86,.2);}
-.proj-desc{
-  font-size:11.5px;color:var(--dim);line-height:1.8;
-  max-width:560px;
-}
-.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
-.tag{
-  font-size:9px;letter-spacing:1px;padding:2px 8px;
-  border-radius:2px;border:1px solid var(--bdr);
-  color:var(--gdim);background:rgba(0,255,136,.03);
-}
-.tag.alert{border-color:rgba(255,95,86,.4);color:var(--alert);background:rgba(255,95,86,.04);}
+.proj-desc-area{padding:22px 26px;border-right:1px solid var(--bdr);}
+.proj-desc{font-size:12px;color:var(--txt);line-height:1.9;margin-bottom:16px;}
+.feat-list{list-style:none;margin:0;}
+.feat-list li{font-size:11.5px;color:var(--dim);padding:5px 0;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;gap:8px;line-height:1.6;}
+.feat-list li:last-child{border-bottom:none;}
+.feat-list li::before{content:'▸';color:var(--g);flex-shrink:0;margin-top:1px;}
 
-/* CTA */
-.proj-cta{
-  padding:22px 24px;display:flex;
-  align-items:center;justify-content:center;
-  border-left:1px solid var(--bdr);min-width:140px;
+/* VISUAL PANEL */
+.proj-visual{
+  padding:20px;display:flex;flex-direction:column;gap:12px;
+  background:rgba(0,0,0,.2);
 }
+.visual-screen{
+  border:1px solid var(--bdrb);border-radius:3px;overflow:hidden;
+  background:#020a05;position:relative;
+}
+.screen-bar{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px;background:rgba(0,30,15,.9);
+  border-bottom:1px solid var(--bdr);
+}
+.s-dot{width:9px;height:9px;border-radius:50%;}
+.s-r{background:#ff5f56;}.s-y{background:#ffbd2e;}.s-g{background:#27c93f;}
+.screen-url{font-size:8.5px;color:var(--dim);margin-left:4px;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.screen-body{padding:12px;min-height:90px;position:relative;overflow:hidden;}
+
+/* ASCII art previews */
+.ascii-preview{font-size:8px;color:var(--g);line-height:1.4;opacity:.7;font-family:'Share Tech Mono',monospace;}
+.terminal-line{font-size:10px;color:var(--g);font-family:'Share Tech Mono',monospace;line-height:1.9;}
+.terminal-line .prompt{color:var(--gdim);}
+.terminal-line .cmd{color:#fff;}
+.terminal-line .out{color:var(--gd);}
+.terminal-line .err{color:var(--alert);}
+
+/* MINI STAT ROW */
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mini-stat{background:rgba(0,255,136,.04);border:1px solid var(--bdr);border-radius:2px;padding:10px;text-align:center;}
+.mini-stat .mv{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--g);}
+.mini-stat .ml{font-size:8.5px;color:var(--dim);letter-spacing:1px;margin-top:2px;}
+
+/* RISK BADGES */
+.risk-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:10px;}
+.risk-row:last-child{border-bottom:none;}
+.rbadge{font-family:'Orbitron',sans-serif;font-size:9px;padding:2px 8px;border-radius:2px;font-weight:700;white-space:nowrap;}
+.rb-extremo{background:rgba(255,50,50,.15);color:#ff5f56;border:1px solid rgba(255,95,86,.4);}
+.rb-alto{background:rgba(255,215,0,.08);color:#ffd700;border:1px solid rgba(255,215,0,.3);}
+.rb-medio{background:rgba(0,255,136,.06);color:var(--g);border:1px solid var(--bdr);}
+
+/* PDCA MINI */
+.pdca-mini{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pm{border:1px solid var(--bdr);border-radius:2px;padding:8px 10px;font-size:9.5px;}
+.pm.p{border-left:3px solid var(--info);}.pm.d{border-left:3px solid var(--g);}
+.pm.c{border-left:3px solid var(--warn);}.pm.a{border-left:3px solid var(--alert);}
+.pm-lbl{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;margin-bottom:3px;}
+.pm.p .pm-lbl{color:var(--info);}.pm.d .pm-lbl{color:var(--g);}
+.pm.c .pm-lbl{color:var(--warn);}.pm.a .pm-lbl{color:var(--alert);}
+.pm p{font-size:9.5px;color:var(--dim);margin:0;}
+
+/* FOOTER BAND */
+.proj-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;gap:16px;flex-wrap:wrap;
+}
+.proj-meta-foot{font-size:10px;color:var(--dim);letter-spacing:1px;}
+.proj-meta-foot strong{color:var(--g);}
 .cta-btn{
-  display:inline-flex;flex-direction:column;align-items:center;
-  gap:6px;text-decoration:none;font-family:'Orbitron',sans-serif;
-  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:8px;
+  text-decoration:none;font-family:'Orbitron',sans-serif;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
   color:#050d0a;background:var(--g);
-  padding:12px 18px;border-radius:2px;font-weight:700;
-  box-shadow:0 0 16px rgba(0,255,136,.3);transition:all .25s;
-  text-align:center;border:none;cursor:pointer;
+  padding:12px 24px;border-radius:2px;font-weight:700;
+  box-shadow:0 0 18px rgba(0,255,136,.35);transition:all .25s;
 }
-.cta-btn:hover{background:#00ffaa;box-shadow:0 0 26px var(--g);transform:translateY(-2px);}
-.cta-btn .arrow{font-size:16px;font-family:'Share Tech Mono',monospace;font-weight:normal;}
-
-/* LOCKED BUTTON */
-.locked-btn{
-  display:inline-flex;flex-direction:column;align-items:center;
-  gap:6px;font-family:'Orbitron',sans-serif;
-  font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--alert);background:transparent;
-  padding:12px 18px;border-radius:2px;font-weight:700;
-  border:1px solid rgba(255,95,86,.4);
-  text-align:center;cursor:not-allowed;
-}
-.locked-btn .lock-icon{font-size:18px;font-family:'Share Tech Mono',monospace;}
+.cta-btn:hover{background:#00ffaa;box-shadow:0 0 30px var(--g);transform:translateY(-2px);}
 
 /* STATUS BAR */
-.proj-status{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 14px;
-  border-top:1px solid var(--bdr);
-  background:rgba(0,0,0,.2);
-  font-size:10px;letter-spacing:1.5px;
-}
-.status-dot{width:7px;height:7px;border-radius:50%;}
-.status-dot.ok{background:var(--g);box-shadow:0 0 5px var(--g);}
-.status-dot.locked{background:var(--alert);box-shadow:0 0 5px var(--alert);}
-.status-dot.pending{background:var(--warn);box-shadow:0 0 5px var(--warn);}
-.status-text.ok{color:var(--g);}
-.status-text.locked{color:var(--alert);}
-.status-text.pending{color:var(--warn);}
+.proj-status{display:flex;align-items:center;gap:8px;padding:9px 14px;border-top:1px solid var(--bdr);background:rgba(0,0,0,.25);font-size:10px;letter-spacing:1.5px;}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sd-ok{background:var(--g);box-shadow:0 0 5px var(--g);}
+.sd-locked{background:var(--alert);box-shadow:0 0 5px var(--alert);}
+.st-ok{color:var(--g);}
+.st-locked{color:var(--alert);}
 
-/* GLITCH EFFECT on locked */
-@keyframes glitch{
-  0%,95%,100%{transform:none;filter:none;}
-  96%{transform:translate(-2px,0);filter:hue-rotate(90deg);}
-  97%{transform:translate(2px,0);filter:hue-rotate(-90deg);}
-  98%{transform:none;filter:none;}
-}
-.proj-card.locked:hover .proj-title{animation:glitch 0.4s infinite;}
+/* LOCKED STATE */
+.proj-card.locked .proj-title{color:var(--alert);text-shadow:0 0 10px rgba(255,95,86,.2);}
+.proj-card.locked::after{border-color:var(--alert);}
+.locked-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--alert);background:transparent;padding:12px 24px;border-radius:2px;font-weight:700;border:1px solid rgba(255,95,86,.4);cursor:not-allowed;}
+
+/* SCAN LINE on screens */
+.screen-body::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,255,136,.025) 3px,rgba(0,255,136,.025) 4px);pointer-events:none;}
 
 /* FOOTER */
-footer{
-  position:relative;z-index:2;text-align:center;
-  padding:20px;border-top:1px solid var(--bdr);
-  color:var(--dim);font-size:11px;letter-spacing:2px;
-  background:linear-gradient(0deg,rgba(0,255,136,.03) 0%,transparent 100%);
-}
+footer{position:relative;z-index:2;text-align:center;padding:22px;border-top:1px solid var(--bdr);color:var(--dim);font-size:11px;letter-spacing:2px;background:linear-gradient(0deg,rgba(0,255,136,.03) 0%,transparent 100%);}
 footer span{color:var(--gd);}
 
-@media(max-width:650px){
-  .proj-inner{grid-template-columns:60px 1fr;grid-template-rows:auto auto;}
-  .proj-cta{border-left:none;border-top:1px solid var(--bdr);grid-column:1/-1;padding:16px;}
-  .proj-num{padding:16px 0;}
-  .proj-num .num{font-size:22px;}
+@keyframes glitch{0%,95%,100%{transform:none;filter:none;}96%{transform:translate(-2px,0);filter:hue-rotate(90deg);}97%{transform:translate(2px,0);filter:hue-rotate(-90deg);}98%{transform:none;}}
+.proj-card.locked:hover .proj-title{animation:glitch .4s infinite;}
+
+@media(max-width:780px){
+  .proj-body{grid-template-columns:1fr;}
+  .proj-visual{border-right:none;border-top:1px solid var(--bdr);}
+  .proj-band{grid-template-columns:70px 1fr;}
+  .proj-num-blk .big-num{font-size:28px;}
+  .stat-bar{flex-wrap:wrap;}
+  .mini-stats{grid-template-columns:repeat(3,1fr);}
 }
 </style>
+<base target="_blank">
 </head>
 <body>
+<<canvas id="mc"></canvas>
 
-<canvas id="matrix-left"></canvas>
-<canvas id="matrix-right"></canvas>
-
-<header>
-  <div class="h-sub">CNO V · Seguridad Informática · UPSLP</div>
+<<header>
+  <div class="h-sub">CNO V · Seguridad Informática · Universidad Politécnica de San Luis Potosí</div>
   <h1>PROYECTOS</h1>
-  <div class="h-sub" style="margin-top:4px;">Magdalena Yesenia Tristán Rivera — 174702</div>
-  <nav>
-    <a href="../index.html">⌂ Inicio</a>
-  </nav>
+  <div class="h-sub" style="margin-top:4px;">Magdalena Yesenia Tristán Rivera — 174702 · Grupo T46B</div>
+  <div class="h-blink">_</div>
+  <nav><a href="../index.html">⌂ Inicio</a></nav>
+
+  <div class="stat-bar">
+    <div class="stat-item"><div class="stat-val">03</div><div class="stat-lbl">Proyectos Totales</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:var(--g);">03</div><div class="stat-lbl">Completados</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:#ffd700;">00</div><div class="stat-lbl">En Curso</div></div>
+    <div class="stat-item"><div class="stat-val">3</div><div class="stat-lbl">Parciales</div></div>
+    <div class="stat-item"><div class="stat-val">ISO</div><div class="stat-lbl">27001:2022</div></div>
+  </div>
 </header>
 
-<main>
-  <div class="section-label">// Repositorio de Proyectos Técnicos</div>
+<<main>
+  <div class="section-label">// Repositorio de Proyectos Técnicos · CNO V</div>
 
-  <div class="projects-grid">
-
-    <!-- PROYECTO 1 — PARCIAL 1 -->
-    <div class="proj-card">
-      <div class="proj-inner">
-        <div class="proj-num">
-          <div class="num">01</div>
-          <div class="parcial-tag">Parcial 1</div>
-        </div>
-        <div class="proj-content">
-          <div class="proj-eyebrow">Proyecto 01 · Parcial 1 · Pentesting Web</div>
-          <div class="proj-title">De la Teoría a la Práctica:<br>Walkthrough</div>
-          <div class="proj-desc">
-            Documentación técnica del recorrido completo desde los fundamentos teóricos de la seguridad informática hasta la aplicación práctica en entornos reales de pentesting. Análisis de vulnerabilidades, metodología y herramientas.
-          </div>
-          <div class="proj-tags">
-            <span class="tag">Pentesting</span>
-            <span class="tag">Walkthrough</span>
-            <span class="tag">Burp Suite</span>
-            <span class="tag">Análisis de Vulnerabilidades</span>
-          </div>
-        </div>
-        <div class="proj-cta">
-          <a href="walkthrough.html" class="cta-btn">
-            <span class="arrow">→</span>
-            Ver Proyecto
-          </a>
-        </div>
+  <!-- ══════════════════════════════ PROYECTO 1 ══════════════════════════════ -->
+  <div class="proj-card">
+    <div class="proj-band">
+      <div class="proj-num-blk">
+        <div class="big-num">01</div>
+        <div class="parcial">Parcial 1</div>
       </div>
-      <div class="proj-status">
-        <span class="status-dot ok"></span>
-        <span class="status-text ok">ACCESO CONCEDIDO — Proyecto disponible</span>
+      <div class="proj-header">
+        <div class="proj-eyebrow">Proyecto 01 · Parcial 1 · Pentesting Web</div>
+        <div class="proj-title">De la Teoría a la Práctica:<br>Walkthrough en Acción</div>
+        <div class="proj-subtitle">Pentesting completo sobre máquina virtual — Metodología + Video</div>
+        <div class="proj-tags">
+          <span class="tag">Pentesting</span>
+          <span class="tag">Walkthrough</span>
+          <span class="tag">Burp Suite</span>
+          <span class="tag blue">Nmap</span>
+          <span class="tag blue">Metasploit</span>
+          <span class="tag orange">SnakeOil VulnHub</span>
+          <span class="tag">Privilege Escalation</span>
+        </div>
       </div>
     </div>
 
-    <!-- PROYECTO 2 — PARCIAL 2 -->
-    <div class="proj-card">
-      <div class="proj-inner">
-        <div class="proj-num">
-          <div class="num">02</div>
-          <div class="parcial-tag">Parcial 2</div>
-        </div>
-        <div class="proj-content">
-          <div class="proj-eyebrow">Proyecto 02 · Parcial 2 · Ingeniería Social</div>
-          <div class="proj-title">El Eslabón Más Débil:<br>Campaña Ética de Phishing</div>
-          <div class="proj-desc">
-            Diseño, implementación y evaluación de una simulación educativa de ingeniería social. Análisis comparativo de plataformas profesionales, Phishing Quiz interactivo y sistema de score global con métricas reales.
-          </div>
-          <div class="proj-tags">
-            <span class="tag">Ingeniería Social</span>
-            <span class="tag">Phishing</span>
-            <span class="tag">Simulación Ética</span>
-            <span class="tag">OWASP</span>
-          </div>
-        </div>
-        <div class="proj-cta">
-          <a href="EslabonDebil.html" class="cta-btn">
-            <span class="arrow">→</span>
-            Ver Proyecto
-          </a>
-        </div>
+    <div class="proj-body">
+      <div class="proj-desc-area">
+        <p class="proj-desc">Recorrido técnico completo desde los fundamentos teóricos de la seguridad ofensiva hasta la explotación práctica en entornos controlados. Análisis de vulnerabilidades, reconocimiento activo/pasivo, explotación y escalada de privilegios sobre la máquina SnakeOil de VulnHub.</p>
+        <ul class="feat-list">
+          <li>Reconocimiento con Nmap y enumeración de servicios activos en la red objetivo</li>
+          <li>Identificación y análisis de vectores de ataque en aplicaciones web</li>
+          <li>Explotación de vulnerabilidades con Burp Suite y herramientas especializadas</li>
+          <li>Escalada de privilegios y obtención de shell root documentada paso a paso</li>
+          <li>Video walkthrough completo con narración técnica detallada</li>
+          <li>Documentación de metodología y lecciones aprendidas</li>
+        </ul>
       </div>
-      <div class="proj-status">
-        <span class="status-dot ok"></span>
-        <span class="status-text ok">ACCESO CONCEDIDO — Proyecto disponible</span>
-      </div>
-    </div>
-
-    <!-- PROYECTO 3 — PARCIAL 3 — LOCKED -->
-    <div class="proj-card locked">
-      <div class="proj-inner">
-        <div class="proj-num">
-          <div class="num" style="color:rgba(255,95,86,.2);">03</div>
-          <div class="parcial-tag">Parcial 3</div>
-        </div>
-        <div class="proj-content">
-          <div class="proj-eyebrow" style="color:rgba(255,95,86,.5);">Proyecto 03 · Parcial 3 · Clasificado</div>
-          <div class="proj-title">[ PRÓXIMAMENTE ]<br>Acceso Denegado</div>
-          <div class="proj-desc" style="color:rgba(255,95,86,.4);">
-            Este proyecto aún no ha sido iniciado. El contenido se encuentra en fase de desarrollo y estará disponible al comenzar el Parcial 3. Mantente en espera de nuevas actualizaciones del sistema.
+      <div class="proj-visual">
+        <!-- Terminal screen -->
+        <div class="visual-screen">
+          <div class="screen-bar">
+            <span class="s-dot s-r"></span><span class="s-dot s-y"></span><span class="s-dot s-g"></span>
+            <span class="screen-url">kali@attacker:~$ — Reconocimiento</span>
           </div>
-          <div class="proj-tags">
-            <span class="tag alert">☠ ENCRYPTED</span>
-            <span class="tag alert">SYSTEM_LOCKED</span>
-            <span class="tag alert">Fase no iniciada</span>
+          <div class="screen-body">
+            <div class="terminal-line"><span class="prompt">root@kali:~# </span><span class="cmd">nmap -sV -sC -A target</span></div>
+            <div class="terminal-line"><span class="out">PORT   STATE SERVICE  VERSION</span></div>
+            <div class="terminal-line"><span class="out">22/tcp open  ssh      OpenSSH 7.4</span></div>
+            <div class="terminal-line"><span class="out">80/tcp open  http     Apache 2.4.6</span></div>
+            <div class="terminal-line"><span class="out">443/tcp open https    nginx 1.12.2</span></div>
+            <div class="terminal-line"><span class="prompt">root@kali:~# </span><span class="cmd">gobuster dir -u http://target</span></div>
+            <div class="terminal-line"><span class="out">/admin  (Status: 200) [size: 4823]</span></div>
+            <div class="terminal-line"><span class="out">/backup (Status: 301) [→ /backup/]</span></div>
           </div>
         </div>
-        <div class="proj-cta">
-          <div class="locked-btn">
-            <span class="lock-icon">🔒</span>
-            Bloqueado
+        <!-- Stats -->
+        <div class="mini-stats">
+          <div class="mini-stat"><div class="mv">7h</div><div class="ml">Duración</div></div>
+          <div class="mini-stat"><div class="mv">P+V</div><div class="ml">Doc+Video</div></div>
+          <div class="mini-stat"><div class="mv">ROOT</div><div class="ml">Obtenido</div></div>
+        </div>
+        <!-- Phase indicators -->
+        <div style="border:1px solid var(--bdr);border-radius:2px;padding:10px 12px;">
+          <div style="font-size:8.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;">FASES DE PENTESTING</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            <span class="tag" style="font-size:8.5px;">01 Reconocimiento</span>
+            <span class="tag" style="font-size:8.5px;">02 Enumeración</span>
+            <span class="tag" style="font-size:8.5px;">03 Explotación</span>
+            <span class="tag" style="font-size:8.5px;">04 Post-Exploit</span>
           </div>
         </div>
-      </div>
-      <div class="proj-status">
-        <span class="status-dot locked"></span>
-        <span class="status-text locked">ACCESO DENEGADO — [ DATA ENCRYPTED ] — Fase final no iniciada</span>
       </div>
     </div>
 
+    <div class="proj-foot">
+      <div class="proj-meta-foot">
+        <strong>Herramientas:</strong> Nmap · Burp Suite · Metasploit · Gobuster · Linpeas<br>
+        <strong>Entorno:</strong> Kali Linux · VirtualBox · SnakeOil (VulnHub)
+      </div>
+      <a href="walkthrough.html" class="cta-btn">→ &nbsp; Ver Proyecto Completo</a>
+    </div>
+    <div class="proj-status">
+      <span class="status-dot sd-ok"></span>
+      <span class="st-ok">ACCESO CONCEDIDO — Proyecto disponible · Parcial 1 · Completado</span>
+    </div>
   </div>
+
+
+  <!-- ══════════════════════════════ PROYECTO 2 ══════════════════════════════ -->
+  <div class="proj-card">
+    <div class="proj-band">
+      <div class="proj-num-blk">
+        <div class="big-num">02</div>
+        <div class="parcial">Parcial 2</div>
+      </div>
+      <div class="proj-header">
+        <div class="proj-eyebrow">Proyecto 02 · Parcial 2 · Ingeniería Social</div>
+        <div class="proj-title">El Eslabón Más Débil:<br>Campaña Ética de Phishing</div>
+        <div class="proj-subtitle">Simulación educativa de ingeniería social · Quiz interactivo · Score global</div>
+        <div class="proj-tags">
+          <span class="tag">Ingeniería Social</span>
+          <span class="tag">Phishing</span>
+          <span class="tag blue">BEC Simulation</span>
+          <span class="tag blue">OSINT</span>
+          <span class="tag orange">OWASP</span>
+          <span class="tag">Quiz Interactivo</span>
+          <span class="tag">Score Global</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-body">
+      <div class="proj-desc-area">
+        <p class="proj-desc">Diseño e implementación de una campaña simulada de phishing con fines educativos. Análisis comparativo de plataformas de seguridad, marco teórico sobre vectores de ingeniería social, y quiz interactivo con sistema de puntuación global en tiempo real vía API externa.</p>
+        <ul class="feat-list">
+          <li>Marco teórico sobre phishing, spear-phishing, vishing, smishing y BEC</li>
+          <li>Tabla comparativa de 5 plataformas profesionales de awareness</li>
+          <li>Quiz interactivo con 10 preguntas, temporizador y retroalimentación</li>
+          <li>Sistema de score global persistente con ranking de participantes</li>
+          <li>Reporte PDF generado dinámicamente con resultados individuales</li>
+          <li>Análisis de vectores de ataque reales documentados en 2024–2025</li>
+        </ul>
+      </div>
+      <div class="proj-visual">
+        <!-- Phishing email mock -->
+        <div class="visual-screen">
+          <div class="screen-bar">
+            <span class="s-dot s-r"></span><span class="s-dot s-y"></span><span class="s-dot s-g"></span>
+            <span class="screen-url">quiz.phishing — Simulación Activa</span>
+          </div>
+          <div class="screen-body" style="padding:10px 12px;">
+            <div style="font-size:9px;color:var(--warn);letter-spacing:1px;margin-bottom:6px;">⚠ CORREO SOSPECHOSO DETECTADO</div>
+            <div style="background:rgba(255,170,0,.06);border:1px solid rgba(255,170,0,.2);border-radius:2px;padding:8px;font-size:9.5px;line-height:1.7;">
+              <div style="color:var(--dim);">De: <span style="color:var(--alert);">soporte@micr0soft.com</span></div>
+              <div style="color:var(--dim);">Para: <span style="color:var(--txt);">usuario@empresa.com</span></div>
+              <div style="color:var(--dim);">Asunto: <span style="color:var(--warn);">⚠ Verificación urgente requerida</span></div>
+              <div style="margin-top:5px;color:var(--dim);font-size:9px;">"Su cuenta será suspendida en 24h. Haga clic aquí para verificar..."</div>
+            </div>
+            <div style="margin-top:7px;display:flex;gap:6px;">
+              <span style="background:rgba(255,95,86,.15);color:var(--alert);font-size:8.5px;padding:3px 8px;border-radius:2px;border:1px solid rgba(255,95,86,.3);">PHISHING</span>
+              <span style="background:rgba(0,255,136,.06);color:var(--g);font-size:8.5px;padding:3px 8px;border-radius:2px;border:1px solid var(--bdr);">DETECTADO ✓</span>
+            </div>
+          </div>
+        </div>
+        <!-- Score display -->
+        <div class="mini-stats">
+          <div class="mini-stat"><div class="mv">10</div><div class="ml">Preguntas</div></div>
+          <div class="mini-stat"><div class="mv">🏆</div><div class="ml">Ranking</div></div>
+          <div class="mini-stat"><div class="mv">PDF</div><div class="ml">Reporte</div></div>
+        </div>
+        <!-- Vectores -->
+        <div style="border:1px solid var(--bdr);border-radius:2px;padding:10px 12px;">
+          <div style="font-size:8.5px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;">VECTORES ESTUDIADOS</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            <span class="tag red" style="font-size:8.5px;">Phishing</span>
+            <span class="tag red" style="font-size:8.5px;">Spear-Phishing</span>
+            <span class="tag red" style="font-size:8.5px;">BEC</span>
+            <span class="tag red" style="font-size:8.5px;">Vishing</span>
+            <span class="tag red" style="font-size:8.5px;">Smishing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-foot">
+      <div class="proj-meta-foot">
+        <strong>Tecnologías:</strong> HTML · CSS · JavaScript · JSONBin.io API · jsPDF<br>
+        <strong>Estándares:</strong> OWASP · NIST SP 800-115 · ISO 27032
+      </div>
+      <a href="EslabonDebil.html" class="cta-btn">→ &nbsp; Ver Proyecto Completo</a>
+    </div>
+    <div class="proj-status">
+      <span class="status-dot sd-ok"></span>
+      <span class="st-ok">ACCESO CONCEDIDO — Proyecto disponible · Parcial 2 · Completado</span>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════ PROYECTO 3 ══════════════════════════════ -->
+  <div class="proj-card">
+    <div class="proj-band">
+      <div class="proj-num-blk">
+        <div class="big-num" style="color:rgba(0,207,255,.25);">03</div>
+        <div class="parcial">Parcial 3</div>
+      </div>
+      <div class="proj-header">
+        <div class="proj-eyebrow" style="color:rgba(0,207,255,.5);">Proyecto 03 · Parcial 3 · Gestión de Seguridad</div>
+        <div class="proj-title" style="color:var(--info);text-shadow:0 0 12px rgba(0,207,255,.3);">SGSI Anthropic:<br>ISO/IEC 27001:2022</div>
+        <div class="proj-subtitle" style="color:rgba(0,207,255,.5);">Sistema de Gestión de Seguridad de la Información · Equipo 5</div>
+        <div class="proj-tags">
+          <span class="tag blue">ISO 27001:2022</span>
+          <span class="tag blue">SGSI</span>
+          <span class="tag blue">Análisis de Riesgos</span>
+          <span class="tag blue">Matrices RACI</span>
+          <span class="tag orange">Anthropic · Claude</span>
+          <span class="tag orange">PDCA</span>
+          <span class="tag blue">ISO 42001:2023</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-body">
+      <div class="proj-desc-area">
+        <p class="proj-desc">Diseño e implementación completa de un Sistema de Gestión de Seguridad de la Información para <strong style="color:var(--info);">Anthropic, PBC</strong> conforme a ISO/IEC 27001:2022. El documento abarca las 10 cláusulas: alcance, contexto organizacional, 20 políticas con matrices RACI, evaluación de riesgos y ciclo PDCA sobre incidente real BEC.</p>
+        <ul class="feat-list">
+          <li>Análisis de contexto: 20 activos internos + 20 activos externos identificados</li>
+          <li>20 políticas de seguridad con Estándar, Directriz, Procedimiento y Línea Base</li>
+          <li>Matriz de riesgo 5×5: 3 riesgos Extremo·25, múltiples Extremo·20 y Muy Alto</li>
+          <li>Matrices RACI completas por cada activo (CEO/CISO/TI/RRHH/Líder Técnico)</li>
+          <li>Ciclo PDCA sobre incidente BEC real: NC-2024-017 con 7 acciones correctivas</li>
+          <li>Checklist de 140+ ítems Sí/No para supervisión de las 20 políticas del SGSI</li>
+        </ul>
+      </div>
+      <div class="proj-visual">
+        <!-- Risk matrix mini -->
+        <div class="visual-screen">
+          <div class="screen-bar">
+            <span class="s-dot s-r"></span><span class="s-dot s-y"></span><span class="s-dot s-g"></span>
+            <span class="screen-url">SGSI — Matriz de Riesgos</span>
+          </div>
+          <div class="screen-body" style="padding:10px 12px;">
+            <div class="risk-row"><span class="rbadge rb-extremo">EXTREMO 25</span><span style="font-size:10px;color:var(--dim);">AWS — Escalada de privilegios</span></div>
+            <div class="risk-row"><span class="rbadge rb-extremo">EXTREMO 25</span><span style="font-size:10px;color:var(--dim);">Trainium2 — Robo modelo</span></div>
+            <div class="risk-row"><span class="rbadge rb-extremo">EXTREMO 20</span><span style="font-size:10px;color:var(--dim);">API Claude — Key leakage</span></div>
+            <div class="risk-row"><span class="rbadge rb-extremo">EXTREMO 20</span><span style="font-size:10px;color:var(--dim);">Correo — BEC / Phishing</span></div>
+            <div class="risk-row"><span class="rbadge rb-alto">ALTO 12</span><span style="font-size:10px;color:var(--dim);">Post-PDCA: riesgo residual</span></div>
+          </div>
+        </div>
+        <!-- Stats -->
+        <div class="mini-stats">
+          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">10</div><div class="ml">Cláusulas</div></div>
+          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">20</div><div class="ml">Políticas</div></div>
+          <div class="mini-stat" style="border-color:rgba(0,207,255,.2);"><div class="mv" style="color:var(--info);">140+</div><div class="ml">Checklist</div></div>
+        </div>
+        <!-- PDCA mini -->
+        <div class="pdca-mini">
+          <div class="pm p"><div class="pm-lbl">PLAN</div><p>Identificar riesgos y controles preventivos</p></div>
+          <div class="pm d"><div class="pm-lbl">DO</div><p>Implementar controles + respuesta 0–2h</p></div>
+          <div class="pm c"><div class="pm-lbl">CHECK</div><p>KPIs: MTTD 47→8 min, clics 8.3%→1.4%</p></div>
+          <div class="pm a"><div class="pm-lbl">ACT</div><p>7 AC correctivas · NC-2024-017 cerrada</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-foot">
+      <div class="proj-meta-foot">
+        <strong>Normas:</strong> ISO 27001 · 27002 · 27005 · 27017 · 27018 · 27032 · 42001 · NIST AI RMF<br>
+        <strong>Equipo 5:</strong> 181700 · 182033 · 182217 · 174702
+      </div>
+      <a href="proyecto3.html" class="cta-btn" style="background:var(--info);box-shadow:0 0 18px rgba(0,207,255,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
+    </div>
+    <div class="proj-status">
+      <span class="status-dot" style="background:var(--info);box-shadow:0 0 5px var(--info);"></span>
+      <span style="color:var(--info);">ACCESO CONCEDIDO — Proyecto disponible · Parcial 3 · Completado · Equipo 5 · ISO 27001:2022</span>
+    </div>
+  </div>
+
 </main>
 
-<footer>
+<<footer>
   <span>Proyectos — CNO V Seguridad Informática</span><br>
   Magdalena Yesenia Tristán Rivera · 174702 · Docente: Mtro. Servando López Contreras<br>
   <span style="color:var(--dim);font-size:10px;margin-top:5px;display:block;">Universidad Politécnica de San Luis Potosí · 2026</span>
 </footer>
 
 <script>
-function createMatrix(id){
-  const c=document.getElementById(id);
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  c.height=innerHeight;c.width=120;
-  const ch='01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*SELECT UNION WHERE';
-  const fs=13,cols=Math.floor(c.width/fs);
+(function(){
+  const c=document.getElementById('mc'),ctx=c.getContext('2d');
+  c.width=innerWidth;c.height=innerHeight;
+  const ch='01アイウエオABCDEFGHIJKLMNOP@#$%SELECT UNION WHERE ISO27001SGSI';
+  const fs=14,cols=Math.floor(c.width/fs);
   const dr=Array(cols).fill(1);
   function draw(){
-    ctx.fillStyle='rgba(5,13,10,0.07)';ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='rgba(5,13,10,0.05)';ctx.fillRect(0,0,c.width,c.height);
     ctx.fillStyle='#00ff88';ctx.font=fs+'px monospace';
     dr.forEach((y,i)=>{
       ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,y*fs);
-      if(y*fs>c.height&&Math.random()>.975)dr[i]=0;dr[i]++;
+      if(y*fs>c.height&&Math.random()>.975)dr[i]=0;
+      dr[i]++;
     });
   }
-  setInterval(draw,45);
-  addEventListener('resize',()=>{c.height=innerHeight;});
-}
-createMatrix('matrix-left');
-createMatrix('matrix-right');
+  setInterval(draw,40);
+  window.addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight;});
+})();
 </script>
 </body>
 </html>
