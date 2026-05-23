@@ -288,7 +288,7 @@ footer span{color:var(--gd);}
         <strong>Herramientas:</strong> Nmap · Burp Suite · Metasploit · Gobuster · Linpeas<br>
         <strong>Entorno:</strong> Kali Linux · VirtualBox · SnakeOil (VulnHub)
       </div>
-      <a href="walkthrough.html" class="cta-btn" style="background:var(--alert);box-shadow:0 0 18px rgba(255,95,86,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
+      <a href="EslabonDebil.html" class="cta-btn" style="background:var(--alert);box-shadow:0 0 18px rgba(255,95,86,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
     </div>
     <div class="proj-status">
       <span class="status-dot" style="background:var(--alert);box-shadow:0 0 5px var(--alert);"></span>
@@ -375,7 +375,7 @@ footer span{color:var(--gd);}
         <strong>Tecnologías:</strong> HTML · CSS · JavaScript · JSONBin.io API · jsPDF<br>
         <strong>Estándares:</strong> OWASP · NIST SP 800-115 · ISO 27032
       </div>
-      <a href="EslabonDebil.html" class="cta-btn" style="background:var(--info);box-shadow:0 0 18px rgba(0,207,255,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
+      <a href="walkthrough.html" class="cta-btn" style="background:var(--info);box-shadow:0 0 18px rgba(0,207,255,.35);color:#050d0a;">→ &nbsp; Ver Proyecto Completo</a>
     </div>
     <div class="proj-status">
       <span class="status-dot" style="background:var(--info);box-shadow:0 0 5px var(--info);"></span>
@@ -487,13 +487,6 @@ footer span{color:var(--gd);}
   setInterval(draw,40);
   window.addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight;});
 })();
-
-// Evita que Inicio y los 3 proyectos hagan salto de página
-document.querySelectorAll('nav a[href="../index.html"], a[href="walkthrough.html"], a[href="EslabonDebil.html"], a[href="proyecto3.html"]').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-  });
-});
 </script>
 </body>
 </html>
